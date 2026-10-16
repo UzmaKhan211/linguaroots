@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Square, Play, RotateCcw } from "lucide-react";
-import { closeness, closenessMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
-import { decodeToMono16k, getScoringConfig, loadReference } from "@/lib/audio";
+import { closenessWithCohort, closenessMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
+import { decodeToMono16k, getScoringConfig, loadCohort, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
 
 type Phase = "idle" | "recording" | "scoring" | "scored";
 
 /** Record, play back and get a closeness score. Recording never leaves the device. */
 export function SayIt({
   referenceUrl,
+  cohortUrls = [],
   passMark = PASS_MARK,
   onPass,
   onSelfCheck,
 }: {
   referenceUrl: string;
+  cohortUrls?: string[];
   passMark?: number;
   onPass: () => void;
   onSelfCheck: () => void;
@@ -30,6 +32,7 @@ export function SayIt({
     let live = true;
     setNoRef(false);
     loadReference(referenceUrl).then((r) => live && setNoRef(!r));
+    void loadCohort(cohortUrls, referenceUrl); // warm the cache
     return () => {
       live = false;
     };
@@ -42,7 +45,7 @@ export function SayIt({
   const start = async () => {
     setMicError(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia(MIC_CONSTRAINTS);
       const r = new MediaRecorder(stream);
       chunks.current = [];
       r.ondataavailable = (e) => e.data.size && chunks.current.push(e.data);
@@ -59,7 +62,8 @@ export function SayIt({
         setPhase("scoring");
         try {
           const take = await decodeToMono16k(await blob.arrayBuffer());
-          const { score: s } = closeness(take, ref, getScoringConfig());
+          const cohort = await loadCohort(cohortUrls, referenceUrl);
+          const { score: s } = closenessWithCohort(take, ref, cohort, getScoringConfig());
           setScore(s);
           if (!passes(s, passMark)) setFails((f) => f + 1);
         } catch {

@@ -160,6 +160,28 @@ export function closeness(take: Float32Array, reference: Float32Array, cfg: Scor
   return { dist, score: distanceToScore(dist, cfg) };
 }
 
+/**
+ * Voice-independent check: how much closer the take is to this phrase than to other
+ * phrases by the same native speaker. A learner's different voice affects all
+ * comparisons equally, so it cancels out. ~1 means "no closer than a different phrase".
+ */
+export const RATIO_CONFIG: ScoringConfig = { perfect: 0.35, pass: 0.6 };
+export const ratioToScore = (ratio: number) => distanceToScore(ratio, RATIO_CONFIG);
+
+export function closenessWithCohort(
+  take: Float32Array,
+  reference: Float32Array,
+  others: Float32Array[],
+  cfg: ScoringConfig = DEFAULT_CONFIG,
+) {
+  const t = mfcc(take);
+  const dist = dtwDistance(t, mfcc(reference));
+  const ds = others.map((o) => dtwDistance(t, mfcc(o))).filter(isFinite).sort((a, b) => a - b);
+  const ratio = ds.length >= 2 && isFinite(dist) ? dist / ds[Math.floor(ds.length / 2)] : Infinity;
+  const score = Math.max(distanceToScore(dist, cfg), isFinite(ratio) ? ratioToScore(ratio) : 0);
+  return { dist, ratio, score };
+}
+
 export const passes = (score: number, mark = PASS_MARK) => score >= mark;
 export const showSelfCheck = (failedTries: number) => failedTries >= SELF_CHECK_AFTER;
 

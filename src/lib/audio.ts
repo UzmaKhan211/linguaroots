@@ -48,3 +48,17 @@ export function saveScoringConfig(c: ScoringConfig | null) {
   if (c) localStorage.setItem(KEY, JSON.stringify(c));
   else localStorage.removeItem(KEY);
 }
+
+/** Other phrases by the same speaker, used to cancel out voice differences when scoring. */
+export async function loadCohort(urls: string[], exclude: string, max = 8): Promise<Float32Array[]> {
+  const pick = [...new Set(urls)].filter((u) => u !== exclude);
+  const step = Math.max(1, Math.floor(pick.length / max));
+  const chosen = pick.filter((_, i) => i % step === 0).slice(0, max);
+  const out = await Promise.all(chosen.map(loadReference));
+  return out.filter((x): x is Float32Array => !!x);
+}
+
+/** Raw microphone: browser voice processing changes the sound and makes scoring unfair. */
+export const MIC_CONSTRAINTS: MediaStreamConstraints = {
+  audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true, channelCount: 1 },
+};
