@@ -165,7 +165,7 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
         a.addEventListener("canplay", tryPlay, { once: true });
         a.addEventListener("loadeddata", tryPlay, { once: true });
         // Some phones never fire load events with a slow connection; try anyway.
-        setTimeout(tryPlay, 3000);
+        setTimeout(tryPlay, 1200);
       }
     }
     // Never hold the screen for more than 20 seconds (missing or silent clip).
