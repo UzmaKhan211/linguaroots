@@ -17,6 +17,7 @@ import { Route as DictionaryRouteImport } from './routes/dictionary'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as LanguageIntroRouteImport } from './routes/language-intro'
 import { Route as LanguagesRouteImport } from './routes/languages'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
@@ -63,6 +64,11 @@ const LanguagesRoute = LanguagesRouteImport.update({
   path: '/languages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
+  '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
+  '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
+  '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/language-intro'
     | '/languages'
+    | '/profile'
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/language-intro'
     | '/languages'
+    | '/profile'
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/language-intro'
     | '/languages'
+    | '/profile'
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   LabRoute: typeof LabRoute
   LanguageIntroRoute: typeof LanguageIntroRoute
   LanguagesRoute: typeof LanguagesRoute
+  ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   WelcomeRoute: typeof WelcomeRoute
   ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LanguagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   LabRoute: LabRoute,
   LanguageIntroRoute: LanguageIntroRoute,
   LanguagesRoute: LanguagesRoute,
+  ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   WelcomeRoute: WelcomeRoute,
   ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
