@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2, Clock } from "lucide-react";
 import { fetchLessonAudio } from "@/lib/lessonAudio";
+import { Button } from "@/components/ui/button";
 
 /** Clips that start on their own wait their turn, so two lines never talk over each other. */
 let autoQueue: Promise<void> = Promise.resolve();
@@ -103,7 +104,8 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
   }
 
   return (
-    <button
+    <Button
+      variant="audio"
       type="button"
       onClick={() => {
         const a = ref.current;
@@ -111,9 +113,8 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
         a.currentTime = 0;
         a.play().then(() => setPlaying(true)).catch(() => setMissing(true));
       }}
-      className="inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-4 font-bold text-secondary-foreground"
     >
       <Volume2 className="size-5" aria-hidden /> {playing ? "Playing…" : label}
-    </button>
+    </Button>
   );
 }

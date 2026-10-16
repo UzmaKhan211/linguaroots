@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Audio playback controls use the shared Button audio variant so lessons and Dictionary stay visually consistent.
 - Lesson content lives as CSV in `src/content/<language>/` and is parsed by `src/lib/content.ts`; screens never hard-code Khowar text, so new scenarios/languages are data changes.
 - Coming-soon languages live in `src/lib/languages.ts` as names only; no phrases or lessons behind them.
 - Dictionary uses its own CSV parser, consolidating normalized Roman words while retaining all scenario/item/source references for learned badges; dictionary-only CDN audio mappings preserve existing lesson clips with overlapping names. Learned badges derive only from completed warm-up membership because conversation progress does not track which individual lines were skipped.
