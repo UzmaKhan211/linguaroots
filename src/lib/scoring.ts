@@ -16,7 +16,7 @@ export interface ScoringConfig {
   perfect: number;
   pass: number;
 }
-export const DEFAULT_CONFIG: ScoringConfig = { perfect: 23.74, pass: 28.92 };
+export const DEFAULT_CONFIG: ScoringConfig = { perfect: 22, pass: 25.75 };
 
 const FRAME = 400; // 25 ms
 const HOP = 160; // 10 ms
@@ -165,7 +165,7 @@ export function closeness(take: Float32Array, reference: Float32Array, cfg: Scor
  * phrases by the same native speaker. A learner's different voice affects all
  * comparisons equally, so it cancels out. ~1 means "no closer than a different phrase".
  */
-export const RATIO_CONFIG: ScoringConfig = { perfect: 0.3, pass: 0.5 };
+export const RATIO_CONFIG: ScoringConfig = { perfect: 0.55, pass: 0.76 };
 export const ratioToScore = (ratio: number) => distanceToScore(ratio, RATIO_CONFIG);
 
 export function closenessWithCohort(

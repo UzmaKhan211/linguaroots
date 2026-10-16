@@ -129,7 +129,7 @@ export async function syncWithAccount(scenarioIds: string[]) {
 export function clearDeviceProgress() {
   try {
     Object.keys(localStorage)
-      .filter((k) => k.startsWith("lr:") && k !== "lr:scoring-config")
+      .filter((k) => k.startsWith("lr:") && !k.startsWith("lr:scoring-config"))
       .forEach((k) => localStorage.removeItem(k));
   } catch {
     /* ignore */
