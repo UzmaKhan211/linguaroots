@@ -11,7 +11,7 @@ export const languages: Language[] = [
   { id: "pashto", name: "Pashto", region: "Pakistan & Afghanistan", status: "coming-soon" },
   { id: "burushaski", name: "Burushaski", region: "Hunza & Nagar", status: "coming-soon" },
   { id: "wakhi", name: "Wakhi", region: "Gojal & Wakhan", status: "coming-soon" },
-  { id: "kalasha", name: "Kalasha", region: "Chitral valleys", status: "coming-soon" },
+  { id: "kalasha", name: "Kalasha", region: "Chitral Valley", status: "coming-soon" },
 ];
 
 /** Available languages first, then coming-soon ones in alphabetical order. */
