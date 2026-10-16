@@ -31,6 +31,22 @@ export function afterChoice(turn: Turn, all: Turn[]): Step {
   return stepAt(turn.nextTurnId, all);
 }
 
+/** Rebuild a saved conversation from its line ids. Returns null if the lesson data changed. */
+export function resumeFrom(ids: string[], startId: string, all: Turn[]): { history: Turn[]; step: Step } | null {
+  const history: Turn[] = [];
+  let step = stepAt(startId, all);
+  for (const id of ids) {
+    const t = all.find((x) => x.id === id);
+    if (!t) return null;
+    const ok =
+      (step.type === "line" && step.turn.id === id) || (step.type === "choose" && step.options.some((o) => o.id === id));
+    if (!ok) return null;
+    history.push(t);
+    step = t.speaker === "character" ? afterLine(t, all) : afterChoice(t, all);
+  }
+  return step.type === "end" ? null : { history, step };
+}
+
 export interface QuizQuestion {
   item: WarmupItem;
   options: string[]; // Roman Khowar, only from real items
