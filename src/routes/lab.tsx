@@ -28,12 +28,14 @@ function Lab() {
   const [cfg, setCfg] = useState<ScoringConfig>(DEFAULT_CONFIG);
   const [progress, setProgress] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [lastAdded, setLastAdded] = useState<string | null>(null);
 
   useEffect(() => setCfg(getScoringConfig()), []);
 
   const addFiles = async (list: FileList | null) => {
-    if (!list) return;
-    const files = Array.from(list);
+    if (!list || !list.length) return;
+    const files = Array.from(list).filter((f) => !f.name.startsWith("."));
+    setLastAdded(null);
     const refs = new Map<string, Float32Array>();
     for (const f of files) {
       const p = parseTakeName(f.name);
@@ -63,6 +65,7 @@ function Lab() {
     setTakes((t) => [...t, ...out]);
     setSkipped((s) => [...s, ...skip]);
     setProgress(null);
+    setLastAdded(`Added ${out.length} take${out.length === 1 ? "" : "s"}${skip.length ? `, skipped ${skip.length} (see the list below)` : ""}.`);
   };
 
   const byPhrase = useMemo(() => {
@@ -84,12 +87,32 @@ function Lab() {
         sorted automatically; the example recording comes from the app (or add <span className="font-mono text-sm">gft-01.mp3</span>). Everything stays on this device.
       </p>
 
-      <section className="mt-6 rounded-3xl border bg-card p-4">
-        <label className="font-bold">
-          Add recordings
-          <input type="file" accept="audio/*" multiple disabled={!!progress} className="mt-2 block w-full text-sm" onChange={(e) => { void addFiles(e.target.files); e.target.value = ""; }} />
-        </label>
+      <section
+        className="mt-6 rounded-3xl border-2 border-dashed bg-card p-4"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => { e.preventDefault(); void addFiles(e.dataTransfer.files); }}
+      >
+        <p className="font-bold">Add recordings</p>
+        <p className="text-sm text-muted-foreground">Drag files here, or choose files or a whole folder.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <label className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-primary px-4 font-bold text-primary-foreground">
+            Choose files
+            <input type="file" multiple disabled={!!progress} className="sr-only" onChange={(e) => { const fl = e.target.files; void addFiles(fl); }} />
+          </label>
+          <label className="inline-flex min-h-11 cursor-pointer items-center rounded-full border-2 px-4 font-bold">
+            Choose a folder
+            <input
+              type="file"
+              multiple
+              disabled={!!progress}
+              className="sr-only"
+              ref={(el) => { if (el) el.setAttribute("webkitdirectory", ""); }}
+              onChange={(e) => void addFiles(e.target.files)}
+            />
+          </label>
+        </div>
         {progress && <p className="mt-2 text-sm" aria-live="polite">{progress}</p>}
+        {lastAdded && !progress && <p className="mt-2 text-sm" aria-live="polite">{lastAdded}</p>}
         {takes.length > 0 && (
           <button type="button" onClick={() => { setTakes([]); setSkipped([]); }} className="mt-3 min-h-11 rounded-full border-2 px-4 text-sm font-bold">
             Clear all
