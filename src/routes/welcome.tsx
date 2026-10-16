@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { LogoMark } from "@/components/LogoMark";
+import { LogoMark, Wordmark } from "@/components/LogoMark";
 import { AudioButton } from "@/components/AudioButton";
 import { scenarios, getWarmup } from "@/lib/content";
 import { finishOnboarding, getPrefs } from "@/lib/progress";
@@ -10,9 +10,9 @@ export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
       { title: "Welcome | LinguaRoots" },
-      { name: "description", content: "A one-minute welcome to practicing Khowar with the people you love." },
+      { name: "description", content: "Discover why indigenous languages like Khowar matter, then try your first word." },
       { property: "og:title", content: "Welcome | LinguaRoots" },
-      { property: "og:description", content: "A one-minute welcome to practicing Khowar with the people you love." },
+      { property: "og:description", content: "Discover why indigenous languages like Khowar matter, then try your first word." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -20,13 +20,12 @@ export const Route = createFileRoute("/welcome")({
   component: Welcome,
 });
 
-const relativeLabel: Record<string, string> = { grandmother: "Grandma", grandfather: "Grandpa" };
-const STEPS = 5;
+const STEPS = 7;
 
 function Welcome() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [relative, setRelative] = useState<string | undefined>(() => getPrefs().relative);
+  const relative = getPrefs().relative;
   const [under13, setUnder13] = useState(false);
 
   const scenario = scenarios.find((s) => s.character === relative) ?? scenarios[0]!;
@@ -55,41 +54,41 @@ function Welcome() {
 
       <div key={step} className="fade-up flex flex-1 flex-col justify-center">
         {step === 0 && (
-          <>
-            <LogoMark className="h-16 w-auto self-start" />
-            <h1 className="mt-6 text-[2rem] font-semibold leading-tight">Get ready to talk with someone you love.</h1>
-            <p className="mt-3 text-lg text-muted-foreground">
-              Hear your relative, choose what to say, and practice saying it in Khowar. No tests, just gentle practice.
+          <div className="flex flex-col items-center text-center">
+            <LogoMark className="pop-in float-soft h-28 w-auto" />
+            <Wordmark className="fade-up mt-5 h-8 w-auto" />
+            <h1 className="fade-up mt-8 text-[2rem] font-semibold leading-tight" style={{ animationDelay: "200ms" }}>
+              Keep your family's language alive.
+            </h1>
+            <p className="fade-up mt-3 text-lg text-muted-foreground" style={{ animationDelay: "320ms" }}>
+              Learn everyday Khowar phrases through short, friendly conversations.
             </p>
             <Primary onClick={next}>Let's begin</Primary>
-          </>
+          </div>
         )}
 
-        {step === 1 && (
+        {step === 1 && <EndangeredFact onNext={next} />}
+        {step === 4 && <GenerationsFact onNext={next} />}
+        {step === 3 && (
           <>
-            <h1 className="text-[1.75rem] font-semibold leading-tight">Who would you like to talk to first?</h1>
-            <div className="mt-6 space-y-3" role="radiogroup" aria-label="Relative">
-              {scenarios.map((s) => {
-                const on = relative === s.character;
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
-                    onClick={() => setRelative(s.character)}
-                    className={`flex min-h-16 w-full items-center justify-between rounded-3xl border-2 bg-card px-5 text-left ${on ? "border-primary ring-2 ring-primary/30" : ""}`}
-                  >
-                    <span>
-                      <span className="block text-xl font-semibold">{relativeLabel[s.character] ?? s.character}</span>
-                      <span className="block text-sm text-muted-foreground">{s.title}</span>
-                    </span>
-                    <span className="text-sm font-bold">{on ? "✓ Chosen" : ""}</span>
-                  </button>
-                );
-              })}
+            <p className="text-sm font-bold uppercase tracking-wider text-accent">About Khowar</p>
+            <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">A language of the mountains</h1>
+            <div className="mt-6 space-y-3">
+              {[
+                ["Where", "The Chitral valley and nearby valleys of northern Pakistan"],
+                ["Who", "Hundreds of thousands of speakers, plus families around the world"],
+                ["How", "Passed down mostly by speaking, from elders to children"],
+              ].map(([k, v], i) => (
+                <div key={k} className="pop-in flex gap-4 rounded-3xl border bg-card p-4 shadow-soft" style={{ animationDelay: `${150 + i * 180}ms` }}>
+                  <span className="w-14 shrink-0 font-display text-lg font-semibold text-primary">{k}</span>
+                  <span className="text-base">{v}</span>
+                </div>
+              ))}
             </div>
-            <Primary onClick={next} disabled={!relative}>Continue</Primary>
+            <p className="fade-up mt-4 text-base text-muted-foreground" style={{ animationDelay: "750ms" }}>
+              Every phrase you learn here was recorded by a real Khowar speaker.
+            </p>
+            <Primary onClick={next}>Continue</Primary>
           </>
         )}
 
@@ -110,7 +109,7 @@ function Welcome() {
           </>
         )}
 
-        {step === 3 && (
+        {step === 5 && (
           <>
             <h1 className="text-[1.75rem] font-semibold leading-tight">One quick check</h1>
             <p className="mt-2 text-lg text-muted-foreground">LinguaRoots is for people aged 13 and over.</p>
@@ -136,7 +135,7 @@ function Welcome() {
           </>
         )}
 
-        {step === 4 && (
+        {step === 6 && (
           <>
             <h1 className="text-[1.75rem] font-semibold leading-tight">Keep your progress safe</h1>
             <p className="mt-2 text-lg text-muted-foreground">
@@ -163,5 +162,89 @@ function Primary({ children, onClick, disabled }: { children: React.ReactNode; o
     >
       {children}
     </button>
+  );
+}
+
+function EndangeredFact({ onNext }: { onNext: () => void }) {
+  const [shown, setShown] = useState(false);
+  return (
+    <>
+      <p className="text-sm font-bold uppercase tracking-wider text-accent">Did you know?</p>
+      <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">The world speaks about 7,000 languages.</h1>
+      <p className="mt-2 text-lg text-muted-foreground">How many of them are at risk of being lost? Tap to find out.</p>
+      <button
+        type="button"
+        onClick={() => setShown(true)}
+        aria-label="Reveal how many languages are at risk"
+        className="mt-6 grid grid-cols-10 gap-2 rounded-3xl border bg-card p-5 shadow-soft"
+      >
+        {Array.from({ length: 50 }, (_, i) => {
+          const atRisk = shown && i % 10 < 4;
+          return (
+            <span
+              key={i}
+              className={`aspect-square rounded-full transition-all duration-500 motion-reduce:transition-none ${atRisk ? "scale-75 bg-accent" : "bg-primary/70"}`}
+              style={{ transitionDelay: `${(i % 10) * 40 + Math.floor(i / 10) * 30}ms` }}
+            />
+          );
+        })}
+      </button>
+      {shown && (
+        <p className="pop-in mt-4 text-lg" role="status">
+          <span className="font-display text-3xl font-semibold text-accent">About 4 in 10</span>
+          <br />
+          are endangered, according to UNESCO. Many are indigenous languages kept alive by families at home.
+        </p>
+      )}
+      <Primary onClick={onNext} disabled={!shown}>Continue</Primary>
+    </>
+  );
+}
+
+function GenerationsFact({ onNext }: { onNext: () => void }) {
+  const [pick, setPick] = useState<number | null>(null);
+  const options = ["One", "Three", "Ten"];
+  const correct = 1;
+  return (
+    <>
+      <p className="text-sm font-bold uppercase tracking-wider text-accent">Quick guess</p>
+      <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">
+        When families move abroad, how many generations does it often take for a home language to fade?
+      </h1>
+      <div className="mt-6 grid grid-cols-3 gap-3">
+        {options.map((o, i) => {
+          const isRight = pick !== null && i === correct;
+          return (
+            <button
+              key={o}
+              type="button"
+              onClick={() => setPick(i)}
+              disabled={pick !== null}
+              className={`min-h-16 rounded-3xl border-2 bg-card text-lg font-bold ${isRight ? "border-primary ring-2 ring-primary/30" : pick === i ? "border-accent" : ""}`}
+            >
+              {o}
+              {isRight && <span className="block text-sm text-primary">✓ Answer</span>}
+            </button>
+          );
+        })}
+      </div>
+      {pick !== null && (
+        <div className="mt-6" role="status">
+          <div className="flex h-24 items-end justify-center gap-6" aria-hidden>
+            {[100, 55, 15].map((h, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div className="grow-up w-12 rounded-t-2xl bg-primary" style={{ height: `${h}%`, animationDelay: `${i * 200}ms`, opacity: 1 - i * 0.25 }} />
+                <span className="text-xs font-bold text-muted-foreground">Gen {i + 1}</span>
+              </div>
+            ))}
+          </div>
+          <p className="pop-in mt-4 text-lg">
+            {pick === correct ? "That's right. " : "It's often just three. "}
+            Grandparents speak it, parents understand it, and children often lose it. Learning a few phrases helps keep the thread going.
+          </p>
+        </div>
+      )}
+      <Primary onClick={onNext} disabled={pick === null}>Continue</Primary>
+    </>
   );
 }
