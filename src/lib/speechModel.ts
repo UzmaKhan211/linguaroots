@@ -1,8 +1,9 @@
 /**
- * Experimental on-device speech-listening scorer (HuBERT features + DTW).
- * Browser only: the library and model (~95 MB, cached by the browser) load lazily on first use.
+ * On-device speech-listening scorer (HuBERT features + DTW).
+ * Browser only: the library and model (cached by the browser) load lazily on first use.
  * Audio is processed on the device; nothing is uploaded.
  */
+import { trimSilence } from "./scoring";
 const MODEL = "Xenova/hubert-base-ls960";
 
 type Frames = Float32Array[];
@@ -16,7 +17,17 @@ export function loadSpeechModel(onProgress?: (pct: number) => void) {
         if (p.status === "progress" && typeof p.progress === "number") onProgress?.(Math.round(p.progress));
       };
       const proc = await AutoProcessor.from_pretrained(MODEL, { progress_callback });
-      const model = await AutoModel.from_pretrained(MODEL, { dtype: "q8", device: "wasm", progress_callback });
+      // Fast mode: use the phone's graphics chip when available, otherwise the regular path.
+      const hasGpu = typeof navigator !== "undefined" && "gpu" in navigator && !!(await (navigator as unknown as { gpu: { requestAdapter: () => Promise<unknown> } }).gpu.requestAdapter().catch(() => null));
+      let model;
+      if (hasGpu) {
+        try {
+          model = await AutoModel.from_pretrained(MODEL, { dtype: "fp32", device: "webgpu", progress_callback });
+        } catch {
+          model = undefined;
+        }
+      }
+      model ??= await AutoModel.from_pretrained(MODEL, { dtype: "q8", device: "wasm", progress_callback });
       return async (x: Float32Array) => {
         const out = (await model(await proc(x))) as { last_hidden_state: { dims: number[]; data: Float32Array } };
         const [, T, D] = out.last_hidden_state.dims as [number, number, number];
