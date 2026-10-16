@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-ro
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Heart, Mic } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { AudioButton } from "@/components/AudioButton";
+import { AudioButton, useAutoAudioBusy } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
@@ -48,6 +48,7 @@ function Talk() {
   const [history, setHistory] = useState<Turn[]>([]);
   const [step, setStep] = useState<Step>(() => stepAt(scenario.startTurnId, turns));
   const [chosen, setChosen] = useState<Turn | null>(null);
+  const speaking = useAutoAudioBusy();
   const [tally, setTally] = useState({ spoken: 0, skipped: 0 });
   const endRef = useRef<HTMLDivElement>(null);
   const isEnd = step.type === "end";
@@ -131,7 +132,7 @@ function Talk() {
         ))}
       </ol>
 
-      {step.type === "choose" && !chosen && (
+      {step.type === "choose" && !chosen && !speaking && (
         <section className="fade-up mt-6">
           <p className="font-bold text-muted-foreground">
             {step.options.length > 1 ? "Select a response of your choice" : "Respond by saying"}
@@ -160,7 +161,7 @@ function Talk() {
         </section>
       )}
 
-      {chosen && (
+      {chosen && !speaking && (
         <section className="fade-up mt-6 rounded-3xl border bg-leaf-soft p-5">
           <div className="flex items-center justify-between gap-2">
             <p className="flex items-center gap-2 font-bold text-primary">
