@@ -1,12 +1,12 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Heart, Mic } from "lucide-react";
+import { ArrowLeft, Heart, Mic, RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AudioButton, useAutoAudioBusy } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
-import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
-import { isWarmupDone, markScenarioCompleted } from "@/lib/progress";
+import { afterChoice, afterLine, resumeFrom, stepAt, type Step } from "@/lib/conversation";
+import { getResume, isWarmupDone, markScenarioCompleted, saveResume } from "@/lib/progress";
 import { earn, XP } from "@/lib/rewards";
 import { RewardsBadge } from "@/components/RewardsBadge";
 import { loadCohortKeyed, loadReference } from "@/lib/audio";
@@ -50,10 +50,13 @@ function Talk() {
   const [chosen, setChosen] = useState<Turn | null>(null);
   const speaking = useAutoAudioBusy();
   const [tally, setTally] = useState({ spoken: 0, skipped: 0 });
+  const [restored, setRestored] = useState(0);
+  const [ready, setReady] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const isEnd = step.type === "end";
   useEffect(() => {
     if (!isEnd) return;
+    saveResume(scenario.id, null);
     markScenarioCompleted(scenario.id);
     earn("scenario");
   }, [isEnd, scenario.id]);
@@ -61,6 +64,34 @@ function Talk() {
   useEffect(() => {
     if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
   }, [scenario.id, navigate]);
+
+  // Pick up a conversation left part way.
+  useEffect(() => {
+    const saved = getResume(scenario.id);
+    const r = saved && resumeFrom(saved.history, scenario.startTurnId, turns);
+    if (r && saved) {
+      setHistory(r.history);
+      setStep(r.step);
+      setTally({ spoken: saved.spoken, skipped: saved.skipped });
+      setRestored(r.history.length);
+    }
+    setReady(true);
+  }, [scenario.id, scenario.startTurnId]);
+
+  // Save after every line so leaving never loses the place.
+  useEffect(() => {
+    if (!ready || isEnd || history.length === 0) return;
+    saveResume(scenario.id, { history: history.map((t) => t.id), ...tally });
+  }, [ready, isEnd, history, tally, scenario.id]);
+
+  const startOver = () => {
+    saveResume(scenario.id, null);
+    setHistory([]);
+    setTally({ spoken: 0, skipped: 0 });
+    setRestored(0);
+    setChosen(null);
+    setStep(stepAt(scenario.startTurnId, turns));
+  };
 
   // Get the listening tool ready and pre-listen to the example clips in the background
   // (off the main screen), so after recording only the learner's take needs processing.
@@ -85,13 +116,13 @@ function Talk() {
 
   // Relative's lines appear on their own; walk until replies are needed.
   useEffect(() => {
-    if (step.type !== "line") return;
+    if (!ready || step.type !== "line") return;
     const t = setTimeout(() => {
       setHistory((h) => [...h, step.turn]);
       setStep(afterLine(step.turn, turns));
     }, history.length ? 700 : 200);
     return () => clearTimeout(t);
-  }, [step, history.length]);
+  }, [ready, step, history.length]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -126,9 +157,22 @@ function Talk() {
         <ArrowLeft className="size-5" aria-hidden /> {scenario.title}
       </Link>
 
+      {restored > 0 && !isEnd && (
+        <div className="fade-up mt-4 flex items-center justify-between gap-3 rounded-2xl bg-muted p-3">
+          <p className="text-base font-semibold text-foreground">Welcome back. Pick up where you left off.</p>
+          <button
+            type="button"
+            onClick={startOver}
+            className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full border-2 bg-card px-3 text-sm font-bold"
+          >
+            <RotateCcw className="size-4" aria-hidden /> Start over
+          </button>
+        </div>
+      )}
+
       <ol className="mt-4 space-y-4" aria-live="polite">
         {history.map((t, i) => (
-          <Bubble key={t.id + i} turn={t} who={who} autoPlay />
+          <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restored} />
         ))}
       </ol>
 
@@ -218,11 +262,7 @@ function Talk() {
           <div className="mt-5 grid gap-3">
             <button
               type="button"
-              onClick={() => {
-                setHistory([]);
-                setTally({ spoken: 0, skipped: 0 });
-                setStep(stepAt(scenario.startTurnId, turns));
-              }}
+              onClick={startOver}
               className="min-h-12 rounded-full bg-primary font-bold text-primary-foreground"
             >
               Talk again
