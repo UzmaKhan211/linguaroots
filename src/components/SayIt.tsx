@@ -190,7 +190,11 @@ export function SayIt({
 
       <div aria-live="polite">
         {phase === "scored" && score !== null && (
-          <div className="fade-up rounded-2xl bg-card p-4">
+          <div
+            className={`fade-up rounded-2xl border-2 bg-card p-4 ${
+              passed ? "border-transparent" : fails >= 3 ? "border-destructive" : "border-sun"
+            }`}
+          >
             <p className="font-display text-xl font-semibold">{feedback}</p>
           </div>
         )}
