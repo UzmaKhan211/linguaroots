@@ -85,7 +85,9 @@ function Talk() {
 
       {step.type === "choose" && !chosen && (
         <section className="fade-up mt-6">
-          <p className="font-bold text-muted-foreground">How would you like to reply?</p>
+          <p className="font-bold text-muted-foreground">
+            {step.options.length > 1 ? "Select a response of your choice" : "Respond by saying"}
+          </p>
           <ul className="mt-3 space-y-3">
             {step.options.map((o, idx) => (
               <li key={o.id}>
