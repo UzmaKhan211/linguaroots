@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      closeness_attempts: {
+        Row: {
+          attempt: number
+          created_at: string
+          id: string
+          passed: boolean
+          reference: string
+          score: number
+          scorer: string
+          user_id: string
+        }
+        Insert: {
+          attempt?: number
+          created_at?: string
+          id?: string
+          passed: boolean
+          reference: string
+          score: number
+          scorer?: string
+          user_id: string
+        }
+        Update: {
+          attempt?: number
+          created_at?: string
+          id?: string
+          passed?: boolean
+          reference?: string
+          score?: number
+          scorer?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       language_interest: {
         Row: {
           created_at: string
