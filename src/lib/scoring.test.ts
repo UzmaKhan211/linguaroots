@@ -6,7 +6,7 @@ function tone(freqs: number[], seconds = 0.6) {
   const x = new Float32Array(n);
   const seg = Math.floor(n / freqs.length);
   for (let i = 0; i < n; i++) {
-    const f = freqs[Math.min(freqs.length - 1, Math.floor(i / seg))];
+    const f = freqs[Math.min(freqs.length - 1, Math.floor(i / seg))]!;
     x[i] = 0.5 * Math.sin((2 * Math.PI * f * i) / SAMPLE_RATE);
   }
   return x;
