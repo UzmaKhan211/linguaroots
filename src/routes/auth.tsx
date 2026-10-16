@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
 import { isOnboarded } from "@/lib/progress";
+import { DEFAULT_AVATAR, setPendingAvatar } from "@/lib/avatars";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
