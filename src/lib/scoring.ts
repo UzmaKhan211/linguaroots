@@ -76,11 +76,29 @@ export function trimSilence(x: Float32Array): Float32Array {
     energies.push(e / FRAME);
   }
   if (!energies.length) return x;
-  const peak = Math.max(...energies);
+  // Ignore isolated short pops (mic clicks) followed by silence before measuring.
+  const POP = Math.max(1, Math.round(0.05 * 16000 / HOP));
+  const GAP = Math.max(1, Math.round(0.15 * 16000 / HOP));
+  const e2 = energies.slice();
+  for (let pass = 0; pass < 3; pass++) {
+    const peak0 = Math.max(...e2);
+    const g0 = peak0 * 0.02;
+    const s = e2.findIndex((e) => e > g0);
+    if (s < 0) break;
+    let r = s;
+    while (r + 1 < e2.length && e2[r + 1] > g0) r++;
+    let n = r + 1;
+    while (n < e2.length && e2[n] <= g0) n++;
+    if (r - s + 1 <= POP && n < e2.length && n - r - 1 >= GAP) {
+      for (let k = s; k <= r; k++) e2[k] = 0;
+    } else break;
+  }
+  const peak = Math.max(...e2);
+  if (peak <= 0) return x;
   const gate = peak * 0.02;
-  const first = energies.findIndex((e) => e > gate);
-  let last = energies.length - 1;
-  while (last > first && energies[last] <= gate) last--;
+  const first = e2.findIndex((e) => e > gate);
+  let last = e2.length - 1;
+  while (last > first && e2[last] <= gate) last--;
   return x.slice(first * HOP, last * HOP + FRAME);
 }
 
