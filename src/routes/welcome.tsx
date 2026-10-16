@@ -231,9 +231,9 @@ function GenerationsFact({ onNext }: { onNext: () => void }) {
       {pick !== null && (
         <div className="mt-6" role="status">
           <div className="flex h-24 items-end justify-center gap-6" aria-hidden>
-            {[100, 55, 15].map((h, i) => (
+            {[88, 48, 14].map((h, i) => (
               <div key={i} className="flex flex-col items-center gap-1">
-                <div className="grow-up w-12 rounded-t-2xl bg-primary" style={{ height: `${h}%`, animationDelay: `${i * 200}ms`, opacity: 1 - i * 0.25 }} />
+                <div className="grow-up w-12 rounded-t-2xl bg-primary" style={{ height: `${h}px`, animationDelay: `${i * 200}ms`, opacity: 1 - i * 0.25 }} />
                 <span className="text-xs font-bold text-muted-foreground">Gen {i + 1}</span>
               </div>
             ))}
