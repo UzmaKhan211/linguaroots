@@ -14,7 +14,7 @@ export interface ScoringConfig {
   perfect: number;
   pass: number;
 }
-export const DEFAULT_CONFIG: ScoringConfig = { perfect: 4, pass: 14 };
+export const DEFAULT_CONFIG: ScoringConfig = { perfect: 23.74, pass: 28.92 };
 
 const FRAME = 400; // 25 ms
 const HOP = 160; // 10 ms
