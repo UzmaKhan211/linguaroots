@@ -121,7 +121,7 @@ function Talk() {
 
       <ol className="mt-4 space-y-4" aria-live="polite">
         {history.map((t, i) => (
-          <Bubble key={t.id + i} turn={t} who={who} />
+          <Bubble key={t.id + i} turn={t} who={who} autoPlay={i === 0} />
         ))}
       </ol>
 
@@ -221,7 +221,7 @@ function Talk() {
   );
 }
 
-function Bubble({ turn, who }: { turn: Turn; who: string }) {
+function Bubble({ turn, who, autoPlay = false }: { turn: Turn; who: string; autoPlay?: boolean }) {
   const me = turn.speaker === "learner";
   return (
     <li className={`fade-up flex ${me ? "justify-end" : "justify-start"}`}>
@@ -237,7 +237,7 @@ function Bubble({ turn, who }: { turn: Turn; who: string }) {
         <p className={`text-sm ${me ? "opacity-85" : "text-muted-foreground"}`}>{turn.english}</p>
         {!me && (
           <div className="mt-2">
-            <AudioButton file={turn.audioFile} />
+            <AudioButton file={turn.audioFile} autoPlay={autoPlay} />
           </div>
         )}
       </div>
