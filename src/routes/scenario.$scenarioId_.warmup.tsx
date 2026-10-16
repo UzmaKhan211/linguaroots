@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
 import { markWarmupDone } from "@/lib/progress";
+import { earn, XP } from "@/lib/rewards";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
   loader: ({ params }) => {
@@ -67,6 +68,7 @@ function Warmup() {
 
   const finish = () => {
     markWarmupDone(scenario.id);
+    earn(XP.warmup);
     navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
 
