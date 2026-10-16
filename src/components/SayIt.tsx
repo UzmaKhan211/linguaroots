@@ -109,9 +109,6 @@ export function SayIt({
         </button>
       )}
 
-      {modelPct !== null && phase !== "scoring" && (
-        <p className="text-sm text-muted-foreground">Getting the listening tool ready (one time only)… {modelPct}%</p>
-      )}
 
       {takeUrl && phase !== "recording" && (
         <button
