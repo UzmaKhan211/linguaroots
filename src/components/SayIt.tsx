@@ -32,6 +32,7 @@ export function SayIt({
   const rec = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
   const [modelPct, setModelPct] = useState<number | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
     if (speechReady()) return;
@@ -63,6 +64,7 @@ export function SayIt({
       r.ondataavailable = (e) => e.data.size && chunks.current.push(e.data);
       r.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
+        setStream(null);
         const blob = new Blob(chunks.current, { type: r.mimeType });
         setTakeUrl(URL.createObjectURL(blob));
         const ref = await loadReference(referenceUrl);
@@ -95,6 +97,7 @@ export function SayIt({
         setPhase("scored");
       };
       rec.current = r;
+      setStream(stream);
       r.start();
       setPhase("recording");
     } catch {
@@ -108,27 +111,40 @@ export function SayIt({
 
   return (
     <div className="mt-5 space-y-4">
-      {phase === "recording" ? (
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex h-14 w-full items-center justify-center" aria-hidden>
+          {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
+        </div>
         <button
           type="button"
-          onClick={stop}
-          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-bold text-accent-foreground"
-        >
-          <Square className="size-5" aria-hidden /> Stop recording
-          <span className="ml-1 inline-block size-2 rounded-full bg-accent-foreground motion-safe:animate-pulse" aria-hidden />
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={start}
+          onClick={phase === "recording" ? stop : start}
           disabled={phase === "scoring"}
-          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary font-bold text-primary-foreground disabled:opacity-60"
+          aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Record again"}
+          className={`relative flex size-20 items-center justify-center rounded-full shadow-lift disabled:opacity-60 ${
+            phase === "recording" ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"
+          }`}
         >
-          {phase === "idle" ? <Mic className="size-5" aria-hidden /> : <RotateCcw className="size-5" aria-hidden />}
-          {phase === "idle" ? "Record yourself" : phase === "scoring" ? "Listening closely…" : "Try again"}
+          {phase === "recording" && (
+            <span className="absolute inset-0 rounded-full bg-accent/40 motion-safe:animate-ping" aria-hidden />
+          )}
+          {phase === "recording" ? (
+            <Square className="relative size-7 fill-current" aria-hidden />
+          ) : phase === "scored" ? (
+            <RotateCcw className="size-8" aria-hidden />
+          ) : (
+            <Mic className="size-9" aria-hidden />
+          )}
         </button>
-      )}
-
+        <p className="text-base font-bold" aria-live="polite">
+          {phase === "recording"
+            ? "Listening… tap to stop"
+            : phase === "scoring"
+              ? "Listening closely…"
+              : phase === "scored"
+                ? "Tap to try again"
+                : "Tap and say it"}
+        </p>
+      </div>
 
       {modelPct !== null && (
         <p className="text-sm text-muted-foreground" aria-live="polite">Getting the listening tool ready (one time only)… {modelPct}%</p>
@@ -181,6 +197,61 @@ export function SayIt({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+const BARS = 28;
+
+/** Bars that move with the learner's voice while recording. */
+function LiveWave({ stream }: { stream: MediaStream }) {
+  const [levels, setLevels] = useState<number[]>(() => Array(BARS).fill(0.08));
+  useEffect(() => {
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 512;
+    src.connect(an);
+    const buf = new Uint8Array(an.fftSize);
+    let raf = 0;
+    let last = 0;
+    const tick = (t: number) => {
+      raf = requestAnimationFrame(tick);
+      if (t - last < 60) return;
+      last = t;
+      an.getByteTimeDomainData(buf);
+      let peak = 0;
+      for (const v of buf) peak = Math.max(peak, Math.abs(v - 128) / 128);
+      const level = Math.min(1, 0.08 + peak * 2.2);
+      setLevels((l) => [...l.slice(1), level]);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      src.disconnect();
+      void ctx.close();
+    };
+  }, [stream]);
+  return (
+    <div className="flex h-full items-center gap-[3px]">
+      {levels.map((v, i) => (
+        <span key={i} className="w-1.5 rounded-full bg-accent" style={{ height: `${Math.round(v * 100)}%` }} />
+      ))}
+    </div>
+  );
+}
+
+/** A quiet, still waveform when not recording. */
+function IdleWave({ dim }: { dim: boolean }) {
+  return (
+    <div className={`flex h-full items-center gap-[3px] ${dim ? "opacity-40" : "opacity-30"}`}>
+      {Array.from({ length: BARS }, (_, i) => (
+        <span
+          key={i}
+          className="w-1.5 rounded-full bg-primary"
+          style={{ height: `${12 + Math.round(Math.abs(Math.sin(i * 0.7)) * 30)}%` }}
+        />
+      ))}
     </div>
   );
 }
