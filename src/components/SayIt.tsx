@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Square, Play, RotateCcw } from "lucide-react";
 import { closenessWithCohort, closenessMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
-import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
-import { loadSpeechModel, prewarmSpeech, speechCloseness } from "@/lib/speechModel";
-import { speechRatioToScore } from "@/lib/speechScore";
+import { decodeToMono16k, getScoringConfig, loadCohort, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
 
 type Phase = "idle" | "recording" | "scoring" | "scored";
 
@@ -27,9 +25,7 @@ export function SayIt({
   const [noRef, setNoRef] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const [takeUrl, setTakeUrl] = useState<string | null>(null);
-  const [modelPct, setModelPct] = useState<number | null>(null);
   const [scoreTime, setScoreTime] = useState<number | null>(null);
-  const modelReady = useRef(false);
   const rec = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
 
