@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { closeness, distanceToScore, passes, showSelfCheck, suggestConfig, SAMPLE_RATE } from "./scoring";
+import { ratioToScore, closeness, distanceToScore, passes, showSelfCheck, suggestConfig, SAMPLE_RATE } from "./scoring";
 
 function tone(freqs: number[], seconds = 0.6) {
   const n = Math.floor(SAMPLE_RATE * seconds);
@@ -35,5 +35,14 @@ describe("scoring rules", () => {
     const c = suggestConfig([3, 5, 8], [12, 15])!;
     expect(c.perfect).toBe(3);
     expect(c.pass).toBe(10);
+  });
+});
+
+describe("voice-independent check", () => {
+  it("a take much closer to this phrase than to others passes, whatever the voice", () => {
+    expect(passes(ratioToScore(0.45))).toBe(true);
+  });
+  it("a take no closer than a different phrase stays below the pass mark", () => {
+    expect(passes(ratioToScore(1))).toBe(false);
   });
 });

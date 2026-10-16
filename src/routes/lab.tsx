@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { closeness, distanceToScore, passes, DEFAULT_CONFIG, type ScoringConfig } from "@/lib/scoring";
-import { decodeToMono16k, getScoringConfig, loadReference, saveScoringConfig } from "@/lib/audio";
+import { closenessWithCohort, distanceToScore, ratioToScore, passes, DEFAULT_CONFIG, type ScoringConfig } from "@/lib/scoring";
+import { decodeToMono16k, getScoringConfig, loadCohort, loadReference, saveScoringConfig } from "@/lib/audio";
+import { turns as allTurns } from "@/lib/content";
+
+const cohortUrls = allTurns
+  .filter((t) => t.speaker === "learner" && (t.referenceFile || t.audioFile))
+  .map((t) => `/audio/khowar/${t.referenceFile || t.audioFile}`);
 import { optimiseConfig, parseTakeName } from "@/lib/calibration";
 
 export const Route = createFileRoute("/lab")({
@@ -20,7 +25,7 @@ export const Route = createFileRoute("/lab")({
   component: Lab,
 });
 
-type Take = { name: string; phraseId: string; category: string; shouldPass: boolean; dist: number };
+type Take = { name: string; phraseId: string; category: string; shouldPass: boolean; dist: number; ratio: number };
 
 function Lab() {
   const [takes, setTakes] = useState<Take[]>([]);
@@ -57,7 +62,9 @@ function Lab() {
       if (!ref) { skip.push(`${f.name} (no example recording for ${p.phraseId})`); continue; }
       try {
         const data = await decodeToMono16k(await f.arrayBuffer());
-        out.push({ name: f.name, phraseId: p.phraseId, category: p.category, shouldPass: p.shouldPass, dist: closeness(data, ref).dist });
+        const own = `/audio/khowar/${p.phraseId}.mp3`;
+        const r = closenessWithCohort(data, ref, await loadCohort(cohortUrls, own));
+        out.push({ name: f.name, phraseId: p.phraseId, category: p.category, shouldPass: p.shouldPass, dist: r.dist, ratio: r.ratio });
       } catch {
         skip.push(`${f.name} (couldn't read)`);
       }
@@ -74,7 +81,8 @@ function Lab() {
     return [...m.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [takes]);
 
-  const isOk = (t: Take) => passes(distanceToScore(t.dist, cfg)) === t.shouldPass;
+  const scoreOf = (t: Take) => Math.max(distanceToScore(t.dist, cfg), Number.isFinite(t.ratio) ? ratioToScore(t.ratio) : 0);
+  const isOk = (t: Take) => passes(scoreOf(t)) === t.shouldPass;
   const shouldPass = takes.filter((t) => t.shouldPass);
   const shouldFail = takes.filter((t) => !t.shouldPass);
   const suggestion = optimiseConfig(shouldPass.map((t) => t.dist), shouldFail.map((t) => t.dist));
@@ -164,7 +172,7 @@ function Lab() {
             </summary>
             <ul className="mt-2 space-y-1 text-sm">
               {list.map((t, i) => {
-                const s = distanceToScore(t.dist, cfg);
+                const s = scoreOf(t);
                 return (
                   <li key={i} className="flex justify-between gap-2">
                     <span className="truncate">{t.category.replace("_", " ")} · {t.name}</span>
