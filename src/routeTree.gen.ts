@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChooseLanguageRouteImport } from './routes/choose-language'
 import { Route as LabRouteImport } from './routes/lab'
+import { Route as LanguageIntroRouteImport } from './routes/language-intro'
 import { Route as LanguagesRouteImport } from './routes/languages'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as WelcomeRouteImport } from './routes/welcome'
@@ -35,9 +37,19 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChooseLanguageRoute = ChooseLanguageRouteImport.update({
+  id: '/choose-language',
+  path: '/choose-language',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LabRoute = LabRouteImport.update({
   id: '/lab',
   path: '/lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LanguageIntroRoute = LanguageIntroRouteImport.update({
+  id: '/language-intro',
+  path: '/language-intro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LanguagesRoute = LanguagesRouteImport.update({
@@ -76,7 +88,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/choose-language': typeof ChooseLanguageRoute
   '/lab': typeof LabRoute
+  '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
@@ -88,7 +102,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/choose-language': typeof ChooseLanguageRoute
   '/lab': typeof LabRoute
+  '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
@@ -101,7 +117,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/choose-language': typeof ChooseLanguageRoute
   '/lab': typeof LabRoute
+  '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
@@ -115,7 +133,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/choose-language'
     | '/lab'
+    | '/language-intro'
     | '/languages'
     | '/settings'
     | '/welcome'
@@ -127,7 +147,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/choose-language'
     | '/lab'
+    | '/language-intro'
     | '/languages'
     | '/settings'
     | '/welcome'
@@ -139,7 +161,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/choose-language'
     | '/lab'
+    | '/language-intro'
     | '/languages'
     | '/settings'
     | '/welcome'
@@ -152,7 +176,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  ChooseLanguageRoute: typeof ChooseLanguageRoute
   LabRoute: typeof LabRoute
+  LanguageIntroRoute: typeof LanguageIntroRoute
   LanguagesRoute: typeof LanguagesRoute
   SettingsRoute: typeof SettingsRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -184,11 +210,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/choose-language': {
+      id: '/choose-language'
+      path: '/choose-language'
+      fullPath: '/choose-language'
+      preLoaderRoute: typeof ChooseLanguageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lab': {
       id: '/lab'
       path: '/lab'
       fullPath: '/lab'
       preLoaderRoute: typeof LabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/language-intro': {
+      id: '/language-intro'
+      path: '/language-intro'
+      fullPath: '/language-intro'
+      preLoaderRoute: typeof LanguageIntroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/languages': {
@@ -240,7 +280,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  ChooseLanguageRoute: ChooseLanguageRoute,
   LabRoute: LabRoute,
+  LanguageIntroRoute: LanguageIntroRoute,
   LanguagesRoute: LanguagesRoute,
   SettingsRoute: SettingsRoute,
   WelcomeRoute: WelcomeRoute,

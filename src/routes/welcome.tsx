@@ -2,17 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
-import { AudioButton } from "@/components/AudioButton";
-import { scenarios, getWarmup } from "@/lib/content";
-import { finishOnboarding, getPrefs } from "@/lib/progress";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
       { title: "Welcome | LinguaRoots" },
-      { name: "description", content: "Discover why indigenous languages like Khowar matter, then try your first word." },
+      { name: "description", content: "Discover why indigenous languages matter and start learning yours." },
       { property: "og:title", content: "Welcome | LinguaRoots" },
-      { property: "og:description", content: "Discover why indigenous languages like Khowar matter, then try your first word." },
+      { property: "og:description", content: "Discover why indigenous languages matter and start learning yours." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -20,16 +17,12 @@ export const Route = createFileRoute("/welcome")({
   component: Welcome,
 });
 
-const STEPS = 7;
+const STEPS = 4;
 
 function Welcome() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const relative = getPrefs().relative;
-  const [under13, setUnder13] = useState(false);
 
-  const scenario = scenarios.find((s) => s.character === relative) ?? scenarios[0]!;
-  const tryItem = getWarmup(scenario.id)[0];
   const next = () => setStep((s) => Math.min(STEPS - 1, s + 1));
 
   return (
@@ -70,82 +63,14 @@ function Welcome() {
         {step === 1 && <EndangeredFact onNext={next} />}
         {step === 2 && <GenerationsFact onNext={next} />}
         {step === 3 && (
-          <>
-            <p className="text-sm font-bold uppercase tracking-wider text-accent">About Khowar</p>
-            <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">A language of the mountains</h1>
-            <div className="mt-6 space-y-3">
-              {[
-                ["Where", "The Chitral valley and nearby valleys of northern Pakistan"],
-                ["Who", "Hundreds of thousands of speakers, plus families around the world"],
-                ["How", "Passed down mostly by speaking, from elders to children"],
-              ].map(([k, v], i) => (
-                <div key={k} className="pop-in flex gap-4 rounded-3xl border bg-card p-4 shadow-soft" style={{ animationDelay: `${150 + i * 180}ms` }}>
-                  <span className="w-14 shrink-0 font-display text-lg font-semibold text-primary">{k}</span>
-                  <span className="text-base">{v}</span>
-                </div>
-              ))}
-            </div>
-            <p className="fade-up mt-4 text-base text-muted-foreground" style={{ animationDelay: "750ms" }}>
-              Every phrase you learn here was recorded by a real Khowar speaker.
+          <div className="flex flex-col items-center text-center">
+            <LogoMark className="pop-in h-20 w-auto" />
+            <h1 className="fade-up mt-6 text-[1.75rem] font-semibold leading-tight">Every phrase you learn keeps a language going.</h1>
+            <p className="fade-up mt-3 text-lg text-muted-foreground" style={{ animationDelay: "150ms" }}>
+              Make a free account so your progress is saved on every device.
             </p>
-            <Primary onClick={next}>Continue</Primary>
-          </>
-        )}
-
-        {step === 4 && (
-          <>
-            <h1 className="text-[1.75rem] font-semibold leading-tight">Try your first word</h1>
-            <p className="mt-2 text-muted-foreground">Listen, then say it out loud along with the recording.</p>
-            {tryItem && (
-              <div className="mt-6 rounded-3xl border bg-card p-6 shadow-soft">
-                <p className="font-display text-4xl font-semibold">{tryItem.roman}</p>
-                <p className="mt-1 text-lg text-muted-foreground">{tryItem.english}</p>
-                <div className="mt-4">
-                  <AudioButton file={tryItem.audioFile} label="Hear it" />
-                </div>
-              </div>
-            )}
-            <Primary onClick={next}>I said it</Primary>
-          </>
-        )}
-
-        {step === 5 && (
-          <>
-            <h1 className="text-[1.75rem] font-semibold leading-tight">One quick check</h1>
-            <p className="mt-2 text-lg text-muted-foreground">LinguaRoots is for people aged 13 and over.</p>
-            {under13 ? (
-              <p className="mt-6 rounded-2xl bg-card p-4 text-base" role="status">
-                Thank you for being honest. Please ask a parent or caregiver to practice with you on their device.
-              </p>
-            ) : (
-              <>
-                <Primary
-                  onClick={async () => {
-                    await finishOnboarding({ relative, ageConfirmed: true });
-                    next();
-                  }}
-                >
-                  I'm 13 or older
-                </Primary>
-                <button type="button" onClick={() => setUnder13(true)} className="mt-3 min-h-12 w-full rounded-full border-2 bg-card font-bold">
-                  I'm under 13
-                </button>
-              </>
-            )}
-          </>
-        )}
-
-        {step === 6 && (
-          <>
-            <h1 className="text-[1.75rem] font-semibold leading-tight">Keep your progress safe</h1>
-            <p className="mt-2 text-lg text-muted-foreground">
-              Make a free account to keep your progress on any device. You can also carry on as a guest and save it later.
-            </p>
-            <Primary onClick={() => navigate({ to: "/auth" })}>Save my progress</Primary>
-            <button type="button" onClick={() => navigate({ to: "/" })} className="mt-3 min-h-12 w-full rounded-full border-2 bg-card font-bold">
-              Continue as a guest
-            </button>
-          </>
+            <Primary onClick={() => navigate({ to: "/auth" })}>Create my account</Primary>
+          </div>
         )}
       </div>
     </div>

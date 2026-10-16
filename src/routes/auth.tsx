@@ -4,6 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
+import { isOnboarded } from "@/lib/progress";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -29,7 +30,7 @@ function AuthPage() {
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user) navigate({ to: "/", replace: true });
+    if (user) navigate({ to: isOnboarded() ? "/" : "/choose-language", replace: true });
   }, [user, navigate]);
 
   const social = async (provider: "google" | "apple") => {
@@ -59,8 +60,8 @@ function AuthPage() {
 
   return (
     <AppShell>
-      <h1 className="text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Save your progress" : "Welcome back"}</h1>
-      <p className="mt-2 text-muted-foreground">Anything you've practiced as a guest comes with you.</p>
+      <h1 className="text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
+      <p className="mt-2 text-muted-foreground">Your progress stays safe on every device.</p>
 
       <div className="mt-6 space-y-3">
         <button type="button" onClick={() => social("google")} className="min-h-12 w-full rounded-full border-2 bg-card font-bold">
