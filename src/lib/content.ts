@@ -44,10 +44,15 @@ export interface WarmupItem {
   culturalNote: string | null;
 }
 
+type TurnKey =
+  | "turn_id" | "scenario_id" | "speaker" | "khowar_roman" | "english" | "audio_file" | "prompted_by"
+  | "option_order" | "quality" | "feedback_note" | "next_turn_id" | "is_end" | "score_reference_file"
+  | "pass_threshold" | "cultural_note";
+
 const opt = (v: string | undefined) => (v && v.trim() ? v.trim() : null);
 
 export function buildScenarios(csv: string): Scenario[] {
-  return parseCsv(csv)
+  return parseCsv<"scenario_id" | "scenario_title" | "situation" | "character" | "scenario_order" | "language" | "start_turn_id" | "turn_count">(csv)
     .filter((r) => r.scenario_id)
     .map((r) => ({
       id: r.scenario_id,
@@ -63,7 +68,7 @@ export function buildScenarios(csv: string): Scenario[] {
 }
 
 export function buildTurns(csv: string): Turn[] {
-  return parseCsv(csv)
+  return parseCsv<TurnKey>(csv)
     .filter((r) => r.turn_id)
     .map((r) => {
       const q = opt(r.quality);
@@ -88,7 +93,7 @@ export function buildTurns(csv: string): Turn[] {
 }
 
 export function buildWarmup(csv: string): WarmupItem[] {
-  return parseCsv(csv)
+  return parseCsv<"item_id" | "scenario_id" | "english" | "khowar_roman" | "audio_file" | "source_turn_id" | "cultural_note">(csv)
     .filter((r) => r.item_id)
     .map((r) => ({
       id: r.item_id,

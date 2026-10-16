@@ -1,5 +1,5 @@
 /** Minimal RFC-4180 CSV parser: handles quoted fields, escaped quotes and CRLF. */
-export function parseCsv(text: string): Record<string, string>[] {
+export function parseCsv<K extends string = string>(text: string): Record<K, string>[] {
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
@@ -32,5 +32,7 @@ export function parseCsv(text: string): Record<string, string>[] {
   const [header, ...body] = rows.filter((r) => r.some((v) => v.trim() !== ""));
   if (!header) return [];
   const keys = header.map((h) => h.trim());
-  return body.map((r) => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? "").trim()])));
+  return body.map(
+    (r) => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? "").trim()])) as Record<K, string>,
+  );
 }
