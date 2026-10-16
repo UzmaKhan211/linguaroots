@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LabRouteImport } from './routes/lab'
 import { Route as LanguagesRouteImport } from './routes/languages'
 import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
 import { Route as ScenarioScenarioIdTalkRouteImport } from './routes/scenario.$scenarioId_.talk'
@@ -18,6 +19,11 @@ import { Route as ScenarioScenarioIdWarmupRouteImport } from './routes/scenario.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LabRoute = LabRouteImport.update({
+  id: '/lab',
+  path: '/lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LanguagesRoute = LanguagesRouteImport.update({
@@ -44,6 +50,7 @@ const ScenarioScenarioIdWarmupRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId_/talk': typeof ScenarioScenarioIdTalkRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/lab'
     | '/languages'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId/talk'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/lab'
     | '/languages'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId/talk'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/lab'
     | '/languages'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId_/talk'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LabRoute: typeof LabRoute
   LanguagesRoute: typeof LanguagesRoute
   ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
   ScenarioScenarioIdTalkRoute: typeof ScenarioScenarioIdTalkRoute
@@ -103,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lab': {
+      id: '/lab'
+      path: '/lab'
+      fullPath: '/lab'
+      preLoaderRoute: typeof LabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/languages': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LabRoute: LabRoute,
   LanguagesRoute: LanguagesRoute,
   ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
   ScenarioScenarioIdTalkRoute: ScenarioScenarioIdTalkRoute,
