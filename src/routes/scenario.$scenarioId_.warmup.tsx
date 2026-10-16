@@ -57,7 +57,7 @@ function Warmup() {
   };
 
   const learning = i < items.length;
-  const item = learning ? items[i] : quiz[i - items.length].item;
+  const item = (learning ? items[i] : quiz[i - items.length]?.item) ?? items[0];
   const q = learning ? null : quiz[i - items.length];
 
   return (
