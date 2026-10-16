@@ -11,15 +11,15 @@ import { getWarmup, scenarios } from "@/lib/content";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LinguaRoots | Practice Khowar with the people you love" },
+      { title: "LinguaRoots | Practice a heritage language with the people you care about" },
       {
         name: "description",
-        content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
+        content: "Learn everyday conversational phrases through warm, friendly chats with family.",
       },
-      { property: "og:title", content: "LinguaRoots | Practice Khowar with the people you love" },
+      { property: "og:title", content: "LinguaRoots | Practice a heritage language with the people you care about" },
       {
         property: "og:description",
-        content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
+        content: "Learn everyday conversational phrases through warm, friendly chats with family.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
