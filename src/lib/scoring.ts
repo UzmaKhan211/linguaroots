@@ -203,6 +203,26 @@ export function closenessWithCohort(
 export const passes = (score: number, mark = PASS_MARK) => score >= mark;
 export const showSelfCheck = (failedTries: number) => failedTries >= SELF_CHECK_AFTER;
 
+export const PASS_MESSAGES = [
+  "Nicely said!",
+  "That sounded lovely.",
+  "Wonderful, you've got it.",
+  "Your family would love hearing that.",
+  "Beautiful. That was really close.",
+  "Yes! Just like that.",
+];
+export const TRY_MESSAGES = [
+  "Almost there. Listen once more and have another go.",
+  "Good try! Hear it again, then give it another go.",
+  "You're getting there. Take your time and try again.",
+  "Nice effort. Let's listen together and try once more.",
+  "Keep going, every try helps it stick.",
+];
+/** A warm line that changes each time; never a number. */
+export function feedbackMessage(passed: boolean, rand: () => number = Math.random): string {
+  const list = passed ? PASS_MESSAGES : TRY_MESSAGES;
+  return list[Math.floor(rand() * list.length) % list.length]!;
+}
 /** Gentle words for a score — never "right" or "wrong". */
 export function closenessMessage(score: number, mark = PASS_MARK): string {
   if (score >= 90) return "That sounds just like it.";
