@@ -164,7 +164,7 @@ function Warmup() {
   }
 
   const tile = (selected: boolean, done: boolean) =>
-    `relative flex min-h-16 w-full items-center justify-center rounded-2xl border-2 px-3 py-2 text-center transition-colors ${
+    `relative flex h-24 w-full items-center justify-center rounded-2xl border-2 px-3 py-2 text-center transition-colors ${
       done
         ? "border-primary/40 bg-secondary text-muted-foreground"
         : selected && wrong
