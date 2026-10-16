@@ -62,3 +62,11 @@ export async function loadCohort(urls: string[], exclude: string, max = 8): Prom
 export const MIC_CONSTRAINTS: MediaStreamConstraints = {
   audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true, channelCount: 1 },
 };
+
+export async function loadCohortKeyed(urls: string[], exclude: string, max = 8) {
+  const pick = [...new Set(urls)].filter((u) => u !== exclude);
+  const step = Math.max(1, Math.floor(pick.length / max));
+  const chosen = pick.filter((_, i) => i % step === 0).slice(0, max);
+  const out = await Promise.all(chosen.map(async (key) => ({ key, audio: await loadReference(key) })));
+  return out.filter((x): x is { key: string; audio: Float32Array } => !!x.audio);
+}

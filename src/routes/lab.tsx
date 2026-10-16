@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { closenessWithCohort, distanceToScore, ratioToScore, passes, DEFAULT_CONFIG, type ScoringConfig } from "@/lib/scoring";
-import { decodeToMono16k, getScoringConfig, loadCohort, loadReference, saveScoringConfig } from "@/lib/audio";
+import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, saveScoringConfig } from "@/lib/audio";
 import { turns as allTurns } from "@/lib/content";
 
 const cohortUrls = allTurns
   .filter((t) => t.speaker === "learner" && (t.referenceFile || t.audioFile))
   .map((t) => `/audio/khowar/${t.referenceFile || t.audioFile}`);
+import { loadSpeechModel, speechCloseness } from "@/lib/speechModel";
 import { optimiseConfig, parseTakeName } from "@/lib/calibration";
 
 export const Route = createFileRoute("/lab")({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/lab")({
   component: Lab,
 });
 
-type Take = { name: string; phraseId: string; category: string; shouldPass: boolean; dist: number; ratio: number };
+type Take = { name: string; phraseId: string; category: string; shouldPass: boolean; dist: number; ratio: number; sDist?: number; sRatio?: number };
 
 function Lab() {
   const [takes, setTakes] = useState<Take[]>([]);
@@ -34,6 +35,7 @@ function Lab() {
   const [progress, setProgress] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [lastAdded, setLastAdded] = useState<string | null>(null);
+  const [useSpeech, setUseSpeech] = useState(false);
 
   useEffect(() => setCfg(getScoringConfig()), []);
 
@@ -41,6 +43,16 @@ function Lab() {
     if (!list || !list.length) return;
     const files = Array.from(list).filter((f) => !f.name.startsWith("."));
     setLastAdded(null);
+    if (useSpeech) {
+      setProgress("Downloading the speech-listening tool (one time only)…");
+      try {
+        await loadSpeechModel((pct) => setProgress(`Downloading the speech-listening tool… ${pct}%`));
+      } catch {
+        setProgress(null);
+        setLastAdded("The speech-listening tool couldn't download. Check your connection and try again.");
+        return;
+      }
+    }
     const refs = new Map<string, Float32Array>();
     for (const f of files) {
       const p = parseTakeName(f.name);
@@ -64,7 +76,13 @@ function Lab() {
         const data = await decodeToMono16k(await f.arrayBuffer());
         const own = `/audio/khowar/${p.phraseId}.mp3`;
         const r = closenessWithCohort(data, ref, await loadCohort(cohortUrls, own));
-        out.push({ name: f.name, phraseId: p.phraseId, category: p.category, shouldPass: p.shouldPass, dist: r.dist, ratio: r.ratio });
+        const take: Take = { name: f.name, phraseId: p.phraseId, category: p.category, shouldPass: p.shouldPass, dist: r.dist, ratio: r.ratio };
+        if (useSpeech) {
+          const sc = await speechCloseness(data, own, ref, await loadCohortKeyed(cohortUrls, own));
+          take.sDist = sc.dist;
+          take.sRatio = sc.ratio;
+        }
+        out.push(take);
       } catch {
         skip.push(`${f.name} (couldn't read)`);
       }
@@ -119,6 +137,12 @@ function Lab() {
             />
           </label>
         </div>
+        <label className="mt-3 flex min-h-11 items-start gap-3 text-sm">
+          <input type="checkbox" checked={useSpeech} disabled={!!progress} onChange={(e) => setUseSpeech(e.target.checked)} className="mt-1 size-5" />
+          <span>
+            <b>Also test the speech-listening tool</b> — downloads about 95 MB once and is slower (a few minutes for all takes). Sound still stays on this device.
+          </span>
+        </label>
         {progress && <p className="mt-2 text-sm" aria-live="polite">{progress}</p>}
         {lastAdded && !progress && <p className="mt-2 text-sm" aria-live="polite">{lastAdded}</p>}
         {takes.length > 0 && (
@@ -127,7 +151,7 @@ function Lab() {
               type="button"
               onClick={() => {
                 // Numbers only — no sound leaves the device.
-                const rows = ["file,phrase,category,should_pass,distance,ratio", ...takes.map((t) => [t.name, t.phraseId, t.category, t.shouldPass, t.dist.toFixed(3), Number.isFinite(t.ratio) ? t.ratio.toFixed(4) : ""].join(","))];
+                const rows = ["file,phrase,category,should_pass,distance,ratio,speech_distance,speech_ratio", ...takes.map((t) => [t.name, t.phraseId, t.category, t.shouldPass, t.dist.toFixed(3), Number.isFinite(t.ratio) ? t.ratio.toFixed(4) : "", t.sDist?.toFixed(4) ?? "", t.sRatio !== undefined && Number.isFinite(t.sRatio) ? t.sRatio.toFixed(4) : ""].join(","))];
                 const a = document.createElement("a");
                 a.href = URL.createObjectURL(new Blob([rows.join("\n")], { type: "text/csv" }));
                 a.download = "lab-results.csv";
