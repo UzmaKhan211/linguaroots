@@ -161,3 +161,24 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
+/* A quiet, rounded scroll track for the Dictionary's category strip. */
+.dictionary-filters {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--leaf-soft);
+  overscroll-behavior-x: contain;
+}
+.dictionary-filters::-webkit-scrollbar {
+  height: 6px;
+}
+.dictionary-filters::-webkit-scrollbar-track {
+  background: var(--leaf-soft);
+  border-radius: 999px;
+}
+.dictionary-filters::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+}
+.dictionary-filters::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
