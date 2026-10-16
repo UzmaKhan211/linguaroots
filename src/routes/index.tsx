@@ -7,6 +7,15 @@ import { AppShell } from "@/components/AppShell";
 import { RewardsBadge } from "@/components/RewardsBadge";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
 import { getWarmup, scenarios } from "@/lib/content";
+import { AudioButton } from "@/components/AudioButton";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,9 +58,8 @@ function Index() {
 
   const isNew = rows ? rows.every((r) => !r.warm && r.done === 0) : true;
   const featured = scenarios.find((s) => s.character === relative) ?? scenarios[0]!;
-  const wordsLearned = rows
-    ? rows.filter((r) => r.warm).reduce((n, r) => n + getWarmup(r.id).length, 0)
-    : 0;
+  const learnedWords = rows ? rows.filter((r) => r.warm).flatMap((r) => getWarmup(r.id)) : [];
+  const wordsLearned = learnedWords.length;
   const rest = isNew ? scenarios.filter((s) => s.id !== featured.id) : scenarios;
 
   return (
@@ -94,12 +102,42 @@ function Index() {
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
           <p className="mt-1 text-lg text-muted-foreground">Which conversation would you like to practice today?</p>
           <RewardsBadge className="mt-4" />
-          <div className="mt-4 flex items-center gap-3 rounded-3xl border bg-sun-soft p-4">
-            <BookOpen className="size-6 shrink-0 text-bark" aria-hidden />
-            <p className="text-base text-foreground">
-              <span className="font-bold">{wordsLearned} Khowar words</span> learned so far
-            </p>
-          </div>
+          <Drawer>
+            <DrawerTrigger asChild>
+              <button
+                type="button"
+                disabled={wordsLearned === 0}
+                className="mt-4 flex w-full items-center gap-3 rounded-3xl border bg-sun-soft p-4 text-left"
+              >
+                <BookOpen className="size-6 shrink-0 text-bark" aria-hidden />
+                <span className="flex-1 text-base text-foreground">
+                  <span className="font-bold">{wordsLearned} Khowar words</span> learned so far
+                </span>
+                {wordsLearned > 0 && (
+                  <span className="inline-flex items-center text-sm font-bold text-primary">
+                    See words <ChevronRight className="size-4" aria-hidden />
+                  </span>
+                )}
+              </button>
+            </DrawerTrigger>
+            <DrawerContent className="mx-auto max-w-[440px]">
+              <DrawerHeader className="text-left">
+                <DrawerTitle className="font-display text-2xl">Your Khowar words</DrawerTitle>
+                <DrawerDescription>Tap a word to hear it again.</DrawerDescription>
+              </DrawerHeader>
+              <ul className="max-h-[60vh] space-y-3 overflow-y-auto px-4 pb-8">
+                {learnedWords.map((w) => (
+                  <li key={w.id} className="flex items-center gap-3 rounded-2xl border bg-card p-3">
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-xl font-semibold text-foreground">{w.roman}</span>
+                      <span className="block text-sm text-muted-foreground">{w.english}</span>
+                    </span>
+                    <AudioButton file={w.audioFile} label="Hear it" />
+                  </li>
+                ))}
+              </ul>
+            </DrawerContent>
+          </Drawer>
         </section>
       )}
 
