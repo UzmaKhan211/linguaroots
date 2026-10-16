@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { completedCount, getPrefs, isOnboarded, isWarmupDone, scenarioStage } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -154,7 +154,7 @@ function ProgressRing({
 }: {
   percent: number;
   tone: "leaf" | "clay";
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const c = 2 * Math.PI * 25;
   return (
