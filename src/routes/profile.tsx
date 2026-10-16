@@ -53,28 +53,22 @@ function Profile() {
     })();
   }, [user]);
 
-  const saveName = async () => {
+  const dirty = name.trim() !== savedName || avatar !== savedAvatar;
+
+  const saveChanges = async () => {
     if (!user) return;
     const n = name.trim().slice(0, 40);
     setBusy(true);
-    const { error } = await supabase.from("profiles").update({ display_name: n || null }).eq("id", user.id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: n || null, avatar_path: avatarPathValue(avatar) })
+      .eq("id", user.id);
     setBusy(false);
-    if (error) return setNote("We couldn't save your name just now. Please try again.");
+    if (error) return setNote("We couldn't save your changes just now. Please try again.");
     setSavedName(n);
     setName(n);
-    setNote("Your name is saved.");
-  };
-
-  const pickAvatar = async (id: string) => {
-    if (!user) return;
-    setAvatar(id);
-    const { error } = await supabase.from("profiles").update({ avatar_path: avatarPathValue(id) }).eq("id", user.id);
-    if (error) {
-      setAvatar(savedAvatar);
-      return setNote("We couldn't save your character just now. Please try again.");
-    }
-    setSavedAvatar(id);
-    setNote("Your new character is saved.");
+    setSavedAvatar(avatar);
+    setNote("Your changes are saved.");
   };
 
   const remove = async () => {
