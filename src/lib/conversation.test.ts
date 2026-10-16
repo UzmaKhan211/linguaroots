@@ -39,7 +39,7 @@ describe("conversation engine", () => {
       let step = stepAt(sc.startTurnId, turns);
       let guard = 0;
       while (step.type !== "end" && guard++ < 100) {
-        step = step.type === "line" ? afterLine(step.turn, turns) : afterChoice(step.options[0], turns);
+        step = step.type === "line" ? afterLine(step.turn, turns) : afterChoice(step.options[0]!, turns);
       }
       expect(step.type).toBe("end");
     }
