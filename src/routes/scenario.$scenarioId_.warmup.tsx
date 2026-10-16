@@ -52,6 +52,7 @@ function Warmup() {
   const [round, setRound] = useState(0);
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [pickKh, setPickKh] = useState<string | null>(null);
+  const [wrong, setWrong] = useState(false);
   const [pickEn, setPickEn] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("Now pair each word with its meaning.");
   const [learnAt, setLearnAt] = useState(0);
@@ -81,10 +82,12 @@ function Warmup() {
       setPickEn(null);
     } else {
       setMessage("Not quite a pair — have another listen and try again.");
+      setWrong(true);
       timer.current = setTimeout(() => {
         setPickKh(null);
         setPickEn(null);
-      }, 700);
+        setWrong(false);
+      }, 900);
     }
   };
 
@@ -153,9 +156,11 @@ function Warmup() {
     `relative flex min-h-16 w-full items-center justify-center rounded-2xl border-2 px-3 py-2 text-center transition-colors ${
       done
         ? "border-primary/40 bg-secondary text-muted-foreground"
-        : selected
-          ? "border-primary bg-card ring-4 ring-primary/20"
-          : "border-border bg-card"
+        : selected && wrong
+          ? "border-destructive bg-card ring-4 ring-destructive/20"
+          : selected
+            ? "border-primary bg-card ring-4 ring-primary/20"
+            : "border-border bg-card"
     }`;
 
   return (
