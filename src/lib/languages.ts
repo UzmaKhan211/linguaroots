@@ -8,10 +8,10 @@ export interface Language {
 /** Only Khowar has content. Others are names only — no phrases, no lessons. */
 export const languages: Language[] = [
   { id: "khowar", name: "Khowar", region: "Chitral, Pakistan", status: "available" },
-  { id: "pashto", name: "Pashto", region: "Pakistan & Afghanistan", status: "coming-soon" },
-  { id: "burushaski", name: "Burushaski", region: "Hunza & Nagar", status: "coming-soon" },
-  { id: "wakhi", name: "Wakhi", region: "Gojal & Wakhan", status: "coming-soon" },
-  { id: "kalasha", name: "Kalasha", region: "Chitral Valley", status: "coming-soon" },
+  { id: "pashto", name: "Pashto", region: "Khyber Pakhtunkhwa, Pakistan", status: "coming-soon" },
+  { id: "burushaski", name: "Burushaski", region: "Gilgit Baltistan, Pakistan", status: "coming-soon" },
+  { id: "wakhi", name: "Wakhi", region: "Gilgit Baltistan, Pakistan", status: "coming-soon" },
+  { id: "kalasha", name: "Kalasha", region: "Chitral, Pakistan", status: "coming-soon" },
 ];
 
 /** Available languages first, then coming-soon ones in alphabetical order. */
