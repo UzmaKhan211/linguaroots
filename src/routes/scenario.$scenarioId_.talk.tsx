@@ -60,6 +60,12 @@ function Talk() {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [history.length, step, chosen]);
 
+  // Only one reply? Open it straight away — nothing to pick.
+  useEffect(() => {
+    if (step.type === "choose" && step.options.length === 1) setChosen(step.options[0]);
+  }, [step]);
+  const single = step.type === "choose" && step.options.length === 1;
+
   const confirm = () => {
     if (!chosen) return;
     setHistory((h) => [...h, chosen]);
