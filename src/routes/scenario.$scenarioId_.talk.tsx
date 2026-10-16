@@ -120,9 +120,20 @@ function Talk() {
 
       {chosen && (
         <section className="fade-up mt-6 rounded-3xl border bg-leaf-soft p-5">
-          <p className="flex items-center gap-2 font-bold text-primary">
-            <Mic className="size-5" aria-hidden /> Say it out loud
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="flex items-center gap-2 font-bold text-primary">
+              <Mic className="size-5" aria-hidden /> {single ? "Respond by saying" : "Say it out loud"}
+            </p>
+            {!single && (
+              <button
+                type="button"
+                onClick={() => setChosen(null)}
+                className="inline-flex min-h-11 items-center gap-1 rounded-full border-2 bg-card px-3 text-sm font-bold"
+              >
+                <ArrowLeft className="size-4" aria-hidden /> Change reply
+              </button>
+            )}
+          </div>
           <p className="mt-2 font-display text-2xl font-semibold">{chosen.roman}</p>
           <p className="text-base text-muted-foreground">{chosen.english}</p>
           <div className="mt-4">
@@ -141,13 +152,6 @@ function Talk() {
             onPass={confirm}
             onSelfCheck={confirm}
           />
-          <button
-            type="button"
-            onClick={() => setChosen(null)}
-            className="mt-3 min-h-12 w-full rounded-full font-bold text-muted-foreground underline-offset-4 hover:underline"
-          >
-            Pick a different reply
-          </button>
         </section>
       )}
 
