@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { isOnboarded } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
@@ -27,6 +29,10 @@ export const Route = createFileRoute("/")({
 const relativeLabel: Record<string, string> = { grandmother: "Grandma", grandfather: "Grandpa" };
 
 function Index() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isOnboarded()) navigate({ to: "/welcome", replace: true });
+  }, [navigate]);
   return (
     <AppShell>
       <header className="fade-up flex items-center gap-3">

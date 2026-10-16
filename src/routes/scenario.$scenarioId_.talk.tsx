@@ -6,7 +6,7 @@ import { AudioButton } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
-import { isWarmupDone } from "@/lib/progress";
+import { isWarmupDone, markScenarioCompleted } from "@/lib/progress";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
   loader: ({ params }) => {
@@ -41,6 +41,10 @@ function Talk() {
   const [step, setStep] = useState<Step>(() => stepAt(scenario.startTurnId, turns));
   const [chosen, setChosen] = useState<Turn | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const isEnd = step.type === "end";
+  useEffect(() => {
+    if (isEnd) markScenarioCompleted(scenario.id);
+  }, [isEnd, scenario.id]);
 
   useEffect(() => {
     if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
