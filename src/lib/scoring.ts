@@ -205,7 +205,7 @@ export const showSelfCheck = (failedTries: number) => failedTries >= SELF_CHECK_
 
 /** Gentle words for a score — never "right" or "wrong". */
 export function closenessMessage(score: number, mark = PASS_MARK): string {
-  if (score >= 90) return "Beautiful — that sounds just like it.";
+  if (score >= 90) return "That sounds just like it.";
   if (score >= mark) return "Lovely, that's really close.";
   if (score >= mark - 20) return "Getting closer. Listen once more and try again.";
   return "Let's hear it again together, then have another go.";

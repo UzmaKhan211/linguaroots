@@ -12,10 +12,10 @@ import { AUDIO_BUCKET } from "@/lib/lessonAudio";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin — LinguaRoots" },
+      { title: "Admin | LinguaRoots" },
       { name: "description", content: "Audio clips and language interest for LinguaRoots." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Admin — LinguaRoots" },
+      { property: "og:title", content: "Admin | LinguaRoots" },
       { property: "og:description", content: "Audio clips and language interest for LinguaRoots." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/scenario/$scenarioId")({
     return { scenario, warmupCount: getWarmup(scenario.id).length };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.scenario.title} — LinguaRoots` : "Unavailable — LinguaRoots";
+    const title = loaderData ? `${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
     const desc = loaderData?.scenario.situation ?? "Practise a real Khowar conversation.";
     return {
       meta: [

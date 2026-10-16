@@ -14,9 +14,9 @@ import { optimiseConfig, parseTakeName } from "@/lib/calibration";
 export const Route = createFileRoute("/lab")({
   head: () => ({
     meta: [
-      { title: "Scoring lab — LinguaRoots" },
+      { title: "Scoring lab | LinguaRoots" },
       { name: "description", content: "Calibrate closeness scoring with sample takes." },
-      { property: "og:title", content: "Scoring lab — LinguaRoots" },
+      { property: "og:title", content: "Scoring lab | LinguaRoots" },
       { property: "og:description", content: "Calibrate closeness scoring with sample takes." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -140,7 +140,7 @@ function Lab() {
         <label className="mt-3 flex min-h-11 items-start gap-3 text-sm">
           <input type="checkbox" checked={useSpeech} disabled={!!progress} onChange={(e) => setUseSpeech(e.target.checked)} className="mt-1 size-5" />
           <span>
-            <b>Also test the speech-listening tool</b> — downloads about 95 MB once and is slower (a few minutes for all takes). Sound still stays on this device.
+            <b>Also test the speech-listening tool</b>. Downloads about 95 MB once and is slower (a few minutes for all takes). Sound still stays on this device.
           </span>
         </label>
         {progress && <p className="mt-2 text-sm" aria-live="polite">{progress}</p>}
@@ -195,7 +195,7 @@ function Lab() {
         </div>
         {suggestion && (
           <button type="button" onClick={() => setCfg(suggestion.config)} className="mt-3 min-h-11 w-full rounded-full border-2 bg-card font-bold">
-            Use best settings for all phrases ({suggestion.config.perfect} / {suggestion.config.pass}) — {Math.round(suggestion.accuracy * 100)}% sorted as expected
+            Use best settings for all phrases ({suggestion.config.perfect} / {suggestion.config.pass}): {Math.round(suggestion.accuracy * 100)}% sorted as expected
           </button>
         )}
         <button type="button" onClick={() => { saveScoringConfig(cfg); setSaved(true); }} className="mt-3 min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground">
@@ -208,7 +208,7 @@ function Lab() {
         {byPhrase.map(([id, list]) => (
           <details key={id} className="rounded-3xl border bg-card p-4">
             <summary className="cursor-pointer font-bold">
-              {id} — {list.filter(isOk).length} of {list.length} as expected
+              {id}: {list.filter(isOk).length} of {list.length} as expected
             </summary>
             <ul className="mt-2 space-y-1 text-sm">
               {list.map((t, i) => {

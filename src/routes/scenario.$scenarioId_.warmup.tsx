@@ -14,7 +14,7 @@ export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
     return { scenario, items: getWarmup(scenario.id) };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `Warm-up: ${loaderData.scenario.title} — LinguaRoots` : "Unavailable — LinguaRoots";
+    const title = loaderData ? `Warm-up: ${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
     const desc = "Match the words you'll need, then step into the conversation.";
     return {
       meta: [
@@ -79,12 +79,12 @@ function Warmup() {
     if (kh === en) {
       const item = current.find((it) => it.id === kh)!;
       setMatched((m) => new Set(m).add(kh));
-      setMessage(`Lovely — “${item.roman.trim()}” means “${item.english}”.`);
+      setMessage(`Yes! “${item.roman.trim()}” means “${item.english}”.`);
       setLastNote(item.culturalNote ? item : null);
       setPickKh(null);
       setPickEn(null);
     } else {
-      setMessage("Not quite a pair — have another listen and try again.");
+      setMessage("Not a pair yet. Listen again and have another go.");
       setWrong(true);
       timer.current = setTimeout(() => {
         setPickKh(null);
@@ -126,7 +126,7 @@ function Warmup() {
         </div>
         <h1 className="mt-6 font-display text-3xl font-semibold">New words</h1>
         <p className="mt-2 text-lg text-muted-foreground">
-          Word {learnAt + 1} of {current.length} — listen, then we'll pair them up.
+          Word {learnAt + 1} of {current.length}. Listen, then we'll pair them up.
         </p>
         <div key={`${round}-${learnAt}`} className="fade-up mt-6">
           <div className="rounded-3xl border-2 border-border bg-card px-6 py-10 text-center">

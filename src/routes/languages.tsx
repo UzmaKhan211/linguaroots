@@ -8,9 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/languages")({
   head: () => ({
     meta: [
-      { title: "Languages — LinguaRoots" },
+      { title: "Languages | LinguaRoots" },
       { name: "description", content: "Khowar is live. More heritage languages are coming soon." },
-      { property: "og:title", content: "Languages — LinguaRoots" },
+      { property: "og:title", content: "Languages | LinguaRoots" },
       { property: "og:description", content: "Khowar is live. More heritage languages are coming soon." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -34,7 +34,7 @@ function LanguagesPage() {
   }, []);
 
   const note = async (id: string, name: string) => {
-    setThanks(`Thank you — we've noted that you'd like ${name}.`);
+    setThanks(`Thank you! We've noted that you'd like ${name}.`);
     if (noted.has(id)) return;
     const next = new Set(noted).add(id);
     setNoted(next);
