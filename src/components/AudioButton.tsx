@@ -4,12 +4,34 @@ import { fetchLessonAudio } from "@/lib/lessonAudio";
 
 /** Clips that start on their own wait their turn, so two lines never talk over each other. */
 let autoQueue: Promise<void> = Promise.resolve();
-const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => void) => {
+let pending = 0;
+const bump = (n: number) => {
+  pending = Math.max(0, pending + n);
+  window.dispatchEvent(new CustomEvent("lr:autoaudio", { detail: pending }));
+};
+/** True while a line that started on its own is waiting or playing. */
+export function useAutoAudioBusy() {
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    setBusy(pending > 0);
+    const on = (e: Event) => setBusy((e as CustomEvent<number>).detail > 0);
+    window.addEventListener("lr:autoaudio", on);
+    return () => window.removeEventListener("lr:autoaudio", on);
+  }, []);
+  return busy;
+}
+const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => void, onDone: () => void) => {
   autoQueue = autoQueue.then(
     () =>
       new Promise<void>((done) => {
-        if (!alive()) return done();
-        const finish = () => done();
+        if (!alive()) {
+          onDone();
+          return done();
+        }
+        const finish = () => {
+          onDone();
+          done();
+        };
         a.addEventListener("ended", finish, { once: true });
         a.addEventListener("pause", finish, { once: true });
         a.play().then(onStart).catch(finish);
@@ -33,7 +55,10 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
     a.onerror = () => {
       void fetchLessonAudio(`/audio/${language}/${file}`).then((blob) => {
         if (!alive) return;
-        if (!blob) return setMissing(true);
+        if (!blob) {
+          release();
+          return setMissing(true);
+        }
         objectUrl = URL.createObjectURL(blob);
         a.onerror = () => setMissing(true);
         a.src = objectUrl;
@@ -41,12 +66,27 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
     };
     a.onended = () => setPlaying(false);
     ref.current = a;
+    let held = false;
+    const release = () => {
+      if (held) {
+        held = false;
+        bump(-1);
+      }
+    };
     if (autoPlay) {
-      const tryPlay = () => playWhenFree(a, () => alive, () => alive && setPlaying(true));
+      held = true;
+      bump(1);
+      a.addEventListener("ended", release, { once: true });
+      const tryPlay = () =>
+        playWhenFree(a, () => alive, () => alive && setPlaying(true), release);
       if (a.readyState >= 2) void tryPlay();
       else a.addEventListener("canplay", () => alive && void tryPlay(), { once: true });
     }
+    // Never hold the screen for more than 20 seconds (missing or silent clip).
+    const guard = setTimeout(release, 20000);
     return () => {
+      clearTimeout(guard);
+      release();
       alive = false;
       a.pause();
       if (objectUrl) URL.revokeObjectURL(objectUrl);
