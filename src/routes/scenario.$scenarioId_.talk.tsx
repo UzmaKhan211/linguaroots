@@ -62,7 +62,7 @@ function Talk() {
 
   // Only one reply? Open it straight away — nothing to pick.
   useEffect(() => {
-    if (step.type === "choose" && step.options.length === 1) setChosen(step.options[0]);
+    if (step.type === "choose" && step.options.length === 1) setChosen(step.options[0] ?? null);
   }, [step]);
   const single = step.type === "choose" && step.options.length === 1;
 
