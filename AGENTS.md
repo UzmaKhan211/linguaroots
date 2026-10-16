@@ -21,3 +21,4 @@
 - Rewards (XP, streak) are granted by the award_xp database function, with fixed amounts per reward kind; users cannot write XP directly, so totals stay trustworthy. src/lib/rewards.ts only shows a device preview.
 - Clips added from /admin live in the private `lesson-audio` storage bucket at <language>/<file>; `src/lib/lessonAudio.ts` falls back to it when a bundled clip is missing, so content stays data.
 - Admin access is the `admin` role in `user_roles`, checked with `has_role`; storage writes are gated by that role in policies.
+- Profile (/profile) is the home for name, photo, language choice and account settings; /settings redirects there. Avatars live in the private `avatars` bucket under <user id>/ and are shown via short-lived signed links, so photos are never public.
