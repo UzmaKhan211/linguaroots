@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LanguagesRouteImport } from './routes/languages'
 import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
+import { Route as ScenarioScenarioIdTalkRouteImport } from './routes/scenario.$scenarioId_.talk'
+import { Route as ScenarioScenarioIdWarmupRouteImport } from './routes/scenario.$scenarioId_.warmup'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +30,70 @@ const ScenarioScenarioIdRoute = ScenarioScenarioIdRouteImport.update({
   path: '/scenario/$scenarioId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScenarioScenarioIdTalkRoute = ScenarioScenarioIdTalkRouteImport.update({
+  id: '/scenario/$scenarioId_/talk',
+  path: '/scenario/$scenarioId/talk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenarioScenarioIdWarmupRoute =
+  ScenarioScenarioIdWarmupRouteImport.update({
+    id: '/scenario/$scenarioId_/warmup',
+    path: '/scenario/$scenarioId/warmup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
+  '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
+  '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/languages': typeof LanguagesRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId_/talk': typeof ScenarioScenarioIdTalkRoute
+  '/scenario/$scenarioId_/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/languages' | '/scenario/$scenarioId'
+  fullPaths:
+    | '/'
+    | '/languages'
+    | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId/talk'
+    | '/scenario/$scenarioId/warmup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/languages' | '/scenario/$scenarioId'
-  id: '__root__' | '/' | '/languages' | '/scenario/$scenarioId'
+  to:
+    | '/'
+    | '/languages'
+    | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId/talk'
+    | '/scenario/$scenarioId/warmup'
+  id:
+    | '__root__'
+    | '/'
+    | '/languages'
+    | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId_/talk'
+    | '/scenario/$scenarioId_/warmup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LanguagesRoute: typeof LanguagesRoute
   ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
+  ScenarioScenarioIdTalkRoute: typeof ScenarioScenarioIdTalkRoute
+  ScenarioScenarioIdWarmupRoute: typeof ScenarioScenarioIdWarmupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +119,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScenarioScenarioIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scenario/$scenarioId_/talk': {
+      id: '/scenario/$scenarioId_/talk'
+      path: '/scenario/$scenarioId/talk'
+      fullPath: '/scenario/$scenarioId/talk'
+      preLoaderRoute: typeof ScenarioScenarioIdTalkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenario/$scenarioId_/warmup': {
+      id: '/scenario/$scenarioId_/warmup'
+      path: '/scenario/$scenarioId/warmup'
+      fullPath: '/scenario/$scenarioId/warmup'
+      preLoaderRoute: typeof ScenarioScenarioIdWarmupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +140,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LanguagesRoute: LanguagesRoute,
   ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
+  ScenarioScenarioIdTalkRoute: ScenarioScenarioIdTalkRoute,
+  ScenarioScenarioIdWarmupRoute: ScenarioScenarioIdWarmupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

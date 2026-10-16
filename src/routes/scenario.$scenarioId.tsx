@@ -1,7 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { useEffect, useState } from "react";
 import { getScenario, getWarmup } from "@/lib/content";
+import { isWarmupDone } from "@/lib/progress";
 
 export const Route = createFileRoute("/scenario/$scenarioId")({
   loader: ({ params }) => {
@@ -28,6 +30,8 @@ export const Route = createFileRoute("/scenario/$scenarioId")({
 
 function ScenarioIntro() {
   const { scenario, warmupCount } = Route.useLoaderData();
+  const [done, setDone] = useState(false);
+  useEffect(() => setDone(isWarmupDone(scenario.id)), [scenario.id]);
   return (
     <AppShell>
       <Link to="/" className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted-foreground">
@@ -45,13 +49,26 @@ function ScenarioIntro() {
         </p>
       </div>
 
-      <button
-        type="button"
-        disabled
-        className="mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground opacity-60"
+      <Link
+        to="/scenario/$scenarioId/warmup"
+        params={{ scenarioId: scenario.id }}
+        className="mt-6 flex min-h-14 w-full items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
       >
-        Warm-up opens in the next step
-      </button>
+        {done ? "Warm up again" : "Start the warm-up"}
+      </Link>
+      {done ? (
+        <Link
+          to="/scenario/$scenarioId/talk"
+          params={{ scenarioId: scenario.id }}
+          className="mt-3 flex min-h-14 w-full items-center justify-center rounded-full border-2 bg-card text-lg font-bold"
+        >
+          Go to the conversation
+        </Link>
+      ) : (
+        <p className="mt-3 text-center text-base text-muted-foreground">
+          The conversation opens after your first warm-up.
+        </p>
+      )}
     </AppShell>
   );
 }
