@@ -15,6 +15,13 @@
       "when": 1792125948784,
       "tag": "0001_phase5_rewards_interest_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792169472459,
+      "tag": "0002_closeness_attempts",
+      "breakpoints": true
     }
   ]
 }
