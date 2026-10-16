@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { isOnboarded } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { RewardsBadge } from "@/components/RewardsBadge";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
 import { scenarios } from "@/lib/content";
 
@@ -45,6 +46,7 @@ function Index() {
         <h1 className="mt-1 text-[2rem] font-semibold text-foreground">
           What situation are you about to be in?
         </h1>
+        <RewardsBadge className="mt-4" />
       </section>
 
       <ul className="mt-6 space-y-4">

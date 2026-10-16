@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { syncRewards } from "@/lib/rewards";
 
 /**
  * Progress lives on the device (so guests work offline) and is mirrored to the
@@ -116,6 +117,8 @@ export async function syncWithAccount(scenarioIds: string[]) {
     return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, completed_count: m.completed, updated_at: new Date().toISOString() };
   });
   if (upserts.length) await supabase.from("scenario_progress").upsert(upserts);
+
+  await syncRewards(uid);
 
   if (profile?.onboarded_at && !isOnboarded()) {
     set(PREFS_KEY, JSON.stringify({ relative: profile.relative ?? undefined, ageConfirmed: profile.age_confirmed }));

@@ -1,3 +1,4 @@
+import { fetchLessonAudio } from "@/lib/lessonAudio";
 import { DEFAULT_CONFIG, SAMPLE_RATE, type ScoringConfig } from "./scoring";
 
 /** Browser-only helpers. Call from event handlers / effects only. */
@@ -25,8 +26,8 @@ export function loadReference(url: string) {
   if (!refCache.has(url)) {
     refCache.set(
       url,
-      fetch(url)
-        .then((r) => (r.ok && !(r.headers.get("content-type") ?? "").includes("text/html") ? r.arrayBuffer() : null))
+      fetchLessonAudio(url)
+        .then((b) => (b ? b.arrayBuffer() : null))
         .then((b) => (b ? decodeToMono16k(b) : null))
         .catch(() => null),
     );

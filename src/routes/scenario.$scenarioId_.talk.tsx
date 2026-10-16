@@ -7,6 +7,8 @@ import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
 import { isWarmupDone, markScenarioCompleted } from "@/lib/progress";
+import { earn, XP } from "@/lib/rewards";
+import { RewardsBadge } from "@/components/RewardsBadge";
 import { loadCohortKeyed, loadReference } from "@/lib/audio";
 import { loadSpeech, warmSpeech } from "@/lib/speechClient";
 
@@ -49,7 +51,9 @@ function Talk() {
   const endRef = useRef<HTMLDivElement>(null);
   const isEnd = step.type === "end";
   useEffect(() => {
-    if (isEnd) markScenarioCompleted(scenario.id);
+    if (!isEnd) return;
+    markScenarioCompleted(scenario.id);
+    earn(XP.scenario);
   }, [isEnd, scenario.id]);
 
   useEffect(() => {
@@ -99,6 +103,7 @@ function Talk() {
 
   const confirm = () => {
     if (!chosen) return;
+    earn(XP.line);
     setHistory((h) => [...h, chosen]);
     setStep(afterChoice(chosen, turns));
     setChosen(null);
@@ -192,6 +197,8 @@ function Talk() {
           <Heart className="mx-auto size-10 text-accent" aria-hidden />
           <h2 className="mt-3 text-2xl font-semibold">You talked with {who}</h2>
           <p className="mt-2 text-lg">That was a whole conversation in Khowar. They'd be so happy to hear it.</p>
+          <p className="mt-2 text-base text-muted-foreground">+{XP.scenario} XP for finishing, plus {XP.line} for every line you said.</p>
+          <RewardsBadge className="mt-3 justify-center" />
           <div className="mt-5 grid gap-3">
             <button
               type="button"
