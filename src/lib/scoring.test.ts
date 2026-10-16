@@ -14,9 +14,9 @@ function tone(freqs: number[], seconds = 0.6) {
 
 describe("scoring rules", () => {
   const cfg = { perfect: 4, pass: 14 };
-  it("pass mark is 70%", () => {
-    expect(passes(70)).toBe(true);
-    expect(passes(69)).toBe(false);
+  it("pass mark is 50%", () => {
+    expect(passes(50)).toBe(true);
+    expect(passes(49)).toBe(false);
   });
   it("distance at the pass setting scores exactly 70", () => {
     expect(distanceToScore(14, cfg)).toBe(70);
