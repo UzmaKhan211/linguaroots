@@ -34,7 +34,7 @@ export function loadReference(url: string) {
   return refCache.get(url)!;
 }
 
-const KEY = "lr:scoring-config";
+const KEY = "lr:scoring-config-v2"; // v2: older saved lab settings belong to the old scoring
 export function getScoringConfig(): ScoringConfig {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? "null");
