@@ -7,6 +7,8 @@ import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
 import { isWarmupDone, markScenarioCompleted } from "@/lib/progress";
+import { loadCohortKeyed } from "@/lib/audio";
+import { prewarmSpeech } from "@/lib/speechModel";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
   loader: ({ params }) => {
@@ -53,6 +55,11 @@ function Talk() {
   useEffect(() => {
     if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
   }, [scenario.id, navigate]);
+
+  // Get the listening tool ready while Grandma/Grandpa's opening lines play.
+  useEffect(() => {
+    void loadCohortKeyed(cohortUrls, "").then(prewarmSpeech).catch(() => {});
+  }, []);
 
   // Relative's lines appear on their own; walk until replies are needed.
   useEffect(() => {
