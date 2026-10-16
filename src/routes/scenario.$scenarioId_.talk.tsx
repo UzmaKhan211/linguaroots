@@ -100,7 +100,7 @@ function Talk() {
                 {idx > 0 && (
                   <div className="flex items-center gap-3 py-2" aria-hidden>
                     <span className="h-px flex-1 bg-border" />
-                    <span className="rounded-full bg-muted px-3 py-0.5 text-sm font-bold text-muted-foreground">Or</span>
+                    <span className="rounded-full bg-muted px-3 py-0.5 text-xs font-bold uppercase tracking-widest text-muted-foreground">or</span>
                     <span className="h-px flex-1 bg-border" />
                   </div>
                 )}
