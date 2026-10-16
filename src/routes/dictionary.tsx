@@ -45,7 +45,7 @@ function Dictionary() {
       <Input aria-label="Search words or meanings" placeholder="Search words or meanings" value={query} onChange={(e) => setQuery(e.target.value)} className="h-12 rounded-xl bg-card pl-10 pr-12 text-base md:text-base" />
       {query && <Button variant="ghost" size="icon" className="absolute right-1 top-1 size-10" aria-label="Clear search" onClick={() => setQuery("")}><X aria-hidden /></Button>}
     </div>
-    <div aria-label="Word categories" className="mt-4 flex gap-2 overflow-x-auto pb-3">
+    <div aria-label="Word categories" className="dictionary-filters mt-4 flex gap-2 overflow-x-auto pb-3">
       {["All", ...vocabularyCategories].map((c) => <Button key={c} variant={category === c ? "default" : "secondary"} aria-pressed={category === c} onClick={() => setCategory(c)} className="min-h-11 shrink-0 rounded-full px-4">
         {category === c && <Check aria-hidden />} {c}
       </Button>)}

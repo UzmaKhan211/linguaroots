@@ -29,4 +29,17 @@ describe("dictionary content", () => {
     expect(filterVocabulary(vocabulary, "Food", "Wawi")).toEqual([]);
     expect(vocabularyCategories.filter((c) => c.toLowerCase() === "daily life")).toHaveLength(1);
   });
+  it("sorts words alphabetically by Roman Khowar regardless of case", () => {
+    const words = filterVocabulary(vocabulary, "All", "").map((w) => w.roman);
+    expect(words.slice(0, 4)).toEqual(["Achi", "Awa", "Awa di", "Awa di"]);
+    expect(words.at(-1)).toBe("Zhibosi");
+    expect(words.indexOf("Shapik")).toBeLessThan(words.indexOf("shaw"));
+  });
+  it("sorts category filters alphabetically", () => {
+    expect(vocabularyCategories).toEqual([
+      "Adjectives", "Daily Life", "Family", "Feelings & States", "Food",
+      "Place or Perspective", "Pronouns & Possessives", "Questions", "Responses",
+      "Terms of Endearment", "Time", "Verbs",
+    ]);
+  });
 });
