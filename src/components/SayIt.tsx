@@ -119,8 +119,12 @@ export function SayIt({
           className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary font-bold text-primary-foreground disabled:opacity-60"
         >
           {phase === "idle" ? <Mic className="size-5" aria-hidden /> : <RotateCcw className="size-5" aria-hidden />}
-          {phase === "idle" ? "Record yourself" : phase === "scoring" ? "Listening…" : "Try again"}
+          {phase === "idle" ? "Record yourself" : phase === "scoring" ? "Listening closely…" : "Try again"}
         </button>
+      )}
+
+      {modelPct !== null && phase !== "scoring" && (
+        <p className="text-sm text-muted-foreground">Getting the listening tool ready (one time only)… {modelPct}%</p>
       )}
 
       {takeUrl && phase !== "recording" && (
@@ -141,6 +145,7 @@ export function SayIt({
               <div className="h-full rounded-full bg-primary transition-all motion-reduce:transition-none" style={{ width: `${score}%` }} />
             </div>
             <p className="mt-2 text-base">{closenessMessage(score, passMark)}</p>
+            {scoreTime !== null && <p className="mt-1 text-xs text-muted-foreground">Listened in {scoreTime.toFixed(1)}s</p>}
           </div>
         )}
         {noRef && (
