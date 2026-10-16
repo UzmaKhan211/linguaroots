@@ -6,7 +6,14 @@ I read the PRD. The core of the app is the learner flow: pick a situation, do th
 - Logo file and colour ideas (upload them here)
 - The Scenarios and Turns tables (CSV or spreadsheet)
 - The audio clips, or wait until the admin upload page in Phase 5
-- The PRD's design/tone section reads as cut off ("The feeling should be..."). Paste the full text if it says more.
+
+## Design and tone (from your PRD)
+- Warm, personal and calm. It should feel like "getting ready to talk to someone I love", not taking a test.
+- Large, easy-to-read text, rounded friendly shapes, and colours taken from your logo.
+- Onboarding shows one question or line per screen, with progress dots instead of scores.
+- Gentle animations that turn off when the phone is set to reduce motion.
+- Options are never told apart by colour alone. Feedback is always kind and talks about closeness and encouragement.
+- XP and streaks read as warm encouragement, never as a scoreboard.
 
 ## Phases (we stop after each one so you can test)
 
