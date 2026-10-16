@@ -34,7 +34,7 @@ function LanguagesPage() {
   }, []);
 
   const note = async (id: string, name: string) => {
-    setThanks(`Thank you! We'll let you know when ${name} is ready.`);
+    setThanks(`Thank you! We've noted that you'd like ${name}.`);
     if (noted.has(id)) return;
     const next = new Set(noted).add(id);
     setNoted(next);
