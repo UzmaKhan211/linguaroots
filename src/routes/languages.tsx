@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, Clock, Heart } from "lucide-react";
+import { ArrowLeft, Check, Clock, Heart } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { languages } from "@/lib/languages";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,7 +49,10 @@ function LanguagesPage() {
 
   return (
     <AppShell>
-      <h1 className="fade-up text-[2rem] font-semibold">Your languages</h1>
+      <Link to="/profile" className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted-foreground">
+        <ArrowLeft className="size-5" aria-hidden /> Profile
+      </Link>
+      <h1 className="fade-up mt-2 text-[2rem] font-semibold">Your languages</h1>
       <p className="fade-up mt-2 text-muted-foreground">
         Khowar is ready to practice. Tap another language to tell us you'd like it next.
       </p>
