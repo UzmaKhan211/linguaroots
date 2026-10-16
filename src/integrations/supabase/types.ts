@@ -110,6 +110,7 @@ export type Database = {
       scenario_progress: {
         Row: {
           completed_count: number
+          resume: Json | null
           scenario_id: string
           updated_at: string
           user_id: string
@@ -117,6 +118,7 @@ export type Database = {
         }
         Insert: {
           completed_count?: number
+          resume?: Json | null
           scenario_id: string
           updated_at?: string
           user_id: string
@@ -124,6 +126,7 @@ export type Database = {
         }
         Update: {
           completed_count?: number
+          resume?: Json | null
           scenario_id?: string
           updated_at?: string
           user_id?: string
