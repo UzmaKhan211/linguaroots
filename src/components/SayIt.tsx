@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { playCorrect, playIncorrect } from "@/lib/sfx";
 import { Mic, Square, Play, RotateCcw, CheckCircle2 } from "lucide-react";
 import { closenessWithCohort, feedbackMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
 import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
@@ -121,6 +122,7 @@ export function SayIt({
           setFeedback(feedbackMessage(ok));
           attempts.current += 1;
           void saveAttempt(referenceUrl, s, ok, attempts.current, scorer);
+          if (ok) playCorrect(); else playIncorrect();
           if (!ok) setFails((f) => f + 1);
         } catch {
           setScore(null);

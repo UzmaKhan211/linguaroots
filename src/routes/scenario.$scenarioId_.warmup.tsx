@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
 import { markWarmupDone } from "@/lib/progress";
+import { playCelebrate } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { Button } from "@/components/ui/button";
 
@@ -70,6 +71,7 @@ function Warmup() {
   const finish = () => {
     markWarmupDone(scenario.id);
     earn("warmup");
+    playCelebrate();
     navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
 
