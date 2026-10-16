@@ -3,7 +3,7 @@ import { Volume2, Clock } from "lucide-react";
 import { fetchLessonAudio } from "@/lib/lessonAudio";
 
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
-export function AudioButton({ file, language = "khowar", label = "Play" }: { file: string; language?: string; label?: string }) {
+export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false }: { file: string; language?: string; label?: string; autoPlay?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -26,13 +26,18 @@ export function AudioButton({ file, language = "khowar", label = "Play" }: { fil
     };
     a.onended = () => setPlaying(false);
     ref.current = a;
+    if (autoPlay) {
+      const tryPlay = () => a.play().then(() => alive && setPlaying(true)).catch(() => {});
+      if (a.readyState >= 2) void tryPlay();
+      else a.addEventListener("canplay", () => alive && void tryPlay(), { once: true });
+    }
     return () => {
       alive = false;
       a.pause();
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       ref.current = null;
     };
-  }, [file, language]);
+  }, [file, language, autoPlay]);
 
   if (missing) {
     return (
