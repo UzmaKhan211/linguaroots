@@ -122,9 +122,25 @@ function Lab() {
         {progress && <p className="mt-2 text-sm" aria-live="polite">{progress}</p>}
         {lastAdded && !progress && <p className="mt-2 text-sm" aria-live="polite">{lastAdded}</p>}
         {takes.length > 0 && (
-          <button type="button" onClick={() => { setTakes([]); setSkipped([]); }} className="mt-3 min-h-11 rounded-full border-2 px-4 text-sm font-bold">
-            Clear all
-          </button>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                // Numbers only — no sound leaves the device.
+                const rows = ["file,phrase,category,should_pass,distance,ratio", ...takes.map((t) => [t.name, t.phraseId, t.category, t.shouldPass, t.dist.toFixed(3), Number.isFinite(t.ratio) ? t.ratio.toFixed(4) : ""].join(","))];
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(new Blob([rows.join("\n")], { type: "text/csv" }));
+                a.download = "lab-results.csv";
+                a.click();
+              }}
+              className="min-h-11 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground"
+            >
+              Download results (numbers only)
+            </button>
+            <button type="button" onClick={() => { setTakes([]); setSkipped([]); }} className="min-h-11 rounded-full border-2 px-4 text-sm font-bold">
+              Clear all
+            </button>
+          </div>
         )}
       </section>
 
