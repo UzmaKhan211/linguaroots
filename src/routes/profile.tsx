@@ -53,28 +53,22 @@ function Profile() {
     })();
   }, [user]);
 
-  const saveName = async () => {
+  const dirty = name.trim() !== savedName || avatar !== savedAvatar;
+
+  const saveChanges = async () => {
     if (!user) return;
     const n = name.trim().slice(0, 40);
     setBusy(true);
-    const { error } = await supabase.from("profiles").update({ display_name: n || null }).eq("id", user.id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: n || null, avatar_path: avatarPathValue(avatar) })
+      .eq("id", user.id);
     setBusy(false);
-    if (error) return setNote("We couldn't save your name just now. Please try again.");
+    if (error) return setNote("We couldn't save your changes just now. Please try again.");
     setSavedName(n);
     setName(n);
-    setNote("Your name is saved.");
-  };
-
-  const pickAvatar = async (id: string) => {
-    if (!user) return;
-    setAvatar(id);
-    const { error } = await supabase.from("profiles").update({ avatar_path: avatarPathValue(id) }).eq("id", user.id);
-    if (error) {
-      setAvatar(savedAvatar);
-      return setNote("We couldn't save your character just now. Please try again.");
-    }
-    setSavedAvatar(id);
-    setNote("Your new character is saved.");
+    setSavedAvatar(avatar);
+    setNote("Your changes are saved.");
   };
 
   const remove = async () => {
@@ -116,30 +110,28 @@ function Profile() {
 
             <p className="mt-5 block font-bold">Your character</p>
             <div className="mt-2">
-              <AvatarPicker value={avatar} onChange={pickAvatar} disabled={busy} />
+              <AvatarPicker value={avatar} onChange={setAvatar} disabled={busy} />
             </div>
 
             <label htmlFor="display-name" className="mt-5 block font-bold">
               Your name
             </label>
-            <div className="mt-2 flex gap-2">
-              <input
-                id="display-name"
-                value={name}
-                maxLength={40}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="What should we call you?"
-                className="min-h-12 min-w-0 flex-1 rounded-2xl border-2 bg-background px-4 text-base"
-              />
-              <button
-                type="button"
-                onClick={saveName}
-                disabled={busy || name.trim() === savedName}
-                className="min-h-12 shrink-0 rounded-full bg-primary px-5 font-bold text-primary-foreground disabled:opacity-50"
-              >
-                Save
-              </button>
-            </div>
+            <input
+              id="display-name"
+              value={name}
+              maxLength={40}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="What should we call you?"
+              className="mt-2 min-h-12 w-full rounded-2xl border-2 bg-background px-4 text-base"
+            />
+            <button
+              type="button"
+              onClick={saveChanges}
+              disabled={busy || !dirty}
+              className="mt-3 min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground disabled:opacity-50"
+            >
+              Save changes
+            </button>
             {note && (
               <p className="mt-3 text-sm" role="status">
                 {note}
