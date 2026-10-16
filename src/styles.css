@@ -63,7 +63,7 @@
   --accent-foreground: oklch(0.99 0.01 85);
   --sun: oklch(0.84 0.14 85);
   --sun-soft: oklch(0.95 0.05 88);
-  --bark: oklch(0.45 0.07 50);
+  --bark: #7a4a2e;
   --leaf-soft: oklch(0.93 0.035 155);
   --clay-soft: oklch(0.94 0.03 55);
   --destructive: oklch(0.55 0.17 30);
