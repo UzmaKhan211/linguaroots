@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight, Lock } from "lucide-react";
 import { LogoMark } from "@/components/LogoMark";
-import { languages } from "@/lib/languages";
+import { languages, orderLanguages } from "@/lib/languages";
 
 export const Route = createFileRoute("/choose-language")({
   head: () => ({
@@ -16,13 +16,6 @@ export const Route = createFileRoute("/choose-language")({
   }),
   component: ChooseLanguage,
 });
-
-/** Available languages first, then coming-soon ones in alphabetical order. */
-export function orderLanguages<T extends { name: string; status: string }>(list: T[]): T[] {
-  const ready = list.filter((l) => l.status === "available");
-  const soon = list.filter((l) => l.status !== "available").sort((a, b) => a.name.localeCompare(b.name));
-  return [...ready, ...soon];
-}
 
 function ChooseLanguage() {
   const list = orderLanguages(languages);

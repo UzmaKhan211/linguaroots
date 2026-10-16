@@ -42,7 +42,7 @@ describe("pass mark", () => {
   });
 });
 
-import { orderLanguages } from "@/routes/choose-language";
+import { orderLanguages } from "@/lib/languages";
 import { describe as dl, it as il, expect as el } from "vitest";
 dl("language order", () => {
   il("Khowar first, then coming-soon alphabetically", () => {

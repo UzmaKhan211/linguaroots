@@ -13,3 +13,11 @@ export const languages: Language[] = [
   { id: "wakhi", name: "Wakhi", region: "Gojal & Wakhan", status: "coming-soon" },
   { id: "kalasha", name: "Kalasha", region: "Chitral valleys", status: "coming-soon" },
 ];
+
+/** Available languages first, then coming-soon ones in alphabetical order. */
+export function orderLanguages<T extends { name: string; status: string }>(list: T[]): T[] {
+  const ready = list.filter((l) => l.status === "available");
+  const soon = list.filter((l) => l.status !== "available").sort((a, b) => a.name.localeCompare(b.name));
+  return [...ready, ...soon];
+}
+
