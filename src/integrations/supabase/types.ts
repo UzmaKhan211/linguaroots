@@ -154,6 +154,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_xp: {
+        Args: { _kind: string; _today: string }
+        Returns: {
+          last_active_day: string
+          streak: number
+          xp: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
