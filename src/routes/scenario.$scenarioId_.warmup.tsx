@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Volume2 } from "lucide-react";
+import { ArrowLeft, Check, Sparkles, Volume2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
@@ -138,7 +138,14 @@ function Warmup() {
           >
             <Volume2 className="size-5" aria-hidden /> Hear it
           </button>
-          {it.culturalNote && <p className="mt-5 rounded-2xl bg-sun-soft p-4 text-left text-base">{it.culturalNote}</p>}
+          {it.culturalNote && (
+            <aside className="mt-6 rounded-2xl border border-primary/15 bg-leaf-soft/60 p-4 text-left">
+              <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                <Sparkles className="size-3.5" aria-hidden /> Cultural insight
+              </p>
+              <p className="mt-2 text-base italic leading-relaxed text-foreground/85">{it.culturalNote}</p>
+            </aside>
+          )}
         </div>
         <button
           type="button"
@@ -251,11 +258,6 @@ function Warmup() {
         </ul>
       </div>
 
-      {lastNote && (
-        <p className="fade-up mt-5 rounded-2xl bg-sun-soft p-4 text-base">
-          <span className="font-bold">{lastNote.roman.trim()}:</span> {lastNote.culturalNote}
-        </p>
-      )}
 
       {roundDone && (
         <button
