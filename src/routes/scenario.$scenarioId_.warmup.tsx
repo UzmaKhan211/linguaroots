@@ -1,10 +1,9 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowLeft, Check, Info } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ArrowLeft, Check, Volume2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { AudioButton } from "@/components/AudioButton";
-import { getScenario, getWarmup } from "@/lib/content";
-import { buildQuiz } from "@/lib/conversation";
+import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
+import { chunkRounds, seededShuffle } from "@/lib/pairs";
 import { markWarmupDone } from "@/lib/progress";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
@@ -15,7 +14,7 @@ export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
   },
   head: ({ loaderData }) => {
     const title = loaderData ? `Warm-up: ${loaderData.scenario.title} — LinguaRoots` : "Unavailable — LinguaRoots";
-    const desc = "Get comfortable with the words you'll need before the conversation.";
+    const desc = "Match the words you'll need, then step into the conversation.";
     return {
       meta: [
         { title },
@@ -32,34 +31,81 @@ export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
 
 function Dots({ total, at }: { total: number; at: number }) {
   return (
-    <div className="flex flex-wrap gap-1.5" aria-label={`Step ${at + 1} of ${total}`}>
+    <div className="flex gap-1.5" aria-label={`Round ${at + 1} of ${total}`}>
       {Array.from({ length: total }, (_, i) => (
-        <span key={i} className={`h-2 w-2 rounded-full ${i <= at ? "bg-primary" : "bg-border"}`} />
+        <span key={i} className={`h-2.5 w-2.5 rounded-full ${i <= at ? "bg-primary" : "bg-border"}`} />
       ))}
     </div>
   );
 }
 
+function play(file: string) {
+  if (!file) return;
+  const a = new Audio(`/audio/khowar/${file}`);
+  a.play().catch(() => {});
+}
+
 function Warmup() {
   const { scenario, items } = Route.useLoaderData();
   const navigate = useNavigate();
-  const quiz = useMemo(() => buildQuiz(items), [items]);
-  const total = items.length * 2;
-  const [i, setI] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
+  const rounds = useMemo(() => chunkRounds(items), [items]);
+  const [round, setRound] = useState(0);
+  const [matched, setMatched] = useState<Set<string>>(new Set());
+  const [pickKh, setPickKh] = useState<string | null>(null);
+  const [pickEn, setPickEn] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("Tap a Khowar word to hear it, then tap its meaning.");
+  const [lastNote, setLastNote] = useState<WarmupItem | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const next = () => {
-    setPicked(null);
-    if (i + 1 >= total) {
-      markWarmupDone(scenario.id);
-      navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
-    } else setI(i + 1);
+  const current = rounds[round] ?? [];
+  const khTiles = useMemo(() => seededShuffle(current, `${scenario.id}-k-${round}`), [current, scenario.id, round]);
+  const enTiles = useMemo(() => seededShuffle(current, `${scenario.id}-e-${round}`), [current, scenario.id, round]);
+  const roundDone = current.length > 0 && current.every((it) => matched.has(it.id));
+  const isLast = round + 1 >= rounds.length;
+
+  const finish = () => {
+    markWarmupDone(scenario.id);
+    navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
 
-  const learning = i < items.length;
+  const tryPair = (kh: string | null, en: string | null) => {
+    if (!kh || !en) return;
+    if (timer.current) clearTimeout(timer.current);
+    if (kh === en) {
+      const item = current.find((it) => it.id === kh)!;
+      setMatched((m) => new Set(m).add(kh));
+      setMessage(`Lovely — “${item.roman.trim()}” means “${item.english}”.`);
+      setLastNote(item.culturalNote ? item : null);
+      setPickKh(null);
+      setPickEn(null);
+    } else {
+      setMessage("Not quite a pair — have another listen and try again.");
+      timer.current = setTimeout(() => {
+        setPickKh(null);
+        setPickEn(null);
+      }, 700);
+    }
+  };
+
+  const nextRound = () => {
+    if (isLast) return finish();
+    setRound(round + 1);
+    setPickKh(null);
+    setPickEn(null);
+    setLastNote(null);
+    setMessage("New words — tap a Khowar word to hear it.");
+  };
+
   if (!items.length) return null;
-  const item = (learning ? items[i] : quiz[i - items.length]?.item) ?? items[0]!;
-  const q = learning ? null : quiz[i - items.length];
+
+  const tile = (selected: boolean, done: boolean) =>
+    `relative flex min-h-16 w-full items-center justify-center rounded-2xl border-2 px-3 py-2 text-center transition-colors ${
+      done
+        ? "border-primary/40 bg-secondary text-muted-foreground"
+        : selected
+          ? "border-primary bg-card ring-4 ring-primary/20"
+          : "border-border bg-card"
+    }`;
 
   return (
     <AppShell>
@@ -70,73 +116,97 @@ function Warmup() {
       >
         <ArrowLeft className="size-5" aria-hidden /> {scenario.title}
       </Link>
-      <div className="mt-3">
-        <Dots total={total} at={i} />
+      <div className="mt-3 flex items-center justify-between">
+        <Dots total={rounds.length} at={round} />
+        <button type="button" onClick={finish} className="min-h-11 px-2 text-sm font-bold text-primary underline-offset-4 hover:underline">
+          I'm ready to talk
+        </button>
       </div>
 
-      {learning ? (
-        <section key={item.id} className="fade-up mt-8 rounded-3xl border bg-card p-6 shadow-soft">
-          <p className="text-sm font-bold uppercase tracking-wider text-accent">New word</p>
-          <p className="mt-3 font-display text-4xl font-semibold">{item.roman}</p>
-          <p className="mt-2 text-lg text-muted-foreground">{item.english}</p>
-          <div className="mt-5">
-            <AudioButton file={item.audioFile} />
-          </div>
-          {item.culturalNote && (
-            <p className="mt-5 flex gap-2 rounded-2xl bg-sun-soft p-4 text-base">
-              <Info className="mt-0.5 size-5 shrink-0 text-bark" aria-hidden /> {item.culturalNote}
-            </p>
-          )}
-        </section>
-      ) : (
-        <section key={item.id + "q"} className="fade-up mt-8">
-          <p className="text-sm font-bold uppercase tracking-wider text-accent">Which one means</p>
-          <p className="mt-1 font-display text-3xl font-semibold">“{item.english}”?</p>
-          <ul className="mt-6 space-y-3">
-            {q!.options.map((o) => {
-              const isAnswer = o === item.roman.trim();
-              const show = picked !== null;
-              const mark = show && isAnswer ? "match" : show && o === picked ? "tried" : null;
-              return (
-                <li key={o}>
-                  <button
-                    type="button"
-                    disabled={show}
-                    onClick={() => setPicked(o)}
-                    className={`flex min-h-14 w-full items-center justify-between rounded-2xl border-2 bg-card px-5 text-left text-xl font-semibold ${
-                      mark === "match" ? "border-primary" : "border-border"
-                    }`}
-                  >
-                    {o}
-                    {mark === "match" && (
-                      <span className="flex items-center gap-1 text-sm font-bold text-primary">
-                        <Check className="size-5" aria-hidden /> This one
+      <h1 className="mt-6 font-display text-3xl font-semibold">Word pairs</h1>
+      <p className="mt-2 min-h-14 text-lg" role="status" aria-live="polite">
+        {message}
+      </p>
+
+      <div key={round} className="fade-up mt-4 grid grid-cols-2 gap-3">
+        <ul className="space-y-3" aria-label="Khowar words">
+          {khTiles.map((it) => {
+            const done = matched.has(it.id);
+            const sel = pickKh === it.id;
+            return (
+              <li key={it.id}>
+                <button
+                  type="button"
+                  disabled={done}
+                  aria-pressed={sel}
+                  onClick={() => {
+                    play(it.audioFile);
+                    setPickKh(it.id);
+                    tryPair(it.id, pickEn);
+                  }}
+                  className={tile(sel, done)}
+                >
+                  <span className="flex flex-col items-center gap-1">
+                    <span className="font-display text-xl font-semibold">{it.roman.trim()}</span>
+                    {done ? (
+                      <span className="flex items-center gap-1 text-xs font-bold text-primary">
+                        <Check className="size-4" aria-hidden /> Paired
+                      </span>
+                    ) : (
+                      <Volume2 className="size-4 text-muted-foreground" aria-hidden />
+                    )}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <ul className="space-y-3" aria-label="Meanings">
+          {enTiles.map((it) => {
+            const done = matched.has(it.id);
+            const sel = pickEn === it.id;
+            return (
+              <li key={it.id}>
+                <button
+                  type="button"
+                  disabled={done}
+                  aria-pressed={sel}
+                  onClick={() => {
+                    setPickEn(it.id);
+                    tryPair(pickKh, it.id);
+                  }}
+                  className={tile(sel, done)}
+                >
+                  <span className="flex flex-col items-center gap-1">
+                    <span className="text-base font-semibold">{it.english}</span>
+                    {done && (
+                      <span className="flex items-center gap-1 text-xs font-bold text-primary">
+                        <Check className="size-4" aria-hidden /> Paired
                       </span>
                     )}
-                    {mark === "tried" && <span className="text-sm font-bold text-muted-foreground">Your pick</span>}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          {picked && (
-            <p className="fade-up mt-4 text-lg" role="status">
-              {picked === item.roman.trim()
-                ? "Lovely, you've got it."
-                : `Close! “${item.roman.trim()}” is the one — you'll remember it next time.`}
-            </p>
-          )}
-        </section>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {lastNote && (
+        <p className="fade-up mt-5 rounded-2xl bg-sun-soft p-4 text-base">
+          <span className="font-bold">{lastNote.roman.trim()}:</span> {lastNote.culturalNote}
+        </p>
       )}
 
-      <button
-        type="button"
-        onClick={next}
-        disabled={!learning && !picked}
-        className="mt-8 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-50"
-      >
-        {i + 1 >= total ? "Start the conversation" : learning && i + 1 === items.length ? "Let's practise" : "Next"}
-      </button>
+      {roundDone && (
+        <button
+          type="button"
+          onClick={nextRound}
+          className="fade-up mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
+        >
+          {isLast ? "Start the conversation" : "Next words"}
+        </button>
+      )}
     </AppShell>
   );
 }
