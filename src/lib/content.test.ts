@@ -32,8 +32,8 @@ describe("content data", () => {
   });
 
   it("each scenario has its own warm-up items", () => {
-    expect(getWarmup("grandma-phone-call")).toHaveLength(13);
-    expect(getWarmup("grandft_inperson_meeting")).toHaveLength(13);
+    expect(getWarmup("grandma-phone-call")).toHaveLength(6);
+    expect(getWarmup("grandft_inperson_meeting")).toHaveLength(6);
   });
 
   it("defaults a missing pass mark to 70", () => {

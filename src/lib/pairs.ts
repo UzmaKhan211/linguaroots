@@ -1,11 +1,16 @@
-/** Splits warm-up items into small matching rounds. A tiny leftover joins the last round. */
+/** Splits warm-up items into evenly sized rounds of about `size` (6 → 3+3, 13 → 4+4+5). */
 export function chunkRounds<T>(items: T[], size = 4): T[][] {
+  if (!items.length) return [];
+  const rem = items.length % size;
+  const count = Math.max(1, rem && rem < size / 2 ? Math.floor(items.length / size) : Math.ceil(items.length / size));
+  const base = Math.floor(items.length / count);
+  const extra = items.length % count;
   const rounds: T[][] = [];
-  for (let i = 0; i < items.length; i += size) rounds.push(items.slice(i, i + size));
-  const last = rounds[rounds.length - 1];
-  if (rounds.length > 1 && last && last.length < size / 2) {
-    rounds.pop();
-    rounds[rounds.length - 1]!.push(...last);
+  let i = 0;
+  for (let r = 0; r < count; r++) {
+    const n = base + (r >= count - extra ? 1 : 0);
+    rounds.push(items.slice(i, i + n));
+    i += n;
   }
   return rounds;
 }
