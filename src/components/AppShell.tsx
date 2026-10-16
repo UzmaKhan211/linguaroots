@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Globe2, Settings, BookOpen } from "lucide-react";
+import { Home, UserRound, BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -10,18 +10,17 @@ export function AppShell({ children }: { children: ReactNode }) {
         aria-label="Main"
         className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] border-t bg-card/95 backdrop-blur"
       >
-        <ul className="grid grid-cols-4">
+        <ul className="grid grid-cols-3">
           <NavItem to="/" label="Home" icon={<Home className="size-6" aria-hidden />} />
           <NavItem to="/dictionary" label="Dictionary" icon={<BookOpen className="size-6" aria-hidden />} />
-          <NavItem to="/languages" label="Languages" icon={<Globe2 className="size-6" aria-hidden />} />
-          <NavItem to="/settings" label="Settings" icon={<Settings className="size-6" aria-hidden />} />
+          <NavItem to="/profile" label="Profile" icon={<UserRound className="size-6" aria-hidden />} />
         </ul>
       </nav>
     </div>
   );
 }
 
-function NavItem({ to, label, icon }: { to: "/" | "/dictionary" | "/languages" | "/settings"; label: string; icon: ReactNode }) {
+function NavItem({ to, label, icon }: { to: "/" | "/dictionary" | "/profile"; label: string; icon: ReactNode }) {
   return (
     <li>
       <Link
