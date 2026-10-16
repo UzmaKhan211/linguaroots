@@ -214,12 +214,10 @@ function Warmup() {
                 >
                   <span className="flex flex-col items-center gap-1">
                     <span className="font-display text-xl font-semibold">{it.roman.trim()}</span>
-                    {done ? (
+                    {done && (
                       <span className="flex items-center gap-1 text-xs font-bold text-primary">
                         <Check className="size-4" aria-hidden /> Paired
                       </span>
-                    ) : (
-                      <Volume2 className="size-4 text-muted-foreground" aria-hidden />
                     )}
                   </span>
                 </button>
