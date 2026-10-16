@@ -30,7 +30,7 @@ export function buildVocabulary(csv: string): VocabularyItem[] {
     audioFile: r.audio_file,
     sourceTurnId: r.source_turn_id,
     culturalNote: r.cultural_note || "",
-  }));
+  })).sort((a, b) => a.roman.localeCompare(b.roman, "en", { sensitivity: "base" }) || a.id.localeCompare(b.id));
 }
 
 export const vocabulary = buildVocabulary(vocabCsv);

@@ -9,3 +9,4 @@
 - [x] Dictionary: import supplied vocabulary and audio without replacing lesson clips
 - [x] Dictionary: bottom tab, category filters, search, audio, and learned badges
 - [x] Verify Dictionary and existing navigation
+- [ ] Dictionary corrections: translation, alphabetical ordering, filter scroll bar
