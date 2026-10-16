@@ -68,7 +68,7 @@ function Lab() {
       const p = parseTakeName(f.name);
       if (p.kind === "reference") continue;
       setProgress(`Scoring ${i} of ${files.length}…`);
-      if (p.kind === "unknown") { skip.push(`${f.name} (name not recognised)`); continue; }
+      if (p.kind === "unknown") { skip.push(`${f.name} (name not recognized)`); continue; }
       let ref = refs.get(p.phraseId) ?? null;
       if (!ref) ref = await loadReference(`/audio/khowar/${p.phraseId}.mp3`);
       if (!ref) { skip.push(`${f.name} (no example recording for ${p.phraseId})`); continue; }

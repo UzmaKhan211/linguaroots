@@ -20,7 +20,7 @@ export function RewardsBadge({ className = "" }: { className?: string }) {
       </span>
       <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-clay-soft px-3 text-sm font-bold text-accent">
         <Flame className="size-4" aria-hidden />
-        {streak > 1 ? `${streak} days in a row` : streak === 1 ? "You practised today" : "Practise today to start"}
+        {streak > 1 ? `${streak} days in a row` : streak === 1 ? "You practiced today" : "Practice today to start"}
       </span>
     </div>
   );

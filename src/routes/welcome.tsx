@@ -10,9 +10,9 @@ export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
       { title: "Welcome | LinguaRoots" },
-      { name: "description", content: "A one-minute welcome to practising Khowar with the people you love." },
+      { name: "description", content: "A one-minute welcome to practicing Khowar with the people you love." },
       { property: "og:title", content: "Welcome | LinguaRoots" },
-      { property: "og:description", content: "A one-minute welcome to practising Khowar with the people you love." },
+      { property: "og:description", content: "A one-minute welcome to practicing Khowar with the people you love." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -59,7 +59,7 @@ function Welcome() {
             <LogoMark className="h-16 w-auto self-start" />
             <h1 className="mt-6 text-[2rem] font-semibold leading-tight">Get ready to talk with someone you love.</h1>
             <p className="mt-3 text-lg text-muted-foreground">
-              Hear your relative, choose what to say, and practise saying it in Khowar. No tests, just gentle practice.
+              Hear your relative, choose what to say, and practice saying it in Khowar. No tests, just gentle practice.
             </p>
             <Primary onClick={next}>Let's begin</Primary>
           </>
@@ -116,7 +116,7 @@ function Welcome() {
             <p className="mt-2 text-lg text-muted-foreground">LinguaRoots is for people aged 13 and over.</p>
             {under13 ? (
               <p className="mt-6 rounded-2xl bg-card p-4 text-base" role="status">
-                Thank you for being honest. Please ask a parent or carer to practise with you on their device.
+                Thank you for being honest. Please ask a parent or caregiver to practice with you on their device.
               </p>
             ) : (
               <>
