@@ -1,0 +1,3 @@
+scenario_id,scenario_title,situation,character,scenario_order,language,difficulty,start_turn_id,status,turn_count,check
+grandma-phone-call,Call your grandma,You are calling your grandmother. She picks up the phone.,grandmother,1,khowar,1,gpc-01,reviewed,23,OK
+grandft_inperson_meeting,Meeting grandpa,You visit your grandpa after a long time,grandfather,2,khowar,1,gft-01,,18,OK

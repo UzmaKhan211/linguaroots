@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Lesson content lives as CSV in `src/content/<language>/` and is parsed by `src/lib/content.ts`; screens never hard-code Khowar text, so new scenarios/languages are data changes.
+- Coming-soon languages live in `src/lib/languages.ts` as names only; no phrases or lessons behind them.
+- Mobile-first shell (`AppShell`, max 440px, 44px+ tap targets); all colours are semantic tokens in `src/styles.css`.

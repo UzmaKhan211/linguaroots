@@ -1,0 +1,42 @@
+turn_id,scenario_id,speaker,khowar_roman,english,audio_file,voice_profile,prompted_by,option_order,quality,feedback_note,next_turn_id,is_end,score_reference_file,pass_threshold,hint,cultural_note,variant_note,status,notes,khowar_script,check
+gpc-01,grandma-phone-call,character,Hello?,Hello?,gpc-01.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-02,grandma-phone-call,learner,Hello. Assalam o Alaikum,Hello. Assalam o Alaikum,gpc-02.mp3,,gpc-01,1,best,,gpc-03,,gpc-02.mp3,70%,,,,reviewed,,,OK
+gpc-03,grandma-phone-call,character,Walaikum Assalam. Ay ma jigar kiwali asus?,"Walaikum Assalam. Who is this, my dear?",gpc-03.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-04a,grandma-phone-call,learner,"Ay Wawi, awa asum ta Novais. Kicha Asus?","Hey grandma, it's your grandchild. How are you?",gpc-04a.mp3,,gpc-03,1,best,,gpc-05,,gpc-04a.mp3,70%,,,,reviewed,,,OK
+gpc-04b,grandma-phone-call,learner,"Ay Wawi, kicha asus?","Hey grandma, How are you?",gpc-04b.mp3,,gpc-03,2,acceptable,,gpc-05,,gpc-04b.mp3,70%,,,,reviewed,,,OK
+gpc-05,grandma-phone-call,character,Oh ma jigar! awa jam asum. Tu kicha asus?,"I'm well, my dear. How have you been?",gpc-05.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-06a,grandma-phone-call,learner,Awa di jam asum.,I'm well too.,gpc-06a.mp3,,gpc-05,1,acceptable,,gpc-07,,gpc-06a.mp3,70%,,,,reviewed,,,OK
+gpc-06b,grandma-phone-call,learner,Shukur la wawi. Awa di jam.,"Thank you, grandma. I'm well too.",gpc-06b.mp3,,gpc-05,2,best,Nice. You returned her care.,gpc-07,,gpc-06b.mp3,70%,,,,reviewed,,,OK
+gpc-07,grandma-phone-call,character,Dura saf jam asunia?,Is everyone well at home?,gpc-07.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-08a,grandma-phone-call,learner,Saf jam asuni. Phai saf tazagi shera?,Everyone is well! Is everything good there?,gpc-08a.mp3,,gpc-07,1,acceptable,,gpc-09,,gpc-08a.mp3,70%,,,,reviewed,,,OK
+gpc-08b,grandma-phone-call,learner,"Di, saf barabar. Ta weshki saf jam asunia?","Yes, everyone is fine! Is everyone well on your end?",gpc-08b.mp3,,gpc-07,2,best,,gpc-09,,gpc-08b.mp3,70%,,,,reviewed,,,OK
+gpc-09,grandma-phone-call,character,Saf barabar la ma jigar. Ma hardi lain boyan wa ta bachen.,Everything is well my dear. I miss you.,gpc-09.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-10,grandma-phone-call,learner,Ma di bo yadi gosan tu.,I miss you a lot too.,gpc-10.mp3,,gpc-09,1,best,,gpc-11,,gpc-10.mp3,70%,,,,reviewed,,,OK
+gpc-11,grandma-phone-call,character,Ta sabaq jam biniana.,Are your studies going well?,gpc-11.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-12a,grandma-phone-call,learner,Jam la wawi shukur.,"They're going well, grandma.",gpc-12a.mp3,,gpc-11,1,acceptable,,gpc-13,,gpc-12a.mp3,70%,,,,reviewed,,,OK
+gpc-12b,grandma-phone-call,learner,"Phuk mushkilainiyan la wawi, magam jam.",They're a bit hard but are going well.,gpc-12b.mp3,,gpc-11,2,best,,gpc-13,,gpc-12b.mp3,70%,,,,reviewed,,,OK
+gpc-13,grandma-phone-call,character,Shukur la ma jigar. Shukur.,"That's good, my dear. That's good!",gpc-13.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-14a,grandma-phone-call,learner,A wawi jam wa awa achi telephone kom tatain shaw.,Okay then grandma! I will call you again soon.,gpc-14a.mp3,,gpc-13,1,best,,gpc-15,,gpc-14a.mp3,70%,,,,reviewed,,,OK
+gpc-14b,grandma-phone-call,learner,Jam wa wawi thay achi lua chakusi.,Alright then grandma! We will talk again soon.,gpc-14b.mp3,,gpc-13,2,acceptable,,gpc-15,,gpc-14b.mp3,70%,,,,reviewed,,,OK
+gpc-15,grandma-phone-call,character,Jam la ma jigar. Taan khayalo lakhe.,Alright my dear. Take care.,gpc-15.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-16,grandma-phone-call,learner,Jam la wawi. Tu di taan khayalo lakhe.,"Okay grandma! You too, take care.",gpc-16.mp3,,gpc-15,1,best,,gpc-17,,gpc-16.mp3,70%,,,,reviewed,,,OK
+gpc-17,grandma-phone-call,character,Ta behail artam. Khuda Hafiz,I sent you my blessings. Goodbye.,gpc-17.mp3,,,,,,,,,,,,,reviewed,,,OK
+gpc-18,grandma-phone-call,learner,Khuda Hafiz,Goodbye.,gpc-18.mp3,,gpc-17,1,best,,,yes,gpc-18.mp3,70%,,,,reviewed,,,OK
+gft-01,grandft_inperson_meeting,learner,"Assalam o Alaikum, baba!","Assalam o Alaikum, grandpa!",gft-01.mp3,,,1,best,,gft-02,,gft-01.mp3,70%,,,,reviewed,,,Learner turn needs prompted_by
+gft-02,grandft_inperson_meeting,character,"Walaikum Assalam. Oh, ma novais giru!","Walaikum Assalam. Oh, my grandchild is here!",gft-02.mp3,,,,,,,,,,,,,,,,OK
+gft-03,grandft_inperson_meeting,learner,Kicha asus ay baba?,How are you grandpa?,gft-03.mp3,,gft-02,1,best,,gft-04,,gft-03.mp3,70%,,,,reviewed,,,OK
+gft-04,grandft_inperson_meeting,character,Awa jam la ma zhan. Tu kicha asus?,"I'm good, my dearest. How are you?",gft-04.mp3,,,,,,,,,,,,,,,,OK
+gft-05a,grandft_inperson_meeting,learner,Awa di jam la baba.,"I'm good too, Baba.",gft-05a.mp3,,gft-04,1,acceptable,,gft-06,,gft-05a.mp3,70%,,,,reviewed,,,OK
+gft-05b,grandft_inperson_meeting,learner,Shukur la baba. Awa di jam.,"Thank you, grandpa. I'm well too.",gft-05b.mp3,,gft-04,2,best,,gft-06,,gft-05b.mp3,70%,,,,reviewed,,,OK
+gft-06,grandft_inperson_meeting,character,Bo lot biru biraw wa.,You've grown up a lot now.,gft-06.mp3,,,,,,,,,,,,,,,,OK
+gft-07a,grandft_inperson_meeting,learner,Sahi-a baba?,"Really, baba?",gft-07a.mp3,,gft-06,1,acceptable,,gft-08,,gft-07a.mp3,70%,,,,reviewed,,,OK
+gft-07b,grandft_inperson_meeting,learner,Shayad! Bo wakht achi milaw hotam na.,Perhaps! We met after so long.,gft-07b.mp3,,gft-06,2,best,,gft-08,,gft-07b.mp3,70%,,,,reviewed,,,OK
+gft-08,grandft_inperson_meeting,character,Di kyagh.,Of course!,gft-08.mp3,,,,,,gft-09,,,,,,,,,,OK
+gft-09,grandft_inperson_meeting,character,Chui arer albat ta.,You must be hungry.,gft-09.mp3,,,,,,,,,,,,,,,,OK
+gft-10a,grandft_inperson_meeting,learner,"Chui ghoni koyan, di.","I feel hungry, yes!",gft-10a.mp3,,gft-09,1,acceptable,,gft-11,,gft-10a.mp3,70%,,,,reviewed,,,OK
+gft-10b,grandft_inperson_meeting,learner,"Di la baba, phuk chui koyan.","Yes baba, I am a bit hungry.",gft-10b.mp3,,gft-09,2,best,,gft-11,,gft-10b.mp3,70%,,,,reviewed,,,OK
+gft-11,grandft_inperson_meeting,character,Cho thay shapik zhibosi.,Let's eat then.,gft-11.mp3,,,,,,,,,,,,,,,,OK
+gft-12a,grandft_inperson_meeting,learner,Di hush kosi.,"Yes, let's do that.",gft-12a.mp3,,gft-11,1,best,,gft-13,,gft-12a.mp3,70%,,,,reviewed,,,OK
+gft-12b,grandft_inperson_meeting,learner,"Di, cho zhibosi.","Yes, let's eat.",gft-12b.mp3,,gft-11,2,acceptable,,gft-13,,gft-12b.mp3,70%,,,,reviewed,,,OK
+gft-13,grandft_inperson_meeting,character,Achi mashqool bosi thay.,We can continue talking later then.,gft-13.mp3,,,,,,,,,,,,,,,,OK
+gft-14,grandft_inperson_meeting,learner,Di la baba.,"Yes, baba.",gft-14.mp3,,gft-13,1,best,,,yes,gft-14.mp3,70%,,,,reviewed,,,OK
