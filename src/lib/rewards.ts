@@ -68,24 +68,24 @@ function save(r: Rewards) {
   window.dispatchEvent(new CustomEvent("lr:rewards", { detail: r }));
 }
 
-async function push(r: Rewards) {
-  const { data } = await supabase.auth.getSession();
-  const uid = data.session?.user.id;
-  if (!uid) return;
-  await supabase.from("profiles").update({ xp: r.xp, streak: r.streak, last_active_day: r.lastDay }).eq("id", uid);
+export type RewardKind = keyof typeof XP;
+
+/** The account decides the amount and streak; the device only shows a quick preview until it answers. */
+export function earn(kind: RewardKind) {
+  const preview = award(getRewards(), XP[kind], dayKey());
+  save(preview);
+  void (async () => {
+    const { data: s } = await supabase.auth.getSession();
+    if (!s.session) return;
+    const { data } = await supabase.rpc("award_xp", { _kind: kind, _today: dayKey() });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row) save({ xp: row.xp, streak: row.streak, lastDay: row.last_active_day });
+  })();
+  return preview;
 }
 
-export function earn(amount: number) {
-  const r = award(getRewards(), amount, dayKey());
-  save(r);
-  void push(r);
-  return r;
-}
-
+/** On sign-in, show what the account holds. */
 export async function syncRewards(uid: string) {
   const { data } = await supabase.from("profiles").select("xp, streak, last_active_day").eq("id", uid).maybeSingle();
-  const remote: Rewards = { xp: data?.xp ?? 0, streak: data?.streak ?? 0, lastDay: data?.last_active_day ?? null };
-  const m = mergeRewards(getRewards(), remote);
-  save(m);
-  await push(m);
+  if (data) save({ xp: data.xp ?? 0, streak: data.streak ?? 0, lastDay: data.last_active_day ?? null });
 }

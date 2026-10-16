@@ -55,7 +55,7 @@ function Talk() {
   useEffect(() => {
     if (!isEnd) return;
     markScenarioCompleted(scenario.id);
-    earn(XP.scenario);
+    earn("scenario");
   }, [isEnd, scenario.id]);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ function Talk() {
     if (!chosen) return;
     if (skipped) setTally((t) => ({ ...t, skipped: t.skipped + 1 }));
     else {
-      earn(XP.line);
+      earn("line");
       setTally((t) => ({ ...t, spoken: t.spoken + 1 }));
     }
     setHistory((h) => [...h, chosen]);

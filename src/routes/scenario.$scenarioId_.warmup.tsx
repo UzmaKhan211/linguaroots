@@ -68,7 +68,7 @@ function Warmup() {
 
   const finish = () => {
     markWarmupDone(scenario.id);
-    earn(XP.warmup);
+    earn("warmup");
     navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
 
