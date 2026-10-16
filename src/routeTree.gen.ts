@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LanguagesRouteImport } from './routes/languages'
+import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LanguagesRoute = LanguagesRouteImport.update({
+  id: '/languages',
+  path: '/languages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenarioScenarioIdRoute = ScenarioScenarioIdRouteImport.update({
+  id: '/scenario/$scenarioId',
+  path: '/scenario/$scenarioId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/languages': typeof LanguagesRoute
+  '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/languages': typeof LanguagesRoute
+  '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/languages': typeof LanguagesRoute
+  '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/languages' | '/scenario/$scenarioId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/languages' | '/scenario/$scenarioId'
+  id: '__root__' | '/' | '/languages' | '/scenario/$scenarioId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LanguagesRoute: typeof LanguagesRoute
+  ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/languages': {
+      id: '/languages'
+      path: '/languages'
+      fullPath: '/languages'
+      preLoaderRoute: typeof LanguagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenario/$scenarioId': {
+      id: '/scenario/$scenarioId'
+      path: '/scenario/$scenarioId'
+      fullPath: '/scenario/$scenarioId'
+      preLoaderRoute: typeof ScenarioScenarioIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LanguagesRoute: LanguagesRoute,
+  ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
