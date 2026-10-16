@@ -41,3 +41,16 @@ describe("pass mark", () => {
     expect(allTurns.every((t) => t.passThreshold === 50)).toBe(true);
   });
 });
+
+import { orderLanguages } from "@/routes/choose-language";
+import { describe as dl, it as il, expect as el } from "vitest";
+dl("language order", () => {
+  il("Khowar first, then coming-soon alphabetically", () => {
+    const out = orderLanguages([
+      { name: "Pashto", status: "coming-soon" },
+      { name: "Khowar", status: "available" },
+      { name: "Burushaski", status: "coming-soon" },
+    ]).map((l) => l.name);
+    el(out).toEqual(["Khowar", "Burushaski", "Pashto"]);
+  });
+});
