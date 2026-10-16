@@ -6,4 +6,6 @@
 - [x] Phase 5 – XP, streak, language interest, admin audio upload
 - [ ] UI fixes (user will list them)
 - [ ] Phase 6 – polish and demo check
-- [ ] Stand-alone vocabulary module (words removed from warm-up) — waiting on content
+- [x] Dictionary: import supplied vocabulary and audio without replacing lesson clips
+- [x] Dictionary: bottom tab, category filters, search, audio, and learned badges
+- [x] Verify Dictionary and existing navigation
