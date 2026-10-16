@@ -88,15 +88,21 @@ function Talk() {
           <p className="font-bold text-muted-foreground">
             {step.options.length > 1 ? "Select a response of your choice" : "Respond by saying"}
           </p>
-          <ul className="mt-3 space-y-3">
+          <ul className="mt-3">
             {step.options.map((o, idx) => (
               <li key={o.id}>
+                {idx > 0 && (
+                  <div className="flex items-center gap-3 py-2" aria-hidden>
+                    <span className="h-px flex-1 bg-border" />
+                    <span className="rounded-full bg-muted px-3 py-0.5 text-sm font-bold text-muted-foreground">Or</span>
+                    <span className="h-px flex-1 bg-border" />
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => setChosen(o)}
                   className="w-full rounded-2xl border-2 bg-card p-4 text-left shadow-soft"
                 >
-                  <span className="text-sm font-bold text-muted-foreground">Reply {idx + 1}</span>
                   <span className="block font-display text-xl font-semibold">{o.roman}</span>
                   <span className="block text-sm text-muted-foreground">{o.english}</span>
                 </button>
