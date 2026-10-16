@@ -13,12 +13,12 @@ export const Route = createFileRoute("/")({
       { title: "LinguaRoots | Practise Khowar with the people you love" },
       {
         name: "description",
-        content: "Pick a situation, hear your relative, and practise real Khowar conversations.",
+        content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
       },
       { property: "og:title", content: "LinguaRoots | Practise Khowar with the people you love" },
       {
         property: "og:description",
-        content: "Pick a situation, hear your relative, and practise real Khowar conversations.",
+        content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -44,8 +44,11 @@ function Index() {
       <section className="fade-up mt-8">
         <p className="text-sm font-bold uppercase tracking-wider text-accent">Khowar</p>
         <h1 className="mt-1 text-[2rem] font-semibold text-foreground">
-          What situation are you about to be in?
+          Which conversation would you like to learn today?
         </h1>
+        <p className="mt-2 text-lg text-muted-foreground">
+          Learn the everyday phrases families use, one friendly conversation at a time.
+        </p>
         <RewardsBadge className="mt-4" />
       </section>
 
