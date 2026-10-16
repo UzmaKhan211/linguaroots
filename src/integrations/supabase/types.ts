@@ -71,6 +71,7 @@ export type Database = {
       profiles: {
         Row: {
           age_confirmed: boolean
+          avatar_path: string | null
           created_at: string
           display_name: string | null
           id: string
@@ -83,6 +84,7 @@ export type Database = {
         }
         Insert: {
           age_confirmed?: boolean
+          avatar_path?: string | null
           created_at?: string
           display_name?: string | null
           id: string
@@ -95,6 +97,7 @@ export type Database = {
         }
         Update: {
           age_confirmed?: boolean
+          avatar_path?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
