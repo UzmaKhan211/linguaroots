@@ -29,6 +29,13 @@
       "when": 1792170150605,
       "tag": "0003_lesson_audio_signed_in_read",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792170440957,
+      "tag": "0004_server_rewards_and_has_role_lockdown",
+      "breakpoints": true
     }
   ]
 }
