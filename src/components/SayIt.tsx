@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Square, Play, RotateCcw } from "lucide-react";
 import { closenessWithCohort, closenessMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
-import { decodeToMono16k, getScoringConfig, loadCohort, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
+import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
+import { loadSpeechModel, speechCloseness } from "@/lib/speechModel";
+import { speechRatioToScore } from "@/lib/speechScore";
 
 type Phase = "idle" | "recording" | "scoring" | "scored";
 
@@ -25,6 +27,9 @@ export function SayIt({
   const [noRef, setNoRef] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const [takeUrl, setTakeUrl] = useState<string | null>(null);
+  const [modelPct, setModelPct] = useState<number | null>(null);
+  const [scoreTime, setScoreTime] = useState<number | null>(null);
+  const modelReady = useRef(false);
   const rec = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
 
@@ -33,6 +38,9 @@ export function SayIt({
     setNoRef(false);
     loadReference(referenceUrl).then((r) => live && setNoRef(!r));
     void loadCohort(cohortUrls, referenceUrl); // warm the cache
+    loadSpeechModel((p) => live && setModelPct(p))
+      .then(() => { modelReady.current = true; if (live) setModelPct(null); })
+      .catch(() => live && setModelPct(null));
     return () => {
       live = false;
     };
@@ -60,11 +68,20 @@ export function SayIt({
           return;
         }
         setPhase("scoring");
+        const t0 = performance.now();
         try {
           const take = await decodeToMono16k(await blob.arrayBuffer());
-          const cohort = await loadCohort(cohortUrls, referenceUrl);
-          const { score: s } = closenessWithCohort(take, ref, cohort, getScoringConfig());
+          let s: number;
+          try {
+            // Speech-listening tool (on device); falls back to the light scorer if unavailable.
+            const sc = await speechCloseness(take, referenceUrl, ref, await loadCohortKeyed(cohortUrls, referenceUrl));
+            s = speechRatioToScore(sc.ratio);
+          } catch {
+            const cohort = await loadCohort(cohortUrls, referenceUrl);
+            s = closenessWithCohort(take, ref, cohort, getScoringConfig()).score;
+          }
           setScore(s);
+          setScoreTime((performance.now() - t0) / 1000);
           if (!passes(s, passMark)) setFails((f) => f + 1);
         } catch {
           setScore(null);
@@ -102,8 +119,12 @@ export function SayIt({
           className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary font-bold text-primary-foreground disabled:opacity-60"
         >
           {phase === "idle" ? <Mic className="size-5" aria-hidden /> : <RotateCcw className="size-5" aria-hidden />}
-          {phase === "idle" ? "Record yourself" : phase === "scoring" ? "Listening…" : "Try again"}
+          {phase === "idle" ? "Record yourself" : phase === "scoring" ? "Listening closely…" : "Try again"}
         </button>
+      )}
+
+      {modelPct !== null && phase !== "scoring" && (
+        <p className="text-sm text-muted-foreground">Getting the listening tool ready (one time only)… {modelPct}%</p>
       )}
 
       {takeUrl && phase !== "recording" && (
@@ -124,6 +145,7 @@ export function SayIt({
               <div className="h-full rounded-full bg-primary transition-all motion-reduce:transition-none" style={{ width: `${score}%` }} />
             </div>
             <p className="mt-2 text-base">{closenessMessage(score, passMark)}</p>
+            {scoreTime !== null && <p className="mt-1 text-xs text-muted-foreground">Listened in {scoreTime.toFixed(1)}s</p>}
           </div>
         )}
         {noRef && (
