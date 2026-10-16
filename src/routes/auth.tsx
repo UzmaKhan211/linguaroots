@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
 import { isOnboarded } from "@/lib/progress";
+import { DEFAULT_AVATAR, setPendingAvatar } from "@/lib/avatars";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -26,6 +28,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(DEFAULT_AVATAR);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -35,6 +38,7 @@ function AuthPage() {
 
   const social = async (provider: "google" | "apple") => {
     setMsg(null);
+    if (mode === "signup") setPendingAvatar(avatar);
     const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
     if (r.error) setMsg("That didn't work just now. Please try again.");
   };
@@ -44,6 +48,7 @@ function AuthPage() {
     setBusy(true);
     setMsg(null);
     if (mode === "signup") {
+      setPendingAvatar(avatar);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -91,6 +96,13 @@ function AuthPage() {
             className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base"
           />
         </label>
+        {mode === "signup" && (
+          <fieldset>
+            <legend className="text-sm font-semibold">Pick your character</legend>
+            <p className="mb-2 text-sm text-muted-foreground">This friendly face shows on your profile. You can change it later.</p>
+            <AvatarPicker value={avatar} onChange={setAvatar} disabled={busy} />
+          </fieldset>
+        )}
         <button type="submit" disabled={busy} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-60">
           {mode === "signup" ? "Create my account" : "Sign in"}
         </button>
