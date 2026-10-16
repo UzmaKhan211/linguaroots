@@ -21,7 +21,7 @@ export function DictionaryAudio({ url, word }: { url: string; word: string }) {
   }, [url]);
 
   return <div>
-    <Button variant="ghost" className="min-h-11 rounded-full bg-bark px-4 text-primary-foreground hover:bg-bark/90 hover:text-primary-foreground" aria-label={`${playing ? "Stop" : "Hear"} ${word}`} onClick={() => {
+    <Button variant="audio" aria-label={`${playing ? "Stop" : "Hear"} ${word}`} onClick={() => {
       const clip = audio.current;
       if (!clip) return;
       if (playing) { clip.pause(); return; }

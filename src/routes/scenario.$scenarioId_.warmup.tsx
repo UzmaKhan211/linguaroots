@@ -6,6 +6,7 @@ import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
 import { markWarmupDone } from "@/lib/progress";
 import { earn, XP } from "@/lib/rewards";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
   loader: ({ params }) => {
@@ -132,13 +133,14 @@ function Warmup() {
           <div className="rounded-3xl border-2 border-border bg-card px-6 py-10 text-center">
             <p className="font-display text-4xl font-semibold">{it.roman.trim()}</p>
             <p className="mt-2 text-lg text-muted-foreground">{it.english}</p>
-            <button
+            <Button
+              variant="audio"
               type="button"
               onClick={() => play(it.audioFile)}
-              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-5 font-bold text-secondary-foreground"
+              className="mt-6 px-5"
             >
               <Volume2 className="size-5" aria-hidden /> Hear it
-            </button>
+            </Button>
           </div>
           {it.culturalNote && (
             <aside className="mt-5 px-2">
