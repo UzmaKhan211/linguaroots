@@ -207,13 +207,16 @@ function Warmup() {
                   disabled={done}
                   aria-pressed={sel}
                   onClick={() => {
+                    play(it.audioFile);
                     setPickKh(it.id);
                     tryPair(it.id, pickEn);
                   }}
                   className={tile(sel, done)}
                 >
                   <span className="flex flex-col items-center gap-1">
-                    <span className="font-display text-xl font-semibold">{it.roman.trim()}</span>
+                    <span className="flex items-center gap-1.5 font-display text-xl font-semibold">
+                      <Volume2 className="size-4 shrink-0 text-muted-foreground" aria-hidden /> {it.roman.trim()}
+                    </span>
                     {done && (
                       <span className="flex items-center gap-1 text-xs font-bold text-primary">
                         <Check className="size-4" aria-hidden /> Paired
