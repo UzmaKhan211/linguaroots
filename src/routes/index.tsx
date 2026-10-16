@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { completedCount, getPrefs, isOnboarded, isWarmupDone, scenarioStage } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { RewardsBadge } from "@/components/RewardsBadge";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
@@ -37,7 +38,9 @@ function Index() {
   const [relative, setRelative] = useState<string | undefined>();
   useEffect(() => {
     if (!isOnboarded()) {
-      navigate({ to: "/welcome", replace: true });
+      void supabase.auth.getSession().then(({ data }) =>
+        navigate({ to: data.session ? "/choose-language" : "/welcome", replace: true }),
+      );
       return;
     }
     setRelative(getPrefs().relative);
