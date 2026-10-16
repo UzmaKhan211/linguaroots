@@ -16,6 +16,6 @@
 - Pronunciation scoring runs fully in the browser (`src/lib/scoring.ts` pure DSP, `src/lib/audio.ts` browser decode); learner recordings never leave the device.
 - Progress is kept on the device and mirrored to the account when signed in (src/lib/progress.ts); on sign-in the two merge, so guests never lose work.
 
-- Rewards (XP, streak) follow the same device-first, mirror-to-account pattern in src/lib/rewards.ts; amounts and streak rules are pure functions with tests.
+- Rewards (XP, streak) are granted by the award_xp database function, with fixed amounts per reward kind; users cannot write XP directly, so totals stay trustworthy. src/lib/rewards.ts only shows a device preview.
 - Clips added from /admin live in the private `lesson-audio` storage bucket at <language>/<file>; `src/lib/lessonAudio.ts` falls back to it when a bundled clip is missing, so content stays data.
 - Admin access is the `admin` role in `user_roles`, checked with `has_role`; storage writes are gated by that role in policies.
