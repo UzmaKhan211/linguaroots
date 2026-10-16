@@ -7,7 +7,8 @@ import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
 import { isWarmupDone, markScenarioCompleted } from "@/lib/progress";
-import { loadCohortKeyed } from "@/lib/audio";
+import { loadCohortKeyed, loadReference } from "@/lib/audio";
+import { loadSpeech, warmSpeech } from "@/lib/speechClient";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
   loader: ({ params }) => {
@@ -55,10 +56,25 @@ function Talk() {
     if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
   }, [scenario.id, navigate]);
 
-  // Warm the comparison clips so the first score is instant.
+  // Get the listening tool ready and pre-listen to the example clips in the background
+  // (off the main screen), so after recording only the learner's take needs processing.
   useEffect(() => {
-    void loadCohortKeyed(cohortUrls, "").catch(() => {});
-  }, []);
+    void (async () => {
+      try {
+        const cohort = await loadCohortKeyed(cohortUrls, "");
+        await loadSpeech();
+        await warmSpeech(cohort);
+        const mine = turns.filter((t) => t.scenarioId === scenario.id && t.speaker === "learner" && (t.referenceFile || t.audioFile));
+        for (const t of mine) {
+          const key = `/audio/khowar/${t.referenceFile || t.audioFile}`;
+          const audio = await loadReference(key);
+          if (audio) await warmSpeech([{ key, audio }]);
+        }
+      } catch {
+        /* quick scorer is used instead */
+      }
+    })();
+  }, [scenario.id]);
 
 
   // Relative's lines appear on their own; walk until replies are needed.
