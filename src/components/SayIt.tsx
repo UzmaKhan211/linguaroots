@@ -191,8 +191,8 @@ export function SayIt({
       <div aria-live="polite">
         {phase === "scored" && score !== null && (
           <div
-            className={`fade-up rounded-2xl border-2 bg-card p-4 ${
-              passed ? "border-primary bg-leaf-soft" : fails >= 3 ? "border-destructive" : "border-sun"
+            className={`fade-up rounded-2xl border-2 p-4 ${
+              passed ? "border-primary bg-leaf-soft" : fails >= 3 ? "border-destructive bg-card" : "border-sun bg-card"
             }`}
           >
             {passed && (
