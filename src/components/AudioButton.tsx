@@ -46,7 +46,7 @@ const unlock = () => {
   s.muted = true;
   s.play()
     .then(() => {
-      s.pause();
+      if (s.src === SILENT) s.pause();
       s.muted = false;
     })
     .catch(() => {
@@ -196,6 +196,7 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
       onClick={() => {
         const a = ref.current;
         if (!a) return;
+        stopShared();
         a.currentTime = 0;
         a.play().then(() => setPlaying(true)).catch(() => setMissing(true));
       }}
