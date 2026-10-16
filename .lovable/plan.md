@@ -28,8 +28,9 @@ Set up colours, fonts and logo for a 390px phone screen. Load the two scenarios 
 **Phase 3 - Say-it step and closeness score**
 Record on the phone, play back your recording, play the example, and see a closeness percentage worked out on the device. Your recording is never uploaded. The self-check ("did that sound close?") appears only after 3 tries on a line that don't reach the pass mark. A hidden /lab page sets the two scoring settings using your sample takes:
 - the perfect reference takes, which should score highest
-- your friends' good and okay attempts, which should land at or just under the pass mark
-- wrong phrases, mumbled takes and noisy takes, which should score low
+- all of your friends' takes (good and okay), which should pass, since a slightly-off accent is expected from diaspora learners
+- noisy takes where the phrase is still clearly heard, which should pass
+- wrong phrases and mumbled takes, which should not pass
 The lab shows how each group scores, so we can check the settings sort them correctly before saving. Must be tested on the preview link, because the microphone needs a secure connection.
 
 **Phase 4 - Onboarding, accounts and saved progress**
