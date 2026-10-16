@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "public read lesson audio" ON storage.objects;
+CREATE POLICY "signed-in read lesson audio" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'lesson-audio' AND auth.uid() IS NOT NULL);
