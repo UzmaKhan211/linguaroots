@@ -53,6 +53,7 @@ function Talk() {
   const [restored, setRestored] = useState(0);
   const [ready, setReady] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const restoredAt = useRef(0);
   const isEnd = step.type === "end";
   useEffect(() => {
     if (!isEnd) return;
@@ -74,6 +75,7 @@ function Talk() {
       setStep(r.step);
       setTally({ spoken: saved.spoken, skipped: saved.skipped });
       setRestored(r.history.length);
+      restoredAt.current = r.history.length;
     }
     setReady(true);
   }, [scenario.id, scenario.startTurnId]);
@@ -89,6 +91,7 @@ function Talk() {
     setHistory([]);
     setTally({ spoken: 0, skipped: 0 });
     setRestored(0);
+    restoredAt.current = 0;
     setChosen(null);
     setStep(stepAt(scenario.startTurnId, turns));
   };
@@ -172,7 +175,7 @@ function Talk() {
 
       <ol className="mt-4 space-y-4" aria-live="polite">
         {history.map((t, i) => (
-          <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restored} />
+          <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restoredAt.current} />
         ))}
       </ol>
 
@@ -239,6 +242,7 @@ function Talk() {
             passMark={chosen.passThreshold}
             onPass={() => confirm()}
             onSkip={() => confirm(true)}
+            onAttempt={() => setRestored(0)}
           />
         </section>
       )}
