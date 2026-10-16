@@ -165,7 +165,7 @@ export function closeness(take: Float32Array, reference: Float32Array, cfg: Scor
  * phrases by the same native speaker. A learner's different voice affects all
  * comparisons equally, so it cancels out. ~1 means "no closer than a different phrase".
  */
-export const RATIO_CONFIG: ScoringConfig = { perfect: 0.35, pass: 0.6 };
+export const RATIO_CONFIG: ScoringConfig = { perfect: 0.3, pass: 0.5 };
 export const ratioToScore = (ratio: number) => distanceToScore(ratio, RATIO_CONFIG);
 
 export function closenessWithCohort(
