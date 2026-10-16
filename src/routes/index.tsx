@@ -10,12 +10,12 @@ import { scenarios } from "@/lib/content";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LinguaRoots — Practise Khowar with the people you love" },
+      { title: "LinguaRoots | Practise Khowar with the people you love" },
       {
         name: "description",
         content: "Pick a situation, hear your relative, and practise real Khowar conversations.",
       },
-      { property: "og:title", content: "LinguaRoots — Practise Khowar with the people you love" },
+      { property: "og:title", content: "LinguaRoots | Practise Khowar with the people you love" },
       {
         property: "og:description",
         content: "Pick a situation, hear your relative, and practise real Khowar conversations.",

@@ -176,7 +176,7 @@ export function SayIt({
             onClick={onSelfCheck}
             className="mt-2 min-h-12 w-full rounded-full border-2 border-primary bg-card font-bold"
           >
-            Yes, it sounded close — continue
+            Yes, it sounded close. Continue
           </button>
         </div>
       )}

@@ -8,9 +8,9 @@ import { useAuth } from "@/hooks/useAuth";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — LinguaRoots" },
+      { title: "Sign in | LinguaRoots" },
       { name: "description", content: "Sign in or create an account to keep your Khowar practice on every device." },
-      { property: "og:title", content: "Sign in — LinguaRoots" },
+      { property: "og:title", content: "Sign in | LinguaRoots" },
       { property: "og:description", content: "Sign in or create an account to keep your Khowar practice on every device." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -98,7 +98,7 @@ function AuthPage() {
       <div aria-live="polite">{msg && <p className="mt-4 rounded-2xl bg-card p-3">{msg}</p>}</div>
 
       <button type="button" onClick={() => setMode(mode === "signup" ? "signin" : "signup")} className="mt-4 min-h-11 w-full font-bold text-primary underline">
-        {mode === "signup" ? "I already have an account" : "I'm new — create an account"}
+        {mode === "signup" ? "I already have an account" : "I'm new, create an account"}
       </button>
     </AppShell>
   );

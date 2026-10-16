@@ -19,7 +19,7 @@ export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
     return { scenario };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `Talk: ${loaderData.scenario.title} — LinguaRoots` : "Unavailable — LinguaRoots";
+    const title = loaderData ? `Talk: ${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
     const desc = "Have the conversation, hear your relative and reply in Khowar.";
     return {
       meta: [

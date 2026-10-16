@@ -9,9 +9,9 @@ import { finishOnboarding, getPrefs } from "@/lib/progress";
 export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
-      { title: "Welcome — LinguaRoots" },
+      { title: "Welcome | LinguaRoots" },
       { name: "description", content: "A one-minute welcome to practising Khowar with the people you love." },
-      { property: "og:title", content: "Welcome — LinguaRoots" },
+      { property: "og:title", content: "Welcome | LinguaRoots" },
       { property: "og:description", content: "A one-minute welcome to practising Khowar with the people you love." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

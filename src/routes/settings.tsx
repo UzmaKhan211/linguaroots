@@ -9,9 +9,9 @@ import { deleteMyAccount } from "@/lib/account.functions";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — LinguaRoots" },
+      { title: "Settings | LinguaRoots" },
       { name: "description", content: "Manage your LinguaRoots account and replay the welcome." },
-      { property: "og:title", content: "Settings — LinguaRoots" },
+      { property: "og:title", content: "Settings | LinguaRoots" },
       { property: "og:description", content: "Manage your LinguaRoots account and replay the welcome." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
