@@ -175,8 +175,8 @@ export function suggestConfig(passing: number[], failing: number[]): ScoringConf
   const p = passing.filter(isFinite).sort((a, b) => a - b);
   const f = failing.filter(isFinite).sort((a, b) => a - b);
   if (!p.length) return null;
-  const perfect = p[0];
-  const worstPass = p[p.length - 1];
-  const pass = f.length ? (worstPass + Math.max(worstPass, f[0])) / 2 : worstPass * 1.1;
+  const perfect = p[0]!;
+  const worstPass = p[p.length - 1]!;
+  const pass = f.length ? (worstPass + Math.max(worstPass, f[0]!)) / 2 : worstPass * 1.1;
   return { perfect: +perfect.toFixed(2), pass: +Math.max(pass, perfect + 0.5).toFixed(2) };
 }
