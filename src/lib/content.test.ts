@@ -38,6 +38,6 @@ describe("content data", () => {
 
   it("defaults a missing pass mark to 70", () => {
     const [t] = buildTurns("turn_id,speaker,pass_threshold\nx,learner,\n");
-    expect(t.passThreshold).toBe(70);
+    expect(t?.passThreshold).toBe(70);
   });
 });
