@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { getScenario, getWarmup, type WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
 import { markWarmupDone } from "@/lib/progress";
-import { playCelebrate } from "@/lib/sfx";
+import { playCelebrate, playCorrect, playIncorrect } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { Button } from "@/components/ui/button";
 
@@ -82,6 +82,7 @@ function Warmup() {
     if (kh === en) {
       const item = current.find((it) => it.id === kh)!;
       setMatched((m) => new Set(m).add(kh));
+      playCorrect();
       setMessage(`Yes! “${item.roman.trim()}” means “${item.english}”.`);
       setLastNote(item.culturalNote ? item : null);
       setPickKh(null);
@@ -89,6 +90,7 @@ function Warmup() {
     } else {
       setMessage("Not a pair yet. Listen again and have another go.");
       setWrong(true);
+      playIncorrect();
       timer.current = setTimeout(() => {
         setPickKh(null);
         setPickEn(null);
