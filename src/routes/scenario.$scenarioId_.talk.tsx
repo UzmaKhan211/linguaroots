@@ -33,6 +33,10 @@ export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
 
 const relative: Record<string, string> = { grandmother: "Grandma", grandfather: "Grandpa" };
 
+const cohortUrls = turns
+  .filter((t) => t.speaker === "learner" && (t.referenceFile || t.audioFile))
+  .map((t) => `/audio/khowar/${t.referenceFile || t.audioFile}`);
+
 function Talk() {
   const { scenario } = Route.useLoaderData();
   const navigate = useNavigate();
@@ -152,6 +156,7 @@ function Talk() {
           <SayIt
             key={chosen.id}
             referenceUrl={`/audio/khowar/${chosen.referenceFile || chosen.audioFile}`}
+            cohortUrls={cohortUrls}
             passMark={chosen.passThreshold}
             onPass={confirm}
             onSelfCheck={confirm}
