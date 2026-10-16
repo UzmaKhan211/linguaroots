@@ -50,6 +50,13 @@
       "when": 1792189754109,
       "tag": "0006_profile_avatar",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792190781641,
+      "tag": "0007_grant_profiles_update",
+      "breakpoints": true
     }
   ]
 }
