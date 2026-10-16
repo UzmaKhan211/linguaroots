@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          age_confirmed: boolean
+          created_at: string
+          display_name: string | null
+          id: string
+          onboarded_at: string | null
+          relative: string | null
+          updated_at: string
+        }
+        Insert: {
+          age_confirmed?: boolean
+          created_at?: string
+          display_name?: string | null
+          id: string
+          onboarded_at?: string | null
+          relative?: string | null
+          updated_at?: string
+        }
+        Update: {
+          age_confirmed?: boolean
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          onboarded_at?: string | null
+          relative?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      scenario_progress: {
+        Row: {
+          completed_count: number
+          scenario_id: string
+          updated_at: string
+          user_id: string
+          warmup_done: boolean
+        }
+        Insert: {
+          completed_count?: number
+          scenario_id: string
+          updated_at?: string
+          user_id: string
+          warmup_done?: boolean
+        }
+        Update: {
+          completed_count?: number
+          scenario_id?: string
+          updated_at?: string
+          user_id?: string
+          warmup_done?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
