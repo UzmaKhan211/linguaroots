@@ -10,12 +10,12 @@ import { getWarmup, scenarios } from "@/lib/content";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LinguaRoots | Practise Khowar with the people you love" },
+      { title: "LinguaRoots | Practice Khowar with the people you love" },
       {
         name: "description",
         content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
       },
-      { property: "og:title", content: "LinguaRoots | Practise Khowar with the people you love" },
+      { property: "og:title", content: "LinguaRoots | Practice Khowar with the people you love" },
       {
         property: "og:description",
         content: "Learn everyday Khowar phrases through warm, friendly conversations with family.",
@@ -89,7 +89,7 @@ function Index() {
       ) : (
         <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
-          <p className="mt-1 text-lg text-muted-foreground">Which conversation would you like to practise today?</p>
+          <p className="mt-1 text-lg text-muted-foreground">Which conversation would you like to practice today?</p>
           <RewardsBadge className="mt-4" />
           <div className="mt-4 flex items-center gap-3 rounded-3xl border bg-sun-soft p-4">
             <BookOpen className="size-6 shrink-0 text-bark" aria-hidden />

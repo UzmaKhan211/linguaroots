@@ -51,7 +51,7 @@ function LanguagesPage() {
     <AppShell>
       <h1 className="fade-up text-[2rem] font-semibold">Your languages</h1>
       <p className="fade-up mt-2 text-muted-foreground">
-        Khowar is ready to practise. Tap another language to tell us you'd like it next.
+        Khowar is ready to practice. Tap another language to tell us you'd like it next.
       </p>
       <p aria-live="polite" className="mt-3 min-h-6 font-semibold text-primary">{thanks}</p>
       <ul className="mt-3 grid grid-cols-2 gap-3">

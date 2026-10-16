@@ -52,7 +52,7 @@ function Settings() {
           </>
         ) : (
           <>
-            <p className="font-bold">You're practising as a guest</p>
+            <p className="font-bold">You're practicing as a guest</p>
             <p className="mt-1 text-sm text-muted-foreground">Your progress is only on this phone for now.</p>
             <Link to="/auth" className="mt-4 flex min-h-12 w-full items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
               Save my progress

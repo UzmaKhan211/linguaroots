@@ -60,7 +60,7 @@ function AuthPage() {
   return (
     <AppShell>
       <h1 className="text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Save your progress" : "Welcome back"}</h1>
-      <p className="mt-2 text-muted-foreground">Anything you've practised as a guest comes with you.</p>
+      <p className="mt-2 text-muted-foreground">Anything you've practiced as a guest comes with you.</p>
 
       <div className="mt-6 space-y-3">
         <button type="button" onClick={() => social("google")} className="min-h-12 w-full rounded-full border-2 bg-card font-bold">

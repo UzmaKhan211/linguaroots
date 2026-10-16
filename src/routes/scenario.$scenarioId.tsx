@@ -13,7 +13,7 @@ export const Route = createFileRoute("/scenario/$scenarioId")({
   },
   head: ({ loaderData }) => {
     const title = loaderData ? `${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
-    const desc = loaderData?.scenario.situation ?? "Practise a real Khowar conversation.";
+    const desc = loaderData?.scenario.situation ?? "Practice a real Khowar conversation.";
     return {
       meta: [
         { title },
