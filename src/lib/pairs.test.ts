@@ -5,6 +5,9 @@ describe("chunkRounds", () => {
   it("splits 13 words into rounds of 4, 4, 5", () => {
     expect(chunkRounds([...Array(13).keys()]).map((r) => r.length)).toEqual([4, 4, 5]);
   });
+  it("splits 6 words into rounds of 3, 3", () => {
+    expect(chunkRounds([...Array(6).keys()]).map((r) => r.length)).toEqual([3, 3]);
+  });
   it("keeps 8 words as two rounds of 4", () => {
     expect(chunkRounds([...Array(8).keys()]).map((r) => r.length)).toEqual([4, 4]);
   });

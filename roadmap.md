@@ -5,3 +5,4 @@
 - [ ] Phase 4 – onboarding, accounts, saved progress
 - [ ] Phase 5 – XP, streak, language interest, admin audio upload
 - [ ] Phase 6 – polish and demo check
+- [ ] Stand-alone vocabulary module (words removed from warm-up) — waiting on content
