@@ -24,7 +24,7 @@ export const AVATARS: AvatarOption[] = [
   { id: "marmot", label: "Marmot", src: marmot },
 ];
 
-export const DEFAULT_AVATAR = AVATARS[0].id;
+export const DEFAULT_AVATAR = "bear";
 
 const AVATAR_PREFIX = "avatar:";
 const PENDING_KEY = "lr-pending-avatar";
