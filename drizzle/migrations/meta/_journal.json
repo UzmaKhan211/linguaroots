@@ -36,6 +36,13 @@
       "when": 1792170440957,
       "tag": "0004_server_rewards_and_has_role_lockdown",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792175691555,
+      "tag": "0005_scenario_resume",
+      "breakpoints": true
     }
   ]
 }

@@ -41,8 +41,28 @@ async function pushScenario(scenarioId: string) {
     scenario_id: scenarioId,
     warmup_done: isWarmupDone(scenarioId),
     completed_count: completedCount(scenarioId),
+    resume: getResume(scenarioId),
     updated_at: new Date().toISOString(),
   });
+}
+
+/** A conversation left part way: the lines shown so far and the spoken/skipped tally. */
+export type Resume = { history: string[]; spoken: number; skipped: number };
+const resumeKey = (id: string) => `lr:resume:${id}`;
+const isResume = (v: unknown): v is Resume =>
+  !!v && typeof v === "object" && Array.isArray((v as Resume).history) && (v as Resume).history.length > 0;
+
+export function getResume(scenarioId: string): Resume | null {
+  try {
+    const v: unknown = JSON.parse(get(resumeKey(scenarioId)) ?? "null");
+    return isResume(v) ? v : null;
+  } catch {
+    return null;
+  }
+}
+export function saveResume(scenarioId: string, r: Resume | null) {
+  set(resumeKey(scenarioId), r && r.history.length ? JSON.stringify(r) : null);
+  void pushScenario(scenarioId);
 }
 
 export function isWarmupDone(scenarioId: string) {
@@ -100,6 +120,13 @@ export function mergeProgress(
   };
 }
 
+/** Merge rule (pure): keep whichever saved conversation got further. */
+export function pickResume(local: Resume | null, remote: Resume | null): Resume | null {
+  if (!local) return remote;
+  if (!remote) return local;
+  return remote.history.length > local.history.length ? remote : local;
+}
+
 /** Called on sign-in: guest progress moves into the account, account progress comes down to the device. */
 export async function syncWithAccount(scenarioIds: string[]) {
   const uid = await currentUserId();
@@ -108,13 +135,16 @@ export async function syncWithAccount(scenarioIds: string[]) {
     supabase.from("scenario_progress").select("*").eq("user_id", uid),
     supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
   ]);
-  const remote = new Map((rows ?? []).map((r) => [r.scenario_id, { warmupDone: r.warmup_done, completed: r.completed_count }]));
+  const remote = new Map((rows ?? []).map((r) => [r.scenario_id, { warmupDone: r.warmup_done, completed: r.completed_count, resume: r.resume as unknown }]));
   const ids = new Set([...scenarioIds, ...remote.keys()]);
   const upserts = [...ids].map((id) => {
     const m = mergeProgress({ warmupDone: isWarmupDone(id), completed: completedCount(id) }, remote.get(id));
     set(warmKey(id), m.warmupDone ? "1" : null);
     set(doneKey(id), m.completed ? String(m.completed) : null);
-    return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, completed_count: m.completed, updated_at: new Date().toISOString() };
+    const rr = remote.get(id)?.resume;
+    const resume = pickResume(getResume(id), isResume(rr) ? rr : null);
+    set(resumeKey(id), resume ? JSON.stringify(resume) : null);
+    return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, completed_count: m.completed, resume, updated_at: new Date().toISOString() };
   });
   if (upserts.length) await supabase.from("scenario_progress").upsert(upserts);
 

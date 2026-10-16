@@ -1,0 +1,1 @@
+ALTER TABLE public.scenario_progress ADD COLUMN IF NOT EXISTS resume jsonb;

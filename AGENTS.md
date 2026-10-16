@@ -14,7 +14,7 @@
 - Coming-soon languages live in `src/lib/languages.ts` as names only; no phrases or lessons behind them.
 - Mobile-first shell (`AppShell`, max 440px, 44px+ tap targets); all colours are semantic tokens in `src/styles.css`.
 - Pronunciation scoring runs fully in the browser (`src/lib/scoring.ts` pure DSP, `src/lib/audio.ts` browser decode); learner recordings never leave the device.
-- Progress is kept on the device and mirrored to the account when signed in (src/lib/progress.ts); on sign-in the two merge, so guests never lose work.
+- Progress is kept on the device and mirrored to the account when signed in (src/lib/progress.ts); on sign-in the two merge, so guests never lose work. Mid-conversation place is saved as line ids and rebuilt with resumeFrom, so lesson edits safely fall back to a fresh start.
 
 - Rewards (XP, streak) are granted by the award_xp database function, with fixed amounts per reward kind; users cannot write XP directly, so totals stay trustworthy. src/lib/rewards.ts only shows a device preview.
 - Clips added from /admin live in the private `lesson-audio` storage bucket at <language>/<file>; `src/lib/lessonAudio.ts` falls back to it when a bundled clip is missing, so content stays data.
