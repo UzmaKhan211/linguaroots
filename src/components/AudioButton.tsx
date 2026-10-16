@@ -29,13 +29,22 @@ const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => 
           onDone();
           return done();
         }
+        let settled = false;
         const finish = () => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(stall);
           onDone();
           done();
         };
         a.addEventListener("ended", finish, { once: true });
         a.addEventListener("pause", finish, { once: true });
-        a.play().then(onStart).catch(finish);
+        // If play() never settles (stalled load), free the queue for the next line.
+        const stall = setTimeout(finish, 15000);
+        a.play().then(() => {
+          clearTimeout(stall);
+          onStart();
+        }).catch(finish);
       }),
   );
 };
