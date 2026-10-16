@@ -38,6 +38,7 @@ function AuthPage() {
 
   const social = async (provider: "google" | "apple") => {
     setMsg(null);
+    if (mode === "signup") setPendingAvatar(avatar);
     const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
     if (r.error) setMsg("That didn't work just now. Please try again.");
   };
@@ -47,6 +48,7 @@ function AuthPage() {
     setBusy(true);
     setMsg(null);
     if (mode === "signup") {
+      setPendingAvatar(avatar);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
