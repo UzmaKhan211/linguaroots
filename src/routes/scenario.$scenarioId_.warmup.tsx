@@ -154,7 +154,6 @@ function Warmup() {
           onClick={() => {
             const n = learnAt + 1;
             setLearnAt(n);
-            if (n < current.length) play(current[n]!.audioFile);
           }}
           className="mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
         >
@@ -208,7 +207,6 @@ function Warmup() {
                   disabled={done}
                   aria-pressed={sel}
                   onClick={() => {
-                    play(it.audioFile);
                     setPickKh(it.id);
                     tryPair(it.id, pickEn);
                   }}
@@ -216,12 +214,10 @@ function Warmup() {
                 >
                   <span className="flex flex-col items-center gap-1">
                     <span className="font-display text-xl font-semibold">{it.roman.trim()}</span>
-                    {done ? (
+                    {done && (
                       <span className="flex items-center gap-1 text-xs font-bold text-primary">
                         <Check className="size-4" aria-hidden /> Paired
                       </span>
-                    ) : (
-                      <Volume2 className="size-4 text-muted-foreground" aria-hidden />
                     )}
                   </span>
                 </button>
