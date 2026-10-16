@@ -138,3 +138,10 @@ export function clearDeviceProgress() {
     /* ignore */
   }
 }
+
+/** Pure: how far a learner is in one conversation. Warm-up done = halfway, finished once = full. */
+export function scenarioStage(warmupDone: boolean, completed: number): { percent: 0 | 50 | 100; label: string } {
+  if (completed > 0) return { percent: 100, label: "Practise again" };
+  if (warmupDone) return { percent: 50, label: "Ready to talk" };
+  return { percent: 0, label: "Start warm-up" };
+}
