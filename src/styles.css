@@ -126,3 +126,15 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+@layer base {
+  button:not(:disabled),
+  a {
+    transition: transform 0.12s ease, filter 0.12s ease, background-color 0.15s ease;
+  }
+  button:not(:disabled):active,
+  a:active {
+    transform: scale(0.96);
+    filter: brightness(0.92);
+  }
+}

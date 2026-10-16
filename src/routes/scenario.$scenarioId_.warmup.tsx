@@ -154,7 +154,6 @@ function Warmup() {
           onClick={() => {
             const n = learnAt + 1;
             setLearnAt(n);
-            if (n < current.length) play(current[n]!.audioFile);
           }}
           className="mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
         >
@@ -208,7 +207,6 @@ function Warmup() {
                   disabled={done}
                   aria-pressed={sel}
                   onClick={() => {
-                    play(it.audioFile);
                     setPickKh(it.id);
                     tryPair(it.id, pickEn);
                   }}
