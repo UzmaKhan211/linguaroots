@@ -14,6 +14,7 @@ export function SayIt({
   passMark = PASS_MARK,
   onPass,
   onSelfCheck,
+  onSkip,
 }: {
   referenceUrl: string;
   cohortUrls?: string[];
@@ -21,6 +22,8 @@ export function SayIt({
   onPass: () => void;
   /** Leave out to hide the self-check (it is paused for now). */
   onSelfCheck?: () => void;
+  /** Shown only after 3 attempts below the pass mark (or when recording can't work). */
+  onSkip?: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [score, setScore] = useState<number | null>(null);
@@ -182,6 +185,16 @@ export function SayIt({
       {passed && (
         <button type="button" onClick={onPass} className="min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground">
           Continue
+        </button>
+      )}
+
+      {!passed && selfCheck && onSkip && phase !== "recording" && phase !== "scoring" && (
+        <button
+          type="button"
+          onClick={onSkip}
+          className="fade-up min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
+        >
+          Skip this line
         </button>
       )}
 

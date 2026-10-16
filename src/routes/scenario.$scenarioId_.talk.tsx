@@ -194,14 +194,8 @@ function Talk() {
             cohortUrls={cohortUrls}
             passMark={chosen.passThreshold}
             onPass={() => confirm()}
+            onSkip={() => confirm(true)}
           />
-          <button
-            type="button"
-            onClick={() => confirm(true)}
-            className="mt-3 min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
-          >
-            Skip this line
-          </button>
         </section>
       )}
 
