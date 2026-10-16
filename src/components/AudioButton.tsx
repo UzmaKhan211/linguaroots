@@ -2,6 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { Volume2, Clock } from "lucide-react";
 import { fetchLessonAudio } from "@/lib/lessonAudio";
 
+/** Clips that start on their own wait their turn, so two lines never talk over each other. */
+let autoQueue: Promise<void> = Promise.resolve();
+const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => void) => {
+  autoQueue = autoQueue.then(
+    () =>
+      new Promise<void>((done) => {
+        if (!alive()) return done();
+        const finish = () => done();
+        a.addEventListener("ended", finish, { once: true });
+        a.addEventListener("pause", finish, { once: true });
+        a.play().then(onStart).catch(finish);
+      }),
+  );
+};
+
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
 export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false }: { file: string; language?: string; label?: string; autoPlay?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
@@ -27,7 +42,7 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
     a.onended = () => setPlaying(false);
     ref.current = a;
     if (autoPlay) {
-      const tryPlay = () => a.play().then(() => alive && setPlaying(true)).catch(() => {});
+      const tryPlay = () => playWhenFree(a, () => alive, () => alive && setPlaying(true));
       if (a.readyState >= 2) void tryPlay();
       else a.addEventListener("canplay", () => alive && void tryPlay(), { once: true });
     }
