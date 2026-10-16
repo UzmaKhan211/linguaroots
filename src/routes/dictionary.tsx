@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BookOpen, Check, Search, Sparkles, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DictionaryAudio } from "@/components/DictionaryAudio";
-import { filterVocabulary, isVocabularyLearned, vocabulary, vocabularyAudioUrl, vocabularyCategories } from "@/lib/vocabulary";
-import { isWarmupDone } from "@/lib/progress";
-import { useAuth } from "@/hooks/useAuth";
+import { filterVocabulary, vocabulary, vocabularyAudioUrl, vocabularyCategories } from "@/lib/vocabulary";
 
 export const Route = createFileRoute("/dictionary")({
   head: () => ({ meta: [
@@ -24,15 +22,6 @@ export const Route = createFileRoute("/dictionary")({
 function Dictionary() {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
-  const [completed, setCompleted] = useState<Set<string>>(new Set());
-  const { user } = useAuth();
-  useEffect(() => {
-    const refresh = () => setCompleted(new Set(vocabulary.map((w) => w.scenarioId).filter(isWarmupDone)));
-    refresh();
-    window.addEventListener("focus", refresh);
-    const timer = window.setInterval(refresh, 2000);
-    return () => { window.removeEventListener("focus", refresh); window.clearInterval(timer); };
-  }, [user]);
   const filtered = filterVocabulary(vocabulary, category, query);
   return <AppShell>
     <header className="fade-up">
@@ -55,7 +44,6 @@ function Dictionary() {
       {filtered.map((w) => <li key={w.id} className="rounded-2xl border bg-card p-4 shadow-soft">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs font-bold text-muted-foreground">{w.category}</span>
-          {isVocabularyLearned(w, completed) && <span className="inline-flex items-center gap-1 text-xs font-bold text-primary"><Check className="size-4" aria-hidden /> Learned</span>}
         </div>
         <h2 className="mt-2 break-words text-2xl font-semibold tracking-normal">{w.roman}</h2>
         <p className="mt-1 break-words text-base text-muted-foreground">{w.english}</p>
