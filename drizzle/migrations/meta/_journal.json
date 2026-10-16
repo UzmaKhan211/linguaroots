@@ -8,6 +8,13 @@
       "when": 1792118748743,
       "tag": "0000_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792125948784,
+      "tag": "0001_phase5_rewards_interest_admin",
+      "breakpoints": true
     }
   ]
 }
