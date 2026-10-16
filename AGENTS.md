@@ -13,3 +13,4 @@
 - Lesson content lives as CSV in `src/content/<language>/` and is parsed by `src/lib/content.ts`; screens never hard-code Khowar text, so new scenarios/languages are data changes.
 - Coming-soon languages live in `src/lib/languages.ts` as names only; no phrases or lessons behind them.
 - Mobile-first shell (`AppShell`, max 440px, 44px+ tap targets); all colours are semantic tokens in `src/styles.css`.
+- Pronunciation scoring runs fully in the browser (`src/lib/scoring.ts` pure DSP, `src/lib/audio.ts` browser decode); learner recordings never leave the device.
