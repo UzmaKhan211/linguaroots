@@ -96,6 +96,13 @@ function AuthPage() {
             className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base"
           />
         </label>
+        {mode === "signup" && (
+          <fieldset>
+            <legend className="text-sm font-semibold">Pick your character</legend>
+            <p className="mb-2 text-sm text-muted-foreground">This friendly face shows on your profile. You can change it later.</p>
+            <AvatarPicker value={avatar} onChange={setAvatar} disabled={busy} />
+          </fieldset>
+        )}
         <button type="submit" disabled={busy} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-60">
           {mode === "signup" ? "Create my account" : "Sign in"}
         </button>
