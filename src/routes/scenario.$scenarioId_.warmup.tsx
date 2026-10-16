@@ -53,7 +53,8 @@ function Warmup() {
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [pickKh, setPickKh] = useState<string | null>(null);
   const [pickEn, setPickEn] = useState<string | null>(null);
-  const [message, setMessage] = useState<string>("Tap a Khowar word to hear it, then tap its meaning.");
+  const [message, setMessage] = useState<string>("Now pair each word with its meaning.");
+  const [learnAt, setLearnAt] = useState(0);
   const [lastNote, setLastNote] = useState<WarmupItem | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -90,13 +91,63 @@ function Warmup() {
   const nextRound = () => {
     if (isLast) return finish();
     setRound(round + 1);
+    setLearnAt(0);
     setPickKh(null);
     setPickEn(null);
     setLastNote(null);
-    setMessage("New words — tap a Khowar word to hear it.");
+    setMessage("Now pair each word with its meaning.");
   };
 
   if (!items.length) return null;
+
+  if (learnAt < current.length) {
+    const it = current[learnAt]!;
+    const lastCard = learnAt + 1 >= current.length;
+    return (
+      <AppShell>
+        <Link
+          to="/scenario/$scenarioId"
+          params={{ scenarioId: scenario.id }}
+          className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted-foreground"
+        >
+          <ArrowLeft className="size-5" aria-hidden /> {scenario.title}
+        </Link>
+        <div className="mt-3 flex items-center justify-between">
+          <Dots total={rounds.length} at={round} />
+          <button type="button" onClick={finish} className="min-h-11 px-2 text-sm font-bold text-primary underline-offset-4 hover:underline">
+            I'm ready to talk
+          </button>
+        </div>
+        <h1 className="mt-6 font-display text-3xl font-semibold">New words</h1>
+        <p className="mt-2 text-lg text-muted-foreground">
+          Word {learnAt + 1} of {current.length} — listen, then we'll pair them up.
+        </p>
+        <div key={`${round}-${learnAt}`} className="fade-up mt-6 rounded-3xl border-2 border-border bg-card p-6 text-center">
+          <p className="font-display text-4xl font-semibold">{it.roman.trim()}</p>
+          <p className="mt-2 text-lg text-muted-foreground">{it.english}</p>
+          <button
+            type="button"
+            onClick={() => play(it.audioFile)}
+            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-5 font-bold text-secondary-foreground"
+          >
+            <Volume2 className="size-5" aria-hidden /> Hear it
+          </button>
+          {it.culturalNote && <p className="mt-5 rounded-2xl bg-sun-soft p-4 text-left text-base">{it.culturalNote}</p>}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const n = learnAt + 1;
+            setLearnAt(n);
+            if (n < current.length) play(current[n]!.audioFile);
+          }}
+          className="mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
+        >
+          {lastCard ? "Let's pair them" : "Next word"}
+        </button>
+      </AppShell>
+    );
+  }
 
   const tile = (selected: boolean, done: boolean) =>
     `relative flex min-h-16 w-full items-center justify-center rounded-2xl border-2 px-3 py-2 text-center transition-colors ${

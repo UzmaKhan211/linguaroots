@@ -1,5 +1,5 @@
 item_id,scenario_id,unit,english,khowar_roman,type,audio_file,source_turn_id,cultural_note,status,notes,check
-wu-01,grandma-phone-call,1,Wawi,Wawi,,wu-01.mp3,gpc-04a,There are other words that can be used to call your grandma but wawi is a common one.,reviewed,,
+wu-01,grandma-phone-call,1,Grandma,Wawi,,wu-01.mp3,gpc-04a,There are other words that can be used to call your grandma but wawi is a common one.,reviewed,,
 wu-02,grandma-phone-call,1,I or me,Awa,,wu-02.mp3,gpc-04a,Most khowar words can mean more than one thing.,reviewed,,
 wu-03,grandma-phone-call,1,You,Tu,,wu-03.mp3,gpc-05,,reviewed,,
 wu-04,grandma-phone-call,1,Mine,Ma,,wu-04.mp3,gpc-05,,reviewed,,
