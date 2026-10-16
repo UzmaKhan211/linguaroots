@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChooseLanguageRouteImport } from './routes/choose-language'
+import { Route as DictionaryRouteImport } from './routes/dictionary'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as LanguageIntroRouteImport } from './routes/language-intro'
 import { Route as LanguagesRouteImport } from './routes/languages'
@@ -40,6 +41,11 @@ const AuthRoute = AuthRouteImport.update({
 const ChooseLanguageRoute = ChooseLanguageRouteImport.update({
   id: '/choose-language',
   path: '/choose-language',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DictionaryRoute = DictionaryRouteImport.update({
+  id: '/dictionary',
+  path: '/dictionary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/choose-language': typeof ChooseLanguageRoute
+  '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/choose-language': typeof ChooseLanguageRoute
+  '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/choose-language': typeof ChooseLanguageRoute
+  '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
   '/languages': typeof LanguagesRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/choose-language'
+    | '/dictionary'
     | '/lab'
     | '/language-intro'
     | '/languages'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/choose-language'
+    | '/dictionary'
     | '/lab'
     | '/language-intro'
     | '/languages'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/choose-language'
+    | '/dictionary'
     | '/lab'
     | '/language-intro'
     | '/languages'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   ChooseLanguageRoute: typeof ChooseLanguageRoute
+  DictionaryRoute: typeof DictionaryRoute
   LabRoute: typeof LabRoute
   LanguageIntroRoute: typeof LanguageIntroRoute
   LanguagesRoute: typeof LanguagesRoute
@@ -215,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/choose-language'
       fullPath: '/choose-language'
       preLoaderRoute: typeof ChooseLanguageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dictionary': {
+      id: '/dictionary'
+      path: '/dictionary'
+      fullPath: '/dictionary'
+      preLoaderRoute: typeof DictionaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lab': {
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   ChooseLanguageRoute: ChooseLanguageRoute,
+  DictionaryRoute: DictionaryRoute,
   LabRoute: LabRoute,
   LanguageIntroRoute: LanguageIntroRoute,
   LanguagesRoute: LanguagesRoute,
