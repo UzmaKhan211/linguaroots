@@ -48,6 +48,7 @@ function Talk() {
   const [history, setHistory] = useState<Turn[]>([]);
   const [step, setStep] = useState<Step>(() => stepAt(scenario.startTurnId, turns));
   const [chosen, setChosen] = useState<Turn | null>(null);
+  const [tally, setTally] = useState({ spoken: 0, skipped: 0 });
   const endRef = useRef<HTMLDivElement>(null);
   const isEnd = step.type === "end";
   useEffect(() => {
@@ -101,9 +102,14 @@ function Talk() {
   }, [step]);
   const single = step.type === "choose" && step.options.length === 1;
 
-  const confirm = () => {
+  // Spoken lines earn XP; skipped lines move the chat on without XP.
+  const confirm = (skipped = false) => {
     if (!chosen) return;
-    earn(XP.line);
+    if (skipped) setTally((t) => ({ ...t, skipped: t.skipped + 1 }));
+    else {
+      earn(XP.line);
+      setTally((t) => ({ ...t, spoken: t.spoken + 1 }));
+    }
     setHistory((h) => [...h, chosen]);
     setStep(afterChoice(chosen, turns));
     setChosen(null);
@@ -121,7 +127,7 @@ function Talk() {
 
       <ol className="mt-4 space-y-4" aria-live="polite">
         {history.map((t, i) => (
-          <Bubble key={t.id + i} turn={t} who={who} autoPlay={i === 0} />
+          <Bubble key={t.id + i} turn={t} who={who} autoPlay />
         ))}
       </ol>
 
@@ -186,9 +192,15 @@ function Talk() {
             referenceUrl={`/audio/khowar/${chosen.referenceFile || chosen.audioFile}`}
             cohortUrls={cohortUrls}
             passMark={chosen.passThreshold}
-            onPass={confirm}
-            onSelfCheck={confirm}
+            onPass={() => confirm()}
           />
+          <button
+            type="button"
+            onClick={() => confirm(true)}
+            className="mt-3 min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
+          >
+            Skip this line
+          </button>
         </section>
       )}
 
@@ -197,13 +209,23 @@ function Talk() {
           <Heart className="mx-auto size-10 text-accent" aria-hidden />
           <h2 className="mt-3 text-2xl font-semibold">You talked with {who}</h2>
           <p className="mt-2 text-lg">That was a whole conversation in Khowar. They'd be so happy to hear it.</p>
-          <p className="mt-2 text-base text-muted-foreground">+{XP.scenario} XP for finishing, plus {XP.line} for every line you said.</p>
+          <p className="mt-3 text-lg">
+            You said <span className="font-bold">{tally.spoken}</span> {tally.spoken === 1 ? "line" : "lines"} out loud
+            {tally.skipped > 0 && (
+              <>
+                {" "}and skipped <span className="font-bold">{tally.skipped}</span>
+              </>
+            )}
+            .
+          </p>
+          <p className="mt-1 text-base text-muted-foreground">+{XP.scenario} XP for finishing, plus {XP.line} for every line you said.</p>
           <RewardsBadge className="mt-3 justify-center" />
           <div className="mt-5 grid gap-3">
             <button
               type="button"
               onClick={() => {
                 setHistory([]);
+                setTally({ spoken: 0, skipped: 0 });
                 setStep(stepAt(scenario.startTurnId, turns));
               }}
               className="min-h-12 rounded-full bg-primary font-bold text-primary-foreground"

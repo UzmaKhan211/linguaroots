@@ -19,7 +19,8 @@ export function SayIt({
   cohortUrls?: string[];
   passMark?: number;
   onPass: () => void;
-  onSelfCheck: () => void;
+  /** Leave out to hide the self-check (it is paused for now). */
+  onSelfCheck?: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [score, setScore] = useState<number | null>(null);
@@ -168,7 +169,7 @@ export function SayIt({
         </button>
       )}
 
-      {!passed && selfCheck && (
+      {!passed && selfCheck && onSelfCheck && (
         <div className="fade-up">
           <p className="font-semibold">Did that sound close to you?</p>
           <button
