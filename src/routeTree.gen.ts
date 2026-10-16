@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as LanguagesRouteImport } from './routes/languages'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
 import { Route as ScenarioScenarioIdTalkRouteImport } from './routes/scenario.$scenarioId_.talk'
 import { Route as ScenarioScenarioIdWarmupRouteImport } from './routes/scenario.$scenarioId_.warmup'
@@ -19,6 +22,11 @@ import { Route as ScenarioScenarioIdWarmupRouteImport } from './routes/scenario.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LabRoute = LabRouteImport.update({
@@ -29,6 +37,16 @@ const LabRoute = LabRouteImport.update({
 const LanguagesRoute = LanguagesRouteImport.update({
   id: '/languages',
   path: '/languages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScenarioScenarioIdRoute = ScenarioScenarioIdRouteImport.update({
@@ -50,16 +68,22 @@ const ScenarioScenarioIdWarmupRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
+  '/settings': typeof SettingsRoute
+  '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
+  '/settings': typeof SettingsRoute
+  '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
@@ -67,8 +91,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/lab': typeof LabRoute
   '/languages': typeof LanguagesRoute
+  '/settings': typeof SettingsRoute
+  '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
   '/scenario/$scenarioId_/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId_/warmup': typeof ScenarioScenarioIdWarmupRoute
@@ -77,24 +104,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/lab'
     | '/languages'
+    | '/settings'
+    | '/welcome'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId/talk'
     | '/scenario/$scenarioId/warmup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/lab'
     | '/languages'
+    | '/settings'
+    | '/welcome'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId/talk'
     | '/scenario/$scenarioId/warmup'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/lab'
     | '/languages'
+    | '/settings'
+    | '/welcome'
     | '/scenario/$scenarioId'
     | '/scenario/$scenarioId_/talk'
     | '/scenario/$scenarioId_/warmup'
@@ -102,8 +138,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   LabRoute: typeof LabRoute
   LanguagesRoute: typeof LanguagesRoute
+  SettingsRoute: typeof SettingsRoute
+  WelcomeRoute: typeof WelcomeRoute
   ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
   ScenarioScenarioIdTalkRoute: typeof ScenarioScenarioIdTalkRoute
   ScenarioScenarioIdWarmupRoute: typeof ScenarioScenarioIdWarmupRoute
@@ -118,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lab': {
       id: '/lab'
       path: '/lab'
@@ -130,6 +176,20 @@ declare module '@tanstack/react-router' {
       path: '/languages'
       fullPath: '/languages'
       preLoaderRoute: typeof LanguagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scenario/$scenarioId': {
@@ -158,8 +218,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   LabRoute: LabRoute,
   LanguagesRoute: LanguagesRoute,
+  SettingsRoute: SettingsRoute,
+  WelcomeRoute: WelcomeRoute,
   ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
   ScenarioScenarioIdTalkRoute: ScenarioScenarioIdTalkRoute,
   ScenarioScenarioIdWarmupRoute: ScenarioScenarioIdWarmupRoute,
