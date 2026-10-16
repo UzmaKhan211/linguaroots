@@ -143,6 +143,15 @@ export function SayIt({
         <div className="flex h-14 w-full items-center justify-center" aria-hidden>
           {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
         </div>
+        {phase === "scored" && passed ? (
+          <div
+            role="img"
+            aria-label="Said correctly"
+            className="fade-up flex size-20 items-center justify-center rounded-full border-4 border-primary bg-leaf-soft text-primary shadow-lift"
+          >
+            <CheckCircle2 className="size-10" aria-hidden />
+          </div>
+        ) : (
         <button
           type="button"
           onClick={phase === "recording" ? stop : start}
@@ -163,13 +172,16 @@ export function SayIt({
             <Mic className="size-9" aria-hidden />
           )}
         </button>
-        <p className="text-base font-bold" aria-live="polite">
+        )}
+        <p className={`text-base font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
           {phase === "recording"
             ? "Listening… tap to stop"
             : phase === "scoring"
               ? "Listening closely…"
               : phase === "scored"
-                ? "Tap to try again"
+                ? passed
+                  ? "Well said!"
+                  : "Tap to try again"
                 : "Tap and say it"}
         </p>
       </div>
@@ -211,10 +223,19 @@ export function SayIt({
         {micError && <p className="rounded-2xl bg-card p-3 text-base">{micError}</p>}
       </div>
 
-      {passed && (
-        <button type="button" onClick={onPass} className="min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground">
-          Continue
-        </button>
+      {passed && phase === "scored" && (
+        <>
+          <button type="button" onClick={onPass} className="min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground">
+            Continue
+          </button>
+          <button
+            type="button"
+            onClick={start}
+            className="min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
+          >
+            Or record again
+          </button>
+        </>
       )}
 
       {!passed && selfCheck && onSkip && phase !== "recording" && phase !== "scoring" && (
