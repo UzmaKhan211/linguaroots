@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { completedCount, getPrefs, isOnboarded, isWarmupDone, scenarioStage } from "@/lib/progress";
-import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen } from "lucide-react";
+import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { RewardsBadge } from "@/components/RewardsBadge";
@@ -10,6 +10,7 @@ import { getWarmup, scenarios } from "@/lib/content";
 import { AudioButton } from "@/components/AudioButton";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -121,7 +122,13 @@ function Index() {
               </button>
             </DrawerTrigger>
             <DrawerContent className="mx-auto max-w-[440px]">
-              <DrawerHeader className="text-left">
+              <DrawerHeader className="relative pr-16 text-left">
+                <DrawerClose
+                  aria-label="Close"
+                  className="absolute right-3 top-3 flex size-11 items-center justify-center rounded-full bg-muted text-foreground"
+                >
+                  <X className="size-5" aria-hidden />
+                </DrawerClose>
                 <DrawerTitle className="font-display text-2xl">Your Khowar words</DrawerTitle>
                 <DrawerDescription>Tap a word to hear it again.</DrawerDescription>
               </DrawerHeader>
