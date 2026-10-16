@@ -137,16 +137,28 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
         bump(-1);
       }
     };
+    let mine = false;
     if (autoPlay) {
       held = true;
       bump(1);
       a.preload = "auto";
-      a.addEventListener("ended", release, { once: true });
       let queued = false;
       const tryPlay = () => {
-        if (queued) return;
+        if (queued || !alive) return;
         queued = true;
-        playWhenFree(a, () => alive, () => alive && setPlaying(true), release);
+        playWhenFree(
+          () => a.src,
+          () => alive,
+          () => {
+            mine = true;
+            if (alive) setPlaying(true);
+          },
+          () => {
+            mine = false;
+            if (alive) setPlaying(false);
+            release();
+          },
+        );
       };
       if (a.readyState >= 2) tryPlay();
       else {
@@ -162,6 +174,7 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
       clearTimeout(guard);
       release();
       alive = false;
+      if (mine) stopShared();
       a.pause();
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       ref.current = null;
