@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Heart, Mic } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AudioButton } from "@/components/AudioButton";
+import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, stepAt, type Step } from "@/lib/conversation";
 import { isWarmupDone } from "@/lib/progress";
@@ -119,23 +120,20 @@ function Talk() {
             </p>
           )}
           {chosen.feedbackNote && <p className="mt-4 rounded-2xl bg-card p-3 text-base">{chosen.feedbackNote}</p>}
-          <p className="mt-5 font-semibold">Did that sound close?</p>
-          <div className="mt-2 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={confirm}
-              className="min-h-12 rounded-full bg-primary font-bold text-primary-foreground"
-            >
-              Yes, continue
-            </button>
-            <button
-              type="button"
-              onClick={() => setChosen(null)}
-              className="min-h-12 rounded-full border-2 bg-card font-bold"
-            >
-              Pick again
-            </button>
-          </div>
+          <SayIt
+            key={chosen.id}
+            referenceUrl={`/audio/khowar/${chosen.referenceFile || chosen.audioFile}`}
+            passMark={chosen.passThreshold}
+            onPass={confirm}
+            onSelfCheck={confirm}
+          />
+          <button
+            type="button"
+            onClick={() => setChosen(null)}
+            className="mt-3 min-h-12 w-full rounded-full font-bold text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Pick a different reply
+          </button>
         </section>
       )}
 
