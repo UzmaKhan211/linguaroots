@@ -86,11 +86,21 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
     if (autoPlay) {
       held = true;
       bump(1);
+      a.preload = "auto";
       a.addEventListener("ended", release, { once: true });
-      const tryPlay = () =>
+      let queued = false;
+      const tryPlay = () => {
+        if (queued) return;
+        queued = true;
         playWhenFree(a, () => alive, () => alive && setPlaying(true), release);
-      if (a.readyState >= 2) void tryPlay();
-      else a.addEventListener("canplay", () => alive && void tryPlay(), { once: true });
+      };
+      if (a.readyState >= 2) tryPlay();
+      else {
+        a.addEventListener("canplay", tryPlay, { once: true });
+        a.addEventListener("loadeddata", tryPlay, { once: true });
+        // Some phones never fire load events with a slow connection; try anyway.
+        setTimeout(tryPlay, 3000);
+      }
     }
     // Never hold the screen for more than 20 seconds (missing or silent clip).
     const guard = setTimeout(release, 20000);
