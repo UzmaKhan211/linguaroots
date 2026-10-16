@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Square, Play, RotateCcw } from "lucide-react";
+import { Mic, Square, Play, RotateCcw, CheckCircle2 } from "lucide-react";
 import { closenessWithCohort, feedbackMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
 import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
 import { loadSpeech, onSpeechProgress, scoreSpeech, speechReady } from "@/lib/speechClient";
@@ -149,11 +149,11 @@ export function SayIt({
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Record again"}
           className={`relative flex size-20 items-center justify-center rounded-full shadow-lift disabled:opacity-60 ${
-            phase === "recording" ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"
+            phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
           }`}
         >
           {phase === "recording" && (
-            <span className="absolute inset-0 rounded-full bg-accent/40 motion-safe:animate-ping" aria-hidden />
+            <span className="absolute inset-0 rounded-full bg-bark/40 motion-safe:animate-ping" aria-hidden />
           )}
           {phase === "recording" ? (
             <Square className="relative size-7 fill-current" aria-hidden />
@@ -192,10 +192,15 @@ export function SayIt({
         {phase === "scored" && score !== null && (
           <div
             className={`fade-up rounded-2xl border-2 bg-card p-4 ${
-              passed ? "border-transparent" : fails >= 3 ? "border-destructive" : "border-sun"
+              passed ? "border-primary bg-leaf-soft" : fails >= 3 ? "border-destructive" : "border-sun"
             }`}
           >
-            <p className="font-display text-xl font-semibold">{feedback}</p>
+            {passed && (
+              <p className="flex items-center gap-2 font-bold text-primary">
+                <CheckCircle2 className="size-6" aria-hidden /> You got it!
+              </p>
+            )}
+            <p className={`font-display text-xl font-semibold ${passed ? "mt-1" : ""}`}>{feedback}</p>
           </div>
         )}
         {noRef && (
@@ -272,7 +277,7 @@ function LiveWave({ stream }: { stream: MediaStream }) {
   return (
     <div className="flex h-full items-center gap-[3px]">
       {levels.map((v, i) => (
-        <span key={i} className="w-1.5 rounded-full bg-accent" style={{ height: `${Math.round(v * 100)}%` }} />
+        <span key={i} className="w-1.5 rounded-full bg-bark" style={{ height: `${Math.round(v * 100)}%` }} />
       ))}
     </div>
   );
@@ -285,7 +290,7 @@ function IdleWave({ dim }: { dim: boolean }) {
       {Array.from({ length: BARS }, (_, i) => (
         <span
           key={i}
-          className="w-1.5 rounded-full bg-primary"
+          className="w-1.5 rounded-full bg-bark"
           style={{ height: `${12 + Math.round(Math.abs(Math.sin(i * 0.7)) * 30)}%` }}
         />
       ))}
