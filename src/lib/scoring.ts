@@ -7,6 +7,8 @@
 
 export const SAMPLE_RATE = 16000;
 export const PASS_MARK = 50;
+/** Score given at the calibrated "pass" distance; the scale stays fixed so lowering PASS_MARK is genuinely more lenient. */
+export const SCALE_ANCHOR = 70;
 export const SELF_CHECK_AFTER = 3;
 
 /** Two calibrated values: distance that scores 100%, and distance that sits exactly on the pass mark. */
@@ -149,7 +151,7 @@ export function dtwDistance(a: Float64Array[], b: Float64Array[]): number {
 export function distanceToScore(dist: number, cfg: ScoringConfig): number {
   if (!isFinite(dist)) return 0;
   const span = cfg.pass - cfg.perfect || 1;
-  const s = 100 - ((dist - cfg.perfect) / span) * (100 - PASS_MARK);
+  const s = 100 - ((dist - cfg.perfect) / span) * (100 - SCALE_ANCHOR);
   return Math.round(Math.max(0, Math.min(100, s)));
 }
 

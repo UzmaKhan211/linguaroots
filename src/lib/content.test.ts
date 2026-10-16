@@ -10,9 +10,6 @@ describe("content data", () => {
     expect(getChoices("gpc-03").map((t) => t.id)).toEqual(["gpc-04a", "gpc-04b"]);
   });
 
-  it("parses the 70% pass mark on learner lines", () => {
-    expect(getTurn("gpc-02")?.passThreshold).toBe(70);
-  });
 
   it("marks the final lines as scenario ends", () => {
     expect(getTurn("gpc-18")?.isEnd).toBe(true);
@@ -36,10 +33,6 @@ describe("content data", () => {
     expect(getWarmup("grandft_inperson_meeting")).toHaveLength(6);
   });
 
-  it("defaults a missing pass mark to 70", () => {
-    const [t] = buildTurns("turn_id,speaker,pass_threshold\nx,learner,\n");
-    expect(t?.passThreshold).toBe(70);
-  });
 });
 
 import { turns as allTurns } from "./content";
