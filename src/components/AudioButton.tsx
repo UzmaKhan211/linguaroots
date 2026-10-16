@@ -21,11 +21,53 @@ export function useAutoAudioBusy() {
   }, []);
   return busy;
 }
-const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => void, onDone: () => void) => {
+/**
+ * One shared player for lines that start on their own. Phone browsers (Safari especially)
+ * only let a player make sound without a tap once that same player has been started by a tap,
+ * so we "unlock" it on the learner's first tap and reuse it for every later line.
+ */
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
+let shared: HTMLAudioElement | null = null;
+let unlocked = false;
+const getShared = () => {
+  if (!shared && typeof window !== "undefined") {
+    shared = new Audio();
+    shared.preload = "auto";
+  }
+  return shared;
+};
+const unlock = () => {
+  const s = getShared();
+  if (!s || unlocked) return;
+  unlocked = true;
+  // Only prime it when nothing is playing, so a line is never cut off.
+  if (!s.paused) return;
+  s.src = SILENT;
+  s.muted = true;
+  s.play()
+    .then(() => {
+      s.pause();
+      s.muted = false;
+    })
+    .catch(() => {
+      s.muted = false;
+      unlocked = false;
+    });
+};
+if (typeof window !== "undefined") {
+  for (const ev of ["touchend", "click", "keydown"]) window.addEventListener(ev, unlock, { capture: true, passive: true });
+}
+/** Stop any line that started on its own (used when the learner taps a Hear it button). */
+const stopShared = () => {
+  if (shared && !shared.paused) shared.pause();
+};
+
+const playWhenFree = (src: () => string, alive: () => boolean, onStart: () => void, onDone: () => void) => {
   autoQueue = autoQueue.then(
     () =>
       new Promise<void>((done) => {
-        if (!alive()) {
+        const s = getShared();
+        if (!alive() || !s) {
           onDone();
           return done();
         }
@@ -34,17 +76,29 @@ const playWhenFree = (a: HTMLAudioElement, alive: () => boolean, onStart: () => 
           if (settled) return;
           settled = true;
           clearTimeout(stall);
+          s.removeEventListener("ended", finish);
+          s.removeEventListener("pause", finish);
+          s.removeEventListener("error", finish);
           onDone();
           done();
         };
-        a.addEventListener("ended", finish, { once: true });
-        a.addEventListener("pause", finish, { once: true });
+        s.muted = false;
+        s.src = src();
+        s.currentTime = 0;
+        s.addEventListener("ended", finish);
+        s.addEventListener("pause", finish);
+        s.addEventListener("error", finish);
         // If play() never settles (stalled load), free the queue for the next line.
         const stall = setTimeout(finish, 15000);
-        a.play().then(() => {
-          clearTimeout(stall);
-          onStart();
-        }).catch(finish);
+        s.play()
+          .then(() => {
+            clearTimeout(stall);
+            // Long clips still get a ceiling so the queue can never stick.
+            const len = Number.isFinite(s.duration) ? s.duration * 1000 + 3000 : 30000;
+            setTimeout(finish, Math.min(len, 60000));
+            onStart();
+          })
+          .catch(finish);
       }),
   );
 };
