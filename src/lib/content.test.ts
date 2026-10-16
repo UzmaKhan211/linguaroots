@@ -41,3 +41,10 @@ describe("content data", () => {
     expect(t?.passThreshold).toBe(70);
   });
 });
+
+import { turns as allTurns } from "./content";
+describe("pass mark", () => {
+  it("every phrase passes at 50%", () => {
+    expect(allTurns.every((t) => t.passThreshold === 50)).toBe(true);
+  });
+});

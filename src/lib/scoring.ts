@@ -6,7 +6,7 @@
  */
 
 export const SAMPLE_RATE = 16000;
-export const PASS_MARK = 70;
+export const PASS_MARK = 50;
 export const SELF_CHECK_AFTER = 3;
 
 /** Two calibrated values: distance that scores 100%, and distance that sits exactly on the pass mark. */

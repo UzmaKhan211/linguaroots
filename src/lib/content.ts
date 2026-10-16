@@ -1,3 +1,4 @@
+import { PASS_MARK } from "./scoring";
 import { parseCsv } from "./csv";
 import scenariosCsv from "@/content/khowar/Scenarios.csv?raw";
 import turnsCsv from "@/content/khowar/Turns.csv?raw";
@@ -86,7 +87,7 @@ export function buildTurns(csv: string): Turn[] {
         nextTurnId: opt(r.next_turn_id),
         isEnd: /^(yes|true|1)$/i.test(r.is_end ?? ""),
         referenceFile: opt(r.score_reference_file),
-        passThreshold: Number((r.pass_threshold || "70").replace("%", "")) || 70,
+        passThreshold: PASS_MARK, // one app-wide pass mark; the CSV column is ignored
         culturalNote: opt(r.cultural_note),
       } satisfies Turn;
     });
