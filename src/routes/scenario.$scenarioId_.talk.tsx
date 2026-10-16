@@ -236,7 +236,6 @@ function Talk() {
               This works, though {who} might expect something a little warmer here.
             </p>
           )}
-          {chosen.feedbackNote && <p className="mt-4 rounded-2xl bg-card p-3 text-base">{chosen.feedbackNote}</p>}
           <SayIt
             key={chosen.id}
             referenceUrl={`/audio/khowar/${chosen.referenceFile || chosen.audioFile}`}
