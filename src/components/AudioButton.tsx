@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2, Clock } from "lucide-react";
+import { fetchLessonAudio } from "@/lib/lessonAudio";
 
-/** Plays a clip from /audio/<language>/<file>. Shows "recording coming soon" when the clip isn't there yet. */
+/** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
 export function AudioButton({ file, language = "khowar", label = "Play" }: { file: string; language?: string; label?: string }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
@@ -10,13 +11,25 @@ export function AudioButton({ file, language = "khowar", label = "Play" }: { fil
   useEffect(() => {
     setMissing(false);
     if (!file) return setMissing(true);
+    let objectUrl: string | null = null;
+    let alive = true;
     const a = new Audio(`/audio/${language}/${file}`);
     a.preload = "metadata";
-    a.onerror = () => setMissing(true);
+    a.onerror = () => {
+      void fetchLessonAudio(`/audio/${language}/${file}`).then((blob) => {
+        if (!alive) return;
+        if (!blob) return setMissing(true);
+        objectUrl = URL.createObjectURL(blob);
+        a.onerror = () => setMissing(true);
+        a.src = objectUrl;
+      });
+    };
     a.onended = () => setPlaying(false);
     ref.current = a;
     return () => {
+      alive = false;
       a.pause();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
       ref.current = null;
     };
   }, [file, language]);
