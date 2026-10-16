@@ -128,22 +128,24 @@ function Warmup() {
         <p className="mt-2 text-lg text-muted-foreground">
           Word {learnAt + 1} of {current.length} — listen, then we'll pair them up.
         </p>
-        <div key={`${round}-${learnAt}`} className="fade-up mt-6 rounded-3xl border-2 border-border bg-card p-6 text-center">
-          <p className="font-display text-4xl font-semibold">{it.roman.trim()}</p>
-          <p className="mt-2 text-lg text-muted-foreground">{it.english}</p>
-          <button
-            type="button"
-            onClick={() => play(it.audioFile)}
-            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-5 font-bold text-secondary-foreground"
-          >
-            <Volume2 className="size-5" aria-hidden /> Hear it
-          </button>
+        <div key={`${round}-${learnAt}`} className="fade-up mt-6">
+          <div className="rounded-3xl border-2 border-border bg-card px-6 py-10 text-center">
+            <p className="font-display text-4xl font-semibold">{it.roman.trim()}</p>
+            <p className="mt-2 text-lg text-muted-foreground">{it.english}</p>
+            <button
+              type="button"
+              onClick={() => play(it.audioFile)}
+              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-5 font-bold text-secondary-foreground"
+            >
+              <Volume2 className="size-5" aria-hidden /> Hear it
+            </button>
+          </div>
           {it.culturalNote && (
-            <aside className="mt-6 rounded-2xl border border-primary/15 bg-leaf-soft/60 p-4 text-left">
+            <aside className="mt-5 px-2">
               <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-primary">
                 <Sparkles className="size-3.5" aria-hidden /> Cultural insight
               </p>
-              <p className="mt-2 text-base italic leading-relaxed text-foreground/85">{it.culturalNote}</p>
+              <p className="mt-1.5 text-base italic leading-relaxed text-muted-foreground">{it.culturalNote}</p>
             </aside>
           )}
         </div>
