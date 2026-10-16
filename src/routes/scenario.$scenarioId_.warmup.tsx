@@ -71,8 +71,9 @@ function Warmup() {
   };
 
   const tryPair = (kh: string | null, en: string | null) => {
-    if (!kh || !en) return;
     if (timer.current) clearTimeout(timer.current);
+    setWrong(false);
+    if (!kh || !en) return;
     if (kh === en) {
       const item = current.find((it) => it.id === kh)!;
       setMatched((m) => new Set(m).add(kh));
