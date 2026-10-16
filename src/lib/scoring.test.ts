@@ -1,5 +1,5 @@
-import { ratioToScore, describe, expect, it } from "vitest";
-import { closeness, distanceToScore, passes, showSelfCheck, suggestConfig, SAMPLE_RATE } from "./scoring";
+import { describe, expect, it } from "vitest";
+import { ratioToScore, closeness, distanceToScore, passes, showSelfCheck, suggestConfig, SAMPLE_RATE } from "./scoring";
 
 function tone(freqs: number[], seconds = 0.6) {
   const n = Math.floor(SAMPLE_RATE * seconds);
