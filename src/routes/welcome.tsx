@@ -68,7 +68,7 @@ function Welcome() {
         )}
 
         {step === 1 && <EndangeredFact onNext={next} />}
-        {step === 4 && <GenerationsFact onNext={next} />}
+        {step === 2 && <GenerationsFact onNext={next} />}
         {step === 3 && (
           <>
             <p className="text-sm font-bold uppercase tracking-wider text-accent">About Khowar</p>
@@ -92,7 +92,7 @@ function Welcome() {
           </>
         )}
 
-        {step === 2 && (
+        {step === 4 && (
           <>
             <h1 className="text-[1.75rem] font-semibold leading-tight">Try your first word</h1>
             <p className="mt-2 text-muted-foreground">Listen, then say it out loud along with the recording.</p>
