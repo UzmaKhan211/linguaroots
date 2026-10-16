@@ -9,7 +9,7 @@ const doneKey = (id: string) => `lr:completed:${id}`;
 const ONBOARD_KEY = "lr:onboarded";
 const PREFS_KEY = "lr:prefs";
 
-export type Prefs = { relative?: string; ageConfirmed?: boolean };
+export type Prefs = { relative?: string | undefined; ageConfirmed?: boolean };
 
 const get = (k: string) => {
   try {
