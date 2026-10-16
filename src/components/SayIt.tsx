@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Mic, Square, Play, RotateCcw } from "lucide-react";
 import { closenessWithCohort, closenessMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
 import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
-import { loadSpeechModel, speechCloseness } from "@/lib/speechModel";
+import { loadSpeechModel, prewarmSpeech, speechCloseness } from "@/lib/speechModel";
 import { speechRatioToScore } from "@/lib/speechScore";
 
 type Phase = "idle" | "recording" | "scoring" | "scored";
@@ -39,7 +39,14 @@ export function SayIt({
     loadReference(referenceUrl).then((r) => live && setNoRef(!r));
     void loadCohort(cohortUrls, referenceUrl); // warm the cache
     loadSpeechModel((p) => live && setModelPct(p))
-      .then(() => { modelReady.current = true; if (live) setModelPct(null); })
+      .then(async () => {
+        modelReady.current = true;
+        if (live) setModelPct(null);
+        // Pre-listen to this line's example and the comparison phrases while the learner reads/listens.
+        const ref = await loadReference(referenceUrl);
+        const cohort = await loadCohortKeyed(cohortUrls, referenceUrl);
+        await prewarmSpeech([...(ref ? [{ key: referenceUrl, audio: ref }] : []), ...cohort]);
+      })
       .catch(() => live && setModelPct(null));
     return () => {
       live = false;

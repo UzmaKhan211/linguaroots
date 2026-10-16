@@ -63,12 +63,24 @@ export function frameDtw(a: Frames, b: Frames): number {
 }
 
 const refCache = new Map<string, Promise<Frames>>();
+function cachedWith(embed: (x: Float32Array) => Promise<Frames>, key: string, audio: Float32Array) {
+  if (!refCache.has(key)) {
+    const p = embed(audio);
+    p.catch(() => refCache.delete(key));
+    refCache.set(key, p);
+  }
+  return refCache.get(key)!;
+}
+
+/** Pre-listen to example recordings in the background so scoring only has to process the learner's take. */
+export async function prewarmSpeech(items: { key: string; audio: Float32Array }[]) {
+  const embed = await loadSpeechModel();
+  for (const it of items) await cachedWith(embed, it.key, it.audio); // one at a time keeps the phone responsive
+}
+
 export async function speechCloseness(take: Float32Array, refKey: string, ref: Float32Array, cohort: { key: string; audio: Float32Array }[]) {
   const embed = await loadSpeechModel();
-  const cached = (key: string, audio: Float32Array) => {
-    if (!refCache.has(key)) refCache.set(key, embed(audio));
-    return refCache.get(key)!;
-  };
+  const cached = (key: string, audio: Float32Array) => cachedWith(embed, key, audio);
   const t = await embed(take);
   const dist = frameDtw(t, await cached(refKey, ref));
   const ds: number[] = [];
