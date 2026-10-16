@@ -34,6 +34,7 @@ export function SayIt({
   onPass,
   onSelfCheck,
   onSkip,
+  onAttempt,
 }: {
   referenceUrl: string;
   cohortUrls?: string[];
@@ -43,6 +44,7 @@ export function SayIt({
   onSelfCheck?: () => void;
   /** Shown only after 3 attempts below the pass mark (or when recording can't work). */
   onSkip?: () => void;
+  onAttempt?: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [score, setScore] = useState<number | null>(null);
@@ -79,6 +81,7 @@ export function SayIt({
   }, [takeUrl]);
 
   const start = async () => {
+    onAttempt?.();
     setMicError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia(MIC_CONSTRAINTS);
