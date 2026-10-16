@@ -7,6 +7,7 @@ import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, resumeFrom, stepAt, type Step } from "@/lib/conversation";
 import { getResume, isWarmupDone, markScenarioCompleted, saveResume } from "@/lib/progress";
+import { playCelebrate } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { RewardsBadge } from "@/components/RewardsBadge";
 import { loadCohortKeyed, loadReference } from "@/lib/audio";
@@ -60,6 +61,7 @@ function Talk() {
     saveResume(scenario.id, null);
     markScenarioCompleted(scenario.id);
     earn("scenario");
+    playCelebrate();
   }, [isEnd, scenario.id]);
 
   useEffect(() => {
