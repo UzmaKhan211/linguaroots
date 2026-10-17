@@ -49,12 +49,17 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   const roundDone = current.length > 0 && current.every((it) => matched.has(it.id));
   const isLast = round + 1 >= rounds.length;
 
+  const [complete, setComplete] = useState(false);
   const finish = () => {
     if (!isLast || !roundDone) return;
     if (isWords) markWarmupDone(scenario.id);
     else markPhrasesDone(scenario.id);
     earn("warmup", `${scenario.id}:${kind}`);
     playCelebrate();
+    setComplete(true);
+    window.scrollTo({ top: 0 });
+  };
+  const goNext = () => {
     if (isWords) navigate({ to: "/scenario/$scenarioId/phrases", params: { scenarioId: scenario.id } });
     else navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
