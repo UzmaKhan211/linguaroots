@@ -47,6 +47,7 @@ function Index() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [relative, setRelative] = useState<string | undefined>();
+  const [checked, setChecked] = useState(false);
   useEffect(() => {
     let active = true;
     void (async () => {
@@ -54,10 +55,11 @@ function Index() {
       if (!active) return;
       if (data.session) {
         const { data: profile, error } = await supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", data.session.user.id).maybeSingle();
-        if (!active || error) return;
-        const destination = signupDestination(profile);
-        if (destination !== "/") void navigate({ to: destination, replace: true });
-      } else if (!isOnboarded()) void navigate({ to: "/welcome", replace: true });
+        if (!active) return;
+        const destination = error ? "/" : signupDestination(profile);
+        if (destination !== "/") { void navigate({ to: destination, replace: true }); return; }
+      } else if (!isOnboarded()) { void navigate({ to: "/welcome", replace: true }); return; }
+      setChecked(true);
     })();
     setRelative(getPrefs().relative);
     setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), done: completedCount(s.id) })));
@@ -69,6 +71,14 @@ function Index() {
   const learnedWords = rows ? rows.filter((r) => r.warm).flatMap((r) => getWarmup(r.id)) : [];
   const wordsLearned = learnedWords.length;
   const rest = isNew ? scenarios.filter((s) => s.id !== featured.id) : scenarios;
+
+  if (!checked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background" role="status" aria-label="Loading">
+        <LogoMark className="float-soft h-20 w-auto" />
+      </div>
+    );
+  }
 
   return (
     <AppShell>
