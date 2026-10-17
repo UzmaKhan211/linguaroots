@@ -22,6 +22,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ScenarioScenarioIdRouteImport } from './routes/scenario.$scenarioId'
+import { Route as ScenarioScenarioIdPhrasesRouteImport } from './routes/scenario.$scenarioId_.phrases'
 import { Route as ScenarioScenarioIdTalkRouteImport } from './routes/scenario.$scenarioId_.talk'
 import { Route as ScenarioScenarioIdWarmupRouteImport } from './routes/scenario.$scenarioId_.warmup'
 
@@ -90,6 +91,12 @@ const ScenarioScenarioIdRoute = ScenarioScenarioIdRouteImport.update({
   path: '/scenario/$scenarioId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScenarioScenarioIdPhrasesRoute =
+  ScenarioScenarioIdPhrasesRouteImport.update({
+    id: '/scenario/$scenarioId_/phrases',
+    path: '/scenario/$scenarioId/phrases',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ScenarioScenarioIdTalkRoute = ScenarioScenarioIdTalkRouteImport.update({
   id: '/scenario/$scenarioId_/talk',
   path: '/scenario/$scenarioId/talk',
@@ -116,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId/phrases': typeof ScenarioScenarioIdPhrasesRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
@@ -133,6 +141,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId/phrases': typeof ScenarioScenarioIdPhrasesRoute
   '/scenario/$scenarioId/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
@@ -151,6 +160,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/welcome': typeof WelcomeRoute
   '/scenario/$scenarioId': typeof ScenarioScenarioIdRoute
+  '/scenario/$scenarioId_/phrases': typeof ScenarioScenarioIdPhrasesRoute
   '/scenario/$scenarioId_/talk': typeof ScenarioScenarioIdTalkRoute
   '/scenario/$scenarioId_/warmup': typeof ScenarioScenarioIdWarmupRoute
 }
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId/phrases'
     | '/scenario/$scenarioId/talk'
     | '/scenario/$scenarioId/warmup'
   fileRoutesByTo: FileRoutesByTo
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId/phrases'
     | '/scenario/$scenarioId/talk'
     | '/scenario/$scenarioId/warmup'
   id:
@@ -204,6 +216,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/welcome'
     | '/scenario/$scenarioId'
+    | '/scenario/$scenarioId_/phrases'
     | '/scenario/$scenarioId_/talk'
     | '/scenario/$scenarioId_/warmup'
   fileRoutesById: FileRoutesById
@@ -222,6 +235,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   WelcomeRoute: typeof WelcomeRoute
   ScenarioScenarioIdRoute: typeof ScenarioScenarioIdRoute
+  ScenarioScenarioIdPhrasesRoute: typeof ScenarioScenarioIdPhrasesRoute
   ScenarioScenarioIdTalkRoute: typeof ScenarioScenarioIdTalkRoute
   ScenarioScenarioIdWarmupRoute: typeof ScenarioScenarioIdWarmupRoute
 }
@@ -319,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScenarioScenarioIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scenario/$scenarioId_/phrases': {
+      id: '/scenario/$scenarioId_/phrases'
+      path: '/scenario/$scenarioId/phrases'
+      fullPath: '/scenario/$scenarioId/phrases'
+      preLoaderRoute: typeof ScenarioScenarioIdPhrasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scenario/$scenarioId_/talk': {
       id: '/scenario/$scenarioId_/talk'
       path: '/scenario/$scenarioId/talk'
@@ -350,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   WelcomeRoute: WelcomeRoute,
   ScenarioScenarioIdRoute: ScenarioScenarioIdRoute,
+  ScenarioScenarioIdPhrasesRoute: ScenarioScenarioIdPhrasesRoute,
   ScenarioScenarioIdTalkRoute: ScenarioScenarioIdTalkRoute,
   ScenarioScenarioIdWarmupRoute: ScenarioScenarioIdWarmupRoute,
 }
