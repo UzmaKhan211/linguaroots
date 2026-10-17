@@ -306,7 +306,7 @@ function PlaybackWave({ audio }: { audio: HTMLAudioElement }) {
     const id = window.setInterval(() => {
       if (audio.paused) return;
       const t = audio.currentTime * 9;
-      setLevels((prev) => [...prev.slice(1), 0.2 + Math.abs(Math.sin(t) * Math.cos(t * 0.37)) * 0.75]);
+      setLevels((prev) => [0.2 + Math.abs(Math.sin(t) * Math.cos(t * 0.37)) * 0.75, ...prev.slice(0, -1)]);
     }, 70);
     return () => window.clearInterval(id);
   }, [audio]);
@@ -339,7 +339,7 @@ function LiveWave({ stream }: { stream: MediaStream }) {
       let peak = 0;
       for (const v of buf) peak = Math.max(peak, Math.abs(v - 128) / 128);
       const level = Math.min(1, 0.08 + peak * 2.2);
-      setLevels((l) => [...l.slice(1), level]);
+      setLevels((l) => [level, ...l.slice(0, -1)]);
     };
     raf = requestAnimationFrame(tick);
     return () => {
