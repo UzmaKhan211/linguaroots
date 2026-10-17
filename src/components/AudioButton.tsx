@@ -104,7 +104,7 @@ const playWhenFree = (src: () => string, alive: () => boolean, onStart: () => vo
 };
 
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
-export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false }: { file: string; language?: string; label?: string; autoPlay?: boolean }) {
+export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -193,6 +193,9 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
     <Button
       variant="audio"
       type="button"
+      size={iconOnly ? "icon" : undefined}
+      aria-label={iconOnly ? (playing ? "Playing" : label) : undefined}
+      className={iconOnly ? "size-11 shrink-0 rounded-full" : undefined}
       onClick={() => {
         const a = ref.current;
         if (!a) return;
@@ -201,7 +204,8 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
         a.play().then(() => setPlaying(true)).catch(() => setMissing(true));
       }}
     >
-      <Volume2 className="size-5" aria-hidden /> {playing ? "Playing…" : label}
+      <Volume2 className={iconOnly && playing ? "size-5 animate-pulse motion-reduce:animate-none" : "size-5"} aria-hidden />
+      {!iconOnly && <> {playing ? "Playing…" : label}</>}
     </Button>
   );
 }
