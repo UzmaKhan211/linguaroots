@@ -104,7 +104,7 @@ const playWhenFree = (src: () => string, alive: () => boolean, onStart: () => vo
 };
 
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
-export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean }) {
+export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false, bare = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean; bare?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
