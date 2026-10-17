@@ -44,6 +44,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   const [learnAt, setLearnAt] = useState(0);
   const [lastNote, setLastNote] = useState<WarmupItem | null>(null);
   const [hearing, setHearing] = useState(false);
+  const [tilePlaying, setTilePlaying] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const current = rounds[round] ?? [];
@@ -267,15 +268,21 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
                   disabled={done}
                   aria-pressed={sel}
                   onClick={() => {
-                    play(it.audioFile);
+                    setTilePlaying(it.id);
+                    play(it.audioFile, () => setTilePlaying((p) => (p === it.id ? null : p)));
                     setPickKh(it.id);
                     tryPair(it.id, pickEn);
                   }}
                   className={tile(sel, done)}
                 >
                   <span className="flex flex-col items-center gap-1">
-                    <span className={`flex items-center gap-1.5 font-display ${isWords ? "text-xl" : "text-lg leading-snug"} font-semibold`}>
-                      <Volume2 className="size-4 shrink-0 text-muted-foreground" aria-hidden /> {it.roman.trim()}
+                    <span className={`font-display ${isWords ? "text-xl" : "text-lg leading-snug"} font-semibold`}>
+                      {it.roman.trim()}{" "}
+                      {tilePlaying === it.id ? (
+                        <Volume2 className="inline-block size-6 shrink-0 animate-pulse align-middle text-bark motion-reduce:animate-none" aria-hidden />
+                      ) : (
+                        <Volume1 className="inline-block size-6 shrink-0 align-middle text-bark" aria-hidden />
+                      )}
                     </span>
                     {done && (
                       <span className="flex items-center gap-1 text-xs font-bold text-primary">
