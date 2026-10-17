@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Email-first signup: verification link opens password creation, then existing profile setup; verify flow
 - [x] Review independent unit access and completion-based lesson unlocking; fix bypasses and verify
 - [x] Simplify sign-up with progressive disclosure and a dedicated companion step; verify saving and returning-account flow
 - [x] Phase 1 – look, content loading, Home, Languages
