@@ -19,7 +19,7 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { mode?: "signin" } => (s.mode === "signin" ? { mode: "signin" } : {}),
+  validateSearch: (s: Record<string, unknown>): { mode?: "signin" } => (s["mode"] === "signin" ? { mode: "signin" } : {}),
   component: AuthPage,
 });
 
