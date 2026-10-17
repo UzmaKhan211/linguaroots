@@ -20,7 +20,7 @@ export function RewardsCounter() {
           </Button>
         </DrawerTrigger>
       </div>
-      <DrawerContent className="mx-auto max-w-[440px] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <DrawerContent className="mx-auto max-h-[85dvh] max-w-[440px] overflow-y-auto pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <DrawerHeader className="relative pr-16 text-left">
           <DrawerTitle className="font-display text-2xl">Your practice adds up</DrawerTitle>
           <DrawerDescription>Every word and conversation counts.</DrawerDescription>
