@@ -47,6 +47,7 @@ function Index() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [relative, setRelative] = useState<string | undefined>();
   const [checked, setChecked] = useState(false);
+  const [name, setName] = useState("");
   useEffect(() => {
     let active = true;
     void (async () => {
@@ -57,6 +58,7 @@ function Index() {
         if (!active) return;
         const destination = error ? "/" : signupDestination(profile);
         if (destination !== "/") { void navigate({ to: destination, replace: true }); return; }
+        setName((profile?.display_name ?? "").trim());
       } else { void navigate({ to: "/welcome", replace: true }); return; }
       setChecked(true);
     })();
@@ -112,7 +114,7 @@ function Index() {
         </section>
       ) : (
         <section className="fade-up mt-8">
-          <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
+          <h1 className="text-[2rem] font-semibold text-foreground">{name ? `Welcome back, ${name}!` : "Welcome back!"}</h1>
           <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
           <Drawer>
             <DrawerTrigger asChild>
