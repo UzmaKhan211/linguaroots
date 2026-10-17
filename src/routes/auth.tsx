@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LogoMark, Wordmark } from "@/components/LogoMark";
+import { LogoMark } from "@/components/LogoMark";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail } from "lucide-react";
+
 import { signupDestination } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -78,45 +78,66 @@ function AuthPage() {
     finally { setBusy(false); }
   };
 
-  return (
-    <div className="mx-auto min-h-screen w-full max-w-[440px] bg-background px-6 pb-10 pt-8">
-      <header className="flex items-center gap-3"><LogoMark className="h-14 w-auto" /><Wordmark className="h-6 w-auto" /></header>
-      {emailOpen && <Button variant="ghost" disabled={busy || checking} className="mt-4 min-h-11 px-0" onClick={() => { setEmailOpen(false); setMsg(null); }}><ArrowLeft aria-hidden /> Back</Button>}
-      <h1 className="mt-6 text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
-      <p className="mt-2 text-muted-foreground">Your progress stays safe on every device.</p>
+  const onForm = (e: React.FormEvent) => {
+    if (!emailOpen) { e.preventDefault(); setEmailOpen(true); setMsg(null); return; }
+    void submit(e);
+  };
 
-      {!emailOpen ? <div className="mt-8 space-y-3">
-        <Button type="button" variant="outline" disabled={busy || checking} onClick={() => social("google")} className="min-h-14 w-full rounded-full border-2 bg-card text-base font-bold">Continue with Google</Button>
-        <Button type="button" variant="outline" disabled={busy || checking} onClick={() => { setEmailOpen(true); setMsg(null); }} className="min-h-14 w-full rounded-full border-2 bg-card text-base font-bold"><Mail aria-hidden /> Continue with email</Button>
-      </div> : (
-      <form onSubmit={submit} className="mt-6 space-y-4">
-        <label className="block text-sm font-semibold">
+  return (
+    <div className="mx-auto min-h-screen w-full max-w-[440px] bg-background px-6 pb-10 pt-10">
+      <LogoMark className="h-16 w-auto" />
+      <h1 className="mt-8 text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
+
+      <Button type="button" variant="outline" disabled={busy || checking} onClick={() => social("google")} className="relative mt-8 min-h-14 w-full rounded-full border bg-card text-base font-bold">
+        <GoogleIcon className="absolute left-6 size-5" /> Continue with Google
+      </Button>
+
+      <div className="my-6 flex items-center gap-4 text-sm font-semibold text-muted-foreground" aria-hidden>
+        <span className="h-px flex-1 bg-border" /> OR <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <form onSubmit={onForm} className="space-y-4">
+        <label className="block font-bold">
           Email
-          <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base" />
+          <input type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 min-h-14 w-full rounded-full border bg-muted px-5 text-base font-normal" />
         </label>
-        <label className="block text-sm font-semibold">
-          Password
-          <input
-            type="password"
-            required
-            minLength={6}
-            autoComplete={mode === "signup" ? "new-password" : "current-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base"
-          />
-        </label>
-        <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-60">
-          {busy ? "Please wait..." : mode === "signup" ? "Create my account" : "Sign in"}
+        {emailOpen && (
+          <label className="fade-up block font-bold">
+            Password
+            <input
+              type="password"
+              required
+              minLength={6}
+              autoFocus
+              placeholder={mode === "signup" ? "At least 6 characters" : "Password"}
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-2 min-h-14 w-full rounded-full border bg-muted px-5 text-base font-normal"
+            />
+          </label>
+        )}
+        <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lift disabled:opacity-60">
+          {busy ? "Please wait..." : !emailOpen ? "Continue" : mode === "signup" ? "Create my account" : "Sign in"}
         </Button>
       </form>
-      )}
 
       <div aria-live="polite">{msg && <p className="mt-4 rounded-2xl bg-card p-3">{msg}</p>}</div>
 
-      <Button variant="link" disabled={busy || checking} type="button" onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setPassword(""); setMsg(null); }} className="mt-4 min-h-11 w-full font-bold text-primary underline">
-        {mode === "signup" ? "I already have an account" : "I'm new, create an account"}
-      </Button>
+      <p className="mt-6 text-center text-muted-foreground">
+        {mode === "signup" ? "Already have an account? " : "New to LinguaRoots? "}
+        <button type="button" disabled={busy || checking} onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setPassword(""); setMsg(null); }} className="min-h-11 font-bold text-foreground underline underline-offset-4">
+          {mode === "signup" ? "Log in" : "Create an account"}
+        </button>
+      </p>
     </div>
+  );
+}
+
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path fill="currentColor" d="M21.35 11.1H12v2.98h5.35c-.23 1.4-1.66 4.1-5.35 4.1-3.22 0-5.85-2.67-5.85-5.96S8.78 6.26 12 6.26c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.68 3.7 14.55 2.8 12 2.8 6.92 2.8 2.8 6.92 2.8 12s4.12 9.2 9.2 9.2c5.31 0 8.83-3.73 8.83-8.99 0-.6-.07-1.06-.15-1.51z" />
+    </svg>
   );
 }
