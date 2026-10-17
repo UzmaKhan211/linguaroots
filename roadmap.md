@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Simplify sign-up with progressive disclosure and a dedicated companion step; verify saving and returning-account flow
+- [x] Simplify sign-up with progressive disclosure and a dedicated companion step; verify saving and returning-account flow
 - [x] Phase 1 – look, content loading, Home, Languages
 - [x] Phase 2 – warm-up and conversation
 - [x] Phase 3 – say-it step, closeness score, /lab calibration
