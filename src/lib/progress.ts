@@ -66,7 +66,7 @@ export function getResume(scenarioId: string): Resume | null {
 }
 export function saveResume(scenarioId: string, r: Resume | null) {
   set(resumeKey(scenarioId), r && r.history.length ? JSON.stringify(r) : null);
-  void pushScenario(scenarioId);
+  void pushResume(scenarioId);
 }
 
 export function isWarmupDone(scenarioId: string) {
@@ -74,21 +74,21 @@ export function isWarmupDone(scenarioId: string) {
 }
 export function markWarmupDone(scenarioId: string) {
   set(warmKey(scenarioId), "1");
-  void pushScenario(scenarioId);
+  void pushStep(scenarioId, "words");
 }
 export function isPhrasesDone(scenarioId: string) {
   return get(phraseKey(scenarioId)) === "1";
 }
 export function markPhrasesDone(scenarioId: string) {
   set(phraseKey(scenarioId), "1");
-  void pushScenario(scenarioId);
+  void pushStep(scenarioId, "phrases");
 }
 export function completedCount(scenarioId: string) {
   return Number(get(doneKey(scenarioId)) ?? 0) || 0;
 }
 export function markScenarioCompleted(scenarioId: string) {
   set(doneKey(scenarioId), String(completedCount(scenarioId) + 1));
-  void pushScenario(scenarioId);
+  void pushStep(scenarioId, "conversation");
 }
 
 export function isOnboarded() {
@@ -148,18 +148,26 @@ export async function syncWithAccount(scenarioIds: string[]) {
   ]);
   const remote = new Map((rows ?? []).map((r) => [r.scenario_id, { warmupDone: r.warmup_done, phrasesDone: r.phrases_done, completed: r.completed_count, resume: r.resume as unknown }]));
   const ids = new Set([...scenarioIds, ...remote.keys()]);
-  const upserts = [...ids].map((id) => {
-    const m = mergeProgress({ warmupDone: isWarmupDone(id), completed: completedCount(id) }, remote.get(id));
-    set(warmKey(id), m.warmupDone ? "1" : null);
-    set(doneKey(id), m.completed ? String(m.completed) : null);
-    const phrasesDone = isPhrasesDone(id) || !!remote.get(id)?.phrasesDone;
-    set(phraseKey(id), phrasesDone ? "1" : null);
-    const rr = remote.get(id)?.resume;
+  for (const id of ids) {
+    const r = remote.get(id);
+    // Device-only completions go through the backend's in-order check.
+    if (isWarmupDone(id) && !r?.warmupDone) await pushStep(id, "words");
+    if (isPhrasesDone(id) && !r?.phrasesDone) await pushStep(id, "phrases");
+    if (completedCount(id) > 0 && !(r?.completed)) await pushStep(id, "conversation");
+    const rr = r?.resume;
     const resume = pickResume(getResume(id), isResume(rr) ? rr : null);
     set(resumeKey(id), resume ? JSON.stringify(resume) : null);
-    return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, phrases_done: phrasesDone, completed_count: m.completed, resume, updated_at: new Date().toISOString() };
-  });
-  if (upserts.length) await supabase.from("scenario_progress").upsert(upserts);
+    if (resume && resume !== rr) await pushResume(id);
+  }
+  // The account is the source of truth for completion after merging.
+  const { data: fresh } = await supabase.from("scenario_progress").select("*").eq("user_id", uid);
+  const freshMap = new Map((fresh ?? []).map((r) => [r.scenario_id, r]));
+  for (const id of ids) {
+    const f = freshMap.get(id);
+    set(warmKey(id), f?.warmup_done ? "1" : null);
+    set(phraseKey(id), f?.phrases_done ? "1" : null);
+    set(doneKey(id), f?.completed_count ? String(f.completed_count) : null);
+  }
 
   await syncRewards(uid);
 
