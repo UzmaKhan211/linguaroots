@@ -321,7 +321,7 @@ function Talk() {
           <p className="mt-1 font-display text-xl font-semibold">
             {chosen.roman}{" "}
             <span className="inline-block align-middle">
-              <AudioButton file={chosen.audioFile} label="Hear it first" iconOnly bare />
+              <AudioButton file={chosen.audioFile} label="Hear it first" iconOnly bare speaker />
             </span>
           </p>
           <p className="text-sm text-muted-foreground">{chosen.english}</p>
