@@ -35,18 +35,19 @@ async function currentUserId() {
   return data.session?.user.id ?? null;
 }
 
-async function pushScenario(scenarioId: string) {
+type Step = "words" | "phrases" | "conversation";
+
+/** Completion is recorded by the backend, which checks lessons happen in order. */
+async function pushStep(scenarioId: string, step: Step) {
   const uid = await currentUserId();
   if (!uid) return;
-  await supabase.from("scenario_progress").upsert({
-    user_id: uid,
-    scenario_id: scenarioId,
-    warmup_done: isWarmupDone(scenarioId),
-    phrases_done: isPhrasesDone(scenarioId),
-    completed_count: completedCount(scenarioId),
-    resume: getResume(scenarioId),
-    updated_at: new Date().toISOString(),
-  });
+  await supabase.rpc("complete_lesson", { _scenario: scenarioId, _step: step });
+}
+
+async function pushResume(scenarioId: string) {
+  const uid = await currentUserId();
+  if (!uid) return;
+  await supabase.rpc("save_resume", { _scenario: scenarioId, _resume: getResume(scenarioId) as never });
 }
 
 /** A conversation left part way: the lines shown so far and the spoken/skipped tally. */
