@@ -142,6 +142,9 @@ export function SayIt({
   };
 
   const stop = () => rec.current?.state === "recording" && rec.current.stop();
+  const playTake = () => {
+    if (takeUrl) void new Audio(takeUrl).play();
+  };
   const passed = score !== null && passes(score, passMark);
   const selfCheck = noRef || !!micError || showSelfCheck(fails);
 
