@@ -155,11 +155,11 @@ export function SayIt({
           {takeUrl && phase === "scored" && !passed && (
             <Button
               type="button"
-              variant="audio"
+              variant="ghost"
               size="icon"
               onClick={playTake}
               aria-label="Hear yourself"
-              className="size-11 shrink-0 rounded-full"
+              className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark"
             >
               <Play className="size-5 fill-current" aria-hidden />
             </Button>

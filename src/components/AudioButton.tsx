@@ -104,7 +104,7 @@ const playWhenFree = (src: () => string, alive: () => boolean, onStart: () => vo
 };
 
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
-export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean }) {
+export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false, bare = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean; bare?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -191,11 +191,11 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
 
   return (
     <Button
-      variant="audio"
+      variant={bare ? "ghost" : "audio"}
       type="button"
       size={iconOnly ? "icon" : undefined}
       aria-label={iconOnly ? (playing ? "Playing" : label) : undefined}
-      className={iconOnly ? "size-11 shrink-0 rounded-full" : undefined}
+      className={iconOnly ? (bare ? "size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6" : "size-11 shrink-0 rounded-full") : undefined}
       onClick={() => {
         const a = ref.current;
         if (!a) return;
