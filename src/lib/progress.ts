@@ -150,11 +150,11 @@ export async function syncWithAccount(scenarioIds: string[]) {
 
   await syncRewards(uid);
 
+  // Setup is finished on the account only by finishOnboarding, so a brand-new
+  // account never inherits "done" from this device and always sees the companion step.
   if (profile?.onboarded_at && !isOnboarded()) {
     set(PREFS_KEY, JSON.stringify({ relative: profile.relative ?? undefined, ageConfirmed: profile.age_confirmed }));
     set(ONBOARD_KEY, "1");
-  } else {
-    await pushProfile();
   }
 }
 
