@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Clock } from "lucide-react";
+import { Volume2, Clock, Play, Pause } from "lucide-react";
 import { fetchLessonAudio } from "@/lib/lessonAudio";
 import { Button } from "@/components/ui/button";
 
@@ -104,7 +104,7 @@ const playWhenFree = (src: () => string, alive: () => boolean, onStart: () => vo
 };
 
 /** Plays a clip from /audio/<language>/<file> (or from storage if it was added on the admin page). */
-export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false, bare = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean; bare?: boolean }) {
+export function AudioButton({ file, language = "khowar", label = "Play", autoPlay = false, iconOnly = false, bare = false, playPause = false }: { file: string; language?: string; label?: string; autoPlay?: boolean; iconOnly?: boolean; bare?: boolean; playPause?: boolean }) {
   const ref = useRef<HTMLAudioElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -194,17 +194,23 @@ export function AudioButton({ file, language = "khowar", label = "Play", autoPla
       variant={bare ? "ghost" : "audio"}
       type="button"
       size={iconOnly ? "icon" : undefined}
-      aria-label={iconOnly ? (playing ? "Playing" : label) : undefined}
+      aria-label={iconOnly ? (playing ? (playPause ? "Pause" : "Playing") : label) : undefined}
       className={iconOnly ? (bare ? "size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6" : "size-11 shrink-0 rounded-full") : undefined}
       onClick={() => {
         const a = ref.current;
         if (!a) return;
+        if (playPause && playing) {
+          stopShared();
+          a.pause();
+          setPlaying(false);
+          return;
+        }
         stopShared();
         a.currentTime = 0;
         a.play().then(() => setPlaying(true)).catch(() => setMissing(true));
       }}
     >
-      <Volume2 className={iconOnly && playing ? "size-5 animate-pulse motion-reduce:animate-none" : "size-5"} aria-hidden />
+      {playPause ? (playing ? <Pause className="size-6 fill-current" aria-hidden /> : <Play className="size-6 fill-current" aria-hidden />) : <Volume2 className={iconOnly && playing ? "size-5 animate-pulse motion-reduce:animate-none" : "size-5"} aria-hidden />}
       {!iconOnly && <> {playing ? "Playing…" : label}</>}
     </Button>
   );
