@@ -199,7 +199,7 @@ export function SayIt({
           )}
         </Button>
         )}
-        <p className={`${compact ? "col-span-2 justify-center text-sm" : "text-base"} flex items-center gap-1.5 font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
+        <p className={`${compact ? "col-span-2 justify-center text-sm" : "text-base"} ${phase === "scored" && passed ? "hidden" : "flex"} items-center gap-1.5 font-bold`} aria-live="polite">
           {phase === "recording"
             ? "Listening… tap to stop"
             : phase === "scoring"
