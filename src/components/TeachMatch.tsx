@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Sparkles, Volume2 } from "lucide-react";
+import { ArrowLeft, Check, PartyPopper, Sparkles, Volume2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import type { Scenario, WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
@@ -49,12 +49,17 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   const roundDone = current.length > 0 && current.every((it) => matched.has(it.id));
   const isLast = round + 1 >= rounds.length;
 
+  const [complete, setComplete] = useState(false);
   const finish = () => {
     if (!isLast || !roundDone) return;
     if (isWords) markWarmupDone(scenario.id);
     else markPhrasesDone(scenario.id);
     earn("warmup", `${scenario.id}:${kind}`);
     playCelebrate();
+    setComplete(true);
+    window.scrollTo({ top: 0 });
+  };
+  const goNext = () => {
     if (isWords) navigate({ to: "/scenario/$scenarioId/phrases", params: { scenarioId: scenario.id } });
     else navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
@@ -94,6 +99,69 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   };
 
   if (!items.length) return null;
+
+  if (complete) {
+    const steps = [
+      { n: 1, label: "Words", state: isWords ? "done" : "done" },
+      { n: 2, label: "Phrases", state: isWords ? "next" : "done" },
+      { n: 3, label: "Conversation", state: isWords ? "later" : "next" },
+    ] as const;
+    return (
+      <AppShell lesson>
+        <div className="fade-up flex min-h-[70vh] flex-col items-center pt-8 text-center">
+          <span className="flex size-20 items-center justify-center rounded-full bg-leaf-soft text-primary">
+            <PartyPopper className="size-10" aria-hidden />
+          </span>
+          <p className="mt-6 text-sm font-bold uppercase tracking-wider text-accent">
+            {isWords ? "Lesson 1 complete" : "Lesson 2 complete"}
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-semibold">{isWords ? "You know the words!" : "Phrases done!"}</h1>
+          <p className="mt-2 font-bold text-primary">+20 XP</p>
+          <p className="mt-4 text-lg text-muted-foreground">
+            {isWords
+              ? "Next, hear how these words come together in everyday phrases."
+              : "You're ready to put it all together in a real conversation."}
+          </p>
+          <ol className="mt-8 w-full space-y-2 text-left" aria-label="Unit progress">
+            {steps.map((s) => (
+              <li
+                key={s.n}
+                className={`flex items-center gap-3 rounded-2xl border-2 px-4 py-3 ${
+                  s.state === "next" ? "border-primary bg-card" : "border-border bg-card"
+                } ${s.state === "later" ? "opacity-60" : ""}`}
+              >
+                <span
+                  className={`flex size-9 shrink-0 items-center justify-center rounded-full font-bold ${
+                    s.state === "done" ? "bg-primary text-primary-foreground" : s.state === "next" ? "bg-leaf-soft text-primary" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {s.state === "done" ? <Check className="size-5" aria-hidden /> : s.n}
+                </span>
+                <span className="flex-1 font-semibold">Lesson {s.n}: {s.label}</span>
+                <span className="text-sm font-bold text-muted-foreground">
+                  {s.state === "done" ? "Done" : s.state === "next" ? "Up next" : ""}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <button
+            type="button"
+            onClick={goNext}
+            className="mt-8 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
+          >
+            {isWords ? "Start Lesson 2: Phrases" : "Start Lesson 3: Conversation"}
+          </button>
+          <Link
+            to="/scenario/$scenarioId"
+            params={{ scenarioId: scenario.id }}
+            className="mt-3 inline-flex min-h-11 items-center font-semibold text-muted-foreground"
+          >
+            Back to unit
+          </Link>
+        </div>
+      </AppShell>
+    );
+  }
 
   if (learnAt < current.length) {
     const it = current[learnAt]!;
@@ -252,7 +320,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
           onClick={nextRound}
           className="fade-up mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
         >
-          {isLast ? (isWords ? "Go to Lesson 2: Phrases" : "Go to Lesson 3: Conversation") : isWords ? "Next words" : "Next phrases"}
+          {isLast ? "Finish lesson" : isWords ? "Next words" : "Next phrases"}
         </button>
       )}
     </AppShell>
