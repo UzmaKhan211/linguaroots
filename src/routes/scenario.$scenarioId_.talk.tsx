@@ -247,9 +247,13 @@ function Talk() {
           <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restoredAt.current} />
         ))}
       </ol>
+      <div ref={endRef} />
 
+      {/* Pinned reply stage: stays at the bottom like a messaging app, so no scrolling. */}
+      {(step.type === "choose" || chosen) && !speaking && (
+        <div className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] border-t bg-background/95 px-5 pb-5 pt-3 backdrop-blur">
       {step.type === "choose" && !chosen && !speaking && (
-        <section className="fade-up mt-6">
+        <section className="fade-up">
           <p className="font-bold text-muted-foreground">
             {step.options.length > 1 ? "Select a response of your choice" : "Respond by saying"}
           </p>
