@@ -193,7 +193,7 @@ export function SayIt({
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Try again"}
           variant="ghost"
-          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 text-bark hover:bg-sun-soft hover:text-bark disabled:opacity-60 ${compact ? "size-14" : "size-20"}`}
+          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 text-bark hover:bg-sun-soft hover:text-bark disabled:opacity-60 [&_svg]:size-10 ${compact ? "size-14" : "size-20"}`}
         >
           {phase === "recording" ? (
             <Square className="relative size-8 fill-current motion-safe:animate-pulse" aria-hidden />
