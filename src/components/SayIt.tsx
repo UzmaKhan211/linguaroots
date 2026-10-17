@@ -148,10 +148,34 @@ export function SayIt({
   return (
     <div className={compact ? "mt-3 space-y-2" : "mt-5 space-y-4"}>
       <div className={compact ? "grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1" : "flex flex-col items-center gap-3"}>
-        <div className={compact ? "flex h-8 min-w-0 items-center justify-center" : "flex h-14 w-full items-center justify-center"} aria-hidden>
-          {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
+        <div className={compact ? "flex min-h-11 min-w-0 items-center justify-center gap-2" : "flex min-h-14 w-full items-center justify-center gap-3"}>
+          {takeUrl && phase === "scored" && !passed && (
+            <Button
+              type="button"
+              variant="audio"
+              size="icon"
+              onClick={playTake}
+              aria-label="Hear yourself"
+              className="size-11 shrink-0 rounded-full"
+            >
+              <Play className="size-5 fill-current" aria-hidden />
+            </Button>
+          )}
+          <div className={compact ? "flex h-8 min-w-0 flex-1 items-center justify-center" : "flex h-14 min-w-0 flex-1 items-center justify-center"} aria-hidden>
+            {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
+          </div>
         </div>
-        {phase === "scored" && passed ? (
+        {phase === "scored" && passed && takeUrl ? (
+          <Button
+            type="button"
+            variant="audio"
+            onClick={playTake}
+            aria-label="Hear yourself"
+            className={`fade-up relative flex shrink-0 items-center justify-center rounded-full bg-bark p-0 text-primary-foreground shadow-lift [&_svg]:size-8 ${compact ? "size-14" : "size-20"}`}
+          >
+            <Play className="ml-1 fill-current" aria-hidden />
+          </Button>
+        ) : phase === "scored" && passed ? (
           <div
             role="img"
             aria-label="Said correctly"
@@ -164,7 +188,7 @@ export function SayIt({
           type="button"
           onClick={phase === "recording" ? stop : start}
           disabled={phase === "scoring"}
-          aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Record again"}
+          aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Try again"}
           variant="audio"
           className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-7 ${compact ? "size-14" : "size-20"} ${
             phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
@@ -182,14 +206,14 @@ export function SayIt({
           )}
         </Button>
         )}
-        <p className={`${compact ? "col-span-2 text-center text-sm" : "text-base"} font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
+        <p className={`${compact ? "col-span-2 justify-center text-sm" : "text-base"} flex items-center gap-1.5 font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
           {phase === "recording"
             ? "Listening… tap to stop"
             : phase === "scoring"
               ? "Listening closely…"
               : phase === "scored"
                 ? passed
-                  ? "Well said!"
+                  ? <><CheckCircle2 className="size-5" aria-hidden /> Well said!</>
                   : "Tap to try again"
                 : "Tap and say it"}
         </p>
@@ -197,16 +221,6 @@ export function SayIt({
 
       {modelPct !== null && (
         <p className="text-sm text-muted-foreground" aria-live="polite">Getting the listening tool ready (one time only)… {modelPct}%</p>
-      )}
-
-      {takeUrl && phase !== "recording" && (
-        <button
-          type="button"
-          onClick={() => void new Audio(takeUrl).play()}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 bg-card px-4 font-bold"
-        >
-          <Play className="size-4" aria-hidden /> Hear yourself
-        </button>
       )}
 
       <div aria-live="polite">
