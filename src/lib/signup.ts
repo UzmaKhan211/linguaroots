@@ -1,5 +1,9 @@
 import { avatarSrc } from "@/lib/avatars";
 
+export function hasSignupEmail(email: string) {
+  return email.trim().length > 0;
+}
+
 /** Email ownership is confirmed before a new learner chooses a password. */
 export function signupEmailOptions(origin: string) {
   return { shouldCreateUser: true, emailRedirectTo: `${origin}/create-password` };

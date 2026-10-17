@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, EyeOff, Mail } from "lucide-react";
 
-import { signupDestination, signupEmailOptions } from "@/lib/signup";
+import { hasSignupEmail, signupDestination, signupEmailOptions } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
@@ -136,7 +136,7 @@ function AuthPage() {
             </div>
           </div>
         )}
-        <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lift disabled:opacity-60">
+        <Button type="submit" disabled={busy || checking || (mode === "signup" && !hasSignupEmail(email))} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lift disabled:opacity-60">
           {busy ? "Please wait..." : mode === "signup" ? "Verify my email" : !emailOpen ? "Continue" : "Sign in"}
         </Button>
       </form>
