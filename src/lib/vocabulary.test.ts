@@ -35,7 +35,7 @@ describe("dictionary content", () => {
     const words = filterVocabulary(vocabulary, "All", "").map((w) => w.roman);
     expect(words.slice(0, 4)).toEqual(["Achi", "Awa", "Awa di", "Baba"]);
     expect(words.at(-1)).toBe("Zhibosi");
-    expect(words.indexOf("Shapik")).toBeLessThan(words.indexOf("shaw"));
+    expect(words.indexOf("Shapik")).toBeLessThan(words.indexOf("Shaw"));
   });
   it("merges duplicate words regardless of case or spaces and keeps both learning sources", () => {
     const csv = "item_id,scenario_id,khowar_roman,english,category,audio_file,source_turn_id\nfirst,one,Test word,Meaning,Family,one.mp3,t1\nsecond,two,TEST  WORD,Meaning,Family,two.mp3,t2";
