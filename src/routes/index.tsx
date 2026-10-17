@@ -72,6 +72,14 @@ function Index() {
   const wordsLearned = learnedWords.length;
   const rest = isNew ? scenarios.filter((s) => s.id !== featured.id) : scenarios;
 
+  if (!checked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background" role="status" aria-label="Loading">
+        <LogoMark className="float-soft h-20 w-auto" />
+      </div>
+    );
+  }
+
   return (
     <AppShell>
       <header className="fade-up flex items-center gap-3">
