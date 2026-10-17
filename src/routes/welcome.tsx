@@ -133,7 +133,7 @@ function EndangeredFact({ onNext }: { onNext: () => void }) {
         <p className="pop-in mt-4 text-lg" role="status">
           <span className="font-display text-3xl font-semibold text-accent">About 4 in 10</span>
           <br />
-          are endangered, according to UNESCO. Many are indigenous languages kept alive by families at home.
+          are endangered, according to UNESCO.
         </p>
       )}
       <Primary onClick={onNext} disabled={!shown}>Continue</Primary>
