@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { playCorrect, playIncorrect } from "@/lib/sfx";
-import { Mic, Square, Play, RotateCcw, CheckCircle2 } from "lucide-react";
+import { Mic, Square, Play, RotateCcw, CheckCircle2, Check } from "lucide-react";
 import { closenessWithCohort, feedbackMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
 import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
 import { loadSpeech, onSpeechProgress, scoreSpeech, speechReady } from "@/lib/speechClient";
@@ -152,7 +152,7 @@ export function SayIt({
     <div className={compact ? "mt-3 space-y-2" : "mt-5 space-y-4"}>
       <div className={compact ? "grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1" : "flex flex-col items-center gap-3"}>
         <div className={compact ? "flex min-h-11 min-w-0 items-center justify-center gap-2" : "flex min-h-14 w-full items-center justify-center gap-3"}>
-          {takeUrl && phase === "scored" && !passed && (
+          {takeUrl && phase === "scored" && (
             <Button
               type="button"
               variant="ghost"
@@ -168,23 +168,13 @@ export function SayIt({
             {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
           </div>
         </div>
-        {phase === "scored" && passed && takeUrl ? (
-          <Button
-            type="button"
-            variant="audio"
-            onClick={playTake}
-            aria-label="Hear yourself"
-            className={`fade-up relative flex shrink-0 items-center justify-center rounded-full bg-bark p-0 text-primary-foreground shadow-lift [&_svg]:size-8 ${compact ? "size-14" : "size-20"}`}
-          >
-            <Play className="ml-1 fill-current" aria-hidden />
-          </Button>
-        ) : phase === "scored" && passed ? (
+        {phase === "scored" && passed ? (
           <div
             role="img"
             aria-label="Said correctly"
-            className={`fade-up flex items-center justify-center rounded-full border-4 border-primary bg-leaf-soft text-primary shadow-lift ${compact ? "size-14" : "size-20"}`}
+            className={`fade-up flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lift ${compact ? "size-14" : "size-20"}`}
           >
-            <CheckCircle2 className="size-10" aria-hidden />
+            <Check className="size-9" strokeWidth={3} aria-hidden />
           </div>
         ) : (
         <Button
@@ -216,7 +206,7 @@ export function SayIt({
               ? "Listening closely…"
               : phase === "scored"
                 ? passed
-                  ? <><CheckCircle2 className="size-5" aria-hidden /> Well said!</>
+                  ? ""
                   : "Try again"
                 : "Tap and say it"}
         </p>
