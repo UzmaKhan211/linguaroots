@@ -12,7 +12,7 @@ export function AppShell({ children, lesson = false }: { children: ReactNode; le
     <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-background">
       {!lesson && (
         <>
-          <header aria-label="LinguaRoots activity" className="fixed inset-x-0 top-0 z-20 mx-auto max-w-[440px] border-b bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+          <header aria-label="LinguaRoots activity" className="fixed inset-x-0 top-0 z-20 mx-auto max-w-[440px] bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
             <div className="flex h-16 items-center justify-between gap-3 px-5">
               <Link to="/" aria-label="LinguaRoots home" className="flex min-h-11 items-center gap-2"><LogoMark className="h-10 w-auto" /><Wordmark className="hidden h-4 w-auto min-[380px]:block" /></Link>
               <RewardsCounter />

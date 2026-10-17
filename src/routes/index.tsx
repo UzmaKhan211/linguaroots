@@ -113,6 +113,7 @@ function Index() {
         </section>
       ) : (
         <section className="fade-up mt-8">
+          <p className="text-sm font-bold uppercase tracking-wider text-accent">Khowar</p>
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
           <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
           <Drawer>
