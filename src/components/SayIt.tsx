@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { playCorrect, playIncorrect } from "@/lib/sfx";
-import { Mic, Square, Play, RotateCcw, CheckCircle2, Check } from "lucide-react";
+import { Mic, Square, Play, Pause, RotateCcw, CheckCircle2, Check } from "lucide-react";
 import { closenessWithCohort, feedbackMessage, passes, showSelfCheck, PASS_MARK } from "@/lib/scoring";
 import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadReference, MIC_CONSTRAINTS } from "@/lib/audio";
 import { loadSpeech, onSpeechProgress, scoreSpeech, speechReady } from "@/lib/speechClient";
@@ -142,9 +142,24 @@ export function SayIt({
   };
 
   const stop = () => rec.current?.state === "recording" && rec.current.stop();
+  const [player, setPlayer] = useState<HTMLAudioElement | null>(null);
   const playTake = () => {
-    if (takeUrl) void new Audio(takeUrl).play();
+    if (player) {
+      player.pause();
+      setPlayer(null);
+      return;
+    }
+    if (!takeUrl) return;
+    const a = new Audio(takeUrl);
+    a.onended = () => setPlayer(null);
+    setPlayer(a);
+    a.play().catch(() => setPlayer(null));
   };
+  useEffect(() => {
+    if (phase !== "scored") player?.pause();
+    if (phase !== "scored") setPlayer(null);
+  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => player?.pause(), [player]);
   const passed = score !== null && passes(score, passMark);
   const selfCheck = noRef || !!micError || showSelfCheck(fails);
 
@@ -158,14 +173,14 @@ export function SayIt({
               variant="ghost"
               size="icon"
               onClick={playTake}
-              aria-label="Hear yourself"
+              aria-label={player ? "Pause your recording" : "Hear yourself"}
               className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6"
             >
-              <Play className="size-6 fill-current" aria-hidden />
+              {player ? <Pause className="size-6 fill-current" aria-hidden /> : <Play className="size-6 fill-current" aria-hidden />}
             </Button>
           )}
           <div className={compact ? "flex h-8 min-w-0 flex-1 items-center justify-center" : "flex h-14 min-w-0 flex-1 items-center justify-center"} aria-hidden>
-            {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
+            {phase === "recording" && stream ? <LiveWave stream={stream} /> : player ? <PlaybackWave audio={player} /> : <IdleWave dim={phase === "scoring"} />}
           </div>
         </div>
         {phase === "scored" && passed ? (
@@ -282,6 +297,49 @@ export function SayIt({
 }
 
 const BARS = 28;
+
+/** Bars that move with the learner's own take while it plays back. */
+function PlaybackWave({ audio }: { audio: HTMLAudioElement }) {
+  const [levels, setLevels] = useState<number[]>(() => Array(BARS).fill(0.08));
+  useEffect(() => {
+    let ctx: AudioContext | null = null;
+    let raf = 0;
+    try {
+      ctx = new AudioContext();
+      const src = ctx.createMediaElementSource(audio);
+      const an = ctx.createAnalyser();
+      an.fftSize = 512;
+      src.connect(an);
+      an.connect(ctx.destination);
+      const buf = new Uint8Array(an.fftSize);
+      let last = 0;
+      const tick = (t: number) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < 60) return;
+        last = t;
+        an.getByteTimeDomainData(buf);
+        let sum = 0;
+        for (const v of buf) sum += ((v - 128) / 128) ** 2;
+        const lvl = Math.min(1, Math.sqrt(sum / buf.length) * 4);
+        setLevels((prev) => [...prev.slice(1), Math.max(0.08, lvl)]);
+      };
+      raf = requestAnimationFrame(tick);
+    } catch {
+      /* playback still works without the bars */
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      void ctx?.close();
+    };
+  }, [audio]);
+  return (
+    <div className="flex h-full w-full items-center justify-between gap-[2px] overflow-hidden">
+      {levels.map((v, i) => (
+        <span key={i} className="min-w-[2px] max-w-1.5 flex-1 rounded-full bg-bark" style={{ height: `${Math.round(v * 100)}%` }} />
+      ))}
+    </div>
+  );
+}
 
 /** Bars that move with the learner's voice while recording. */
 function LiveWave({ stream }: { stream: MediaStream }) {
