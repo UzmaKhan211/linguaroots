@@ -310,11 +310,6 @@ function PlaybackWave({ audio }: { audio: HTMLAudioElement }) {
     }, 70);
     return () => window.clearInterval(id);
   }, [audio]);
-  return () => {
-      cancelAnimationFrame(raf);
-      void ctx?.close();
-    };
-  }, [audio]);
   return (
     <div className="flex h-full w-full items-center justify-between gap-[2px] overflow-hidden">
       {levels.map((v, i) => (
