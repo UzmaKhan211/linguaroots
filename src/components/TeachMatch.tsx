@@ -99,7 +99,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
     const it = current[learnAt]!;
     const lastCard = learnAt + 1 >= current.length;
     return (
-      <AppShell>
+      <AppShell lesson>
         <Link
           to="/scenario/$scenarioId"
           params={{ scenarioId: scenario.id }}
@@ -163,7 +163,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
     }`;
 
   return (
-    <AppShell>
+    <AppShell lesson>
       <Link
         to="/scenario/$scenarioId"
         params={{ scenarioId: scenario.id }}

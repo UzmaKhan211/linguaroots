@@ -3,11 +3,13 @@ import { Home, UserRound, BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
 import { RequireAccount } from "@/components/RequireAccount";
 
-export function AppShell({ children }: { children: ReactNode }) {
+/** `lesson` hides the bottom bar so a stray tap cannot pull learners out mid-lesson. */
+export function AppShell({ children, lesson = false }: { children: ReactNode; lesson?: boolean }) {
   return (
     <RequireAccount>
     <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-background">
-      <main className="flex-1 px-5 pb-28 pt-6">{children}</main>
+      <main className={lesson ? "flex-1 px-5 pb-10 pt-6" : "flex-1 px-5 pb-28 pt-6"}>{children}</main>
+      {!lesson && (
       <nav
         aria-label="Main"
         className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] border-t bg-card/95 backdrop-blur"
@@ -18,6 +20,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <NavItem to="/profile" label="Profile" icon={<UserRound className="size-6" aria-hidden />} />
         </ul>
       </nav>
+      )}
     </div>
     </RequireAccount>
   );
@@ -29,10 +32,13 @@ function NavItem({ to, label, icon }: { to: "/" | "/dictionary" | "/profile"; la
       <Link
         to={to}
         activeOptions={{ exact: true }}
-        className="flex min-h-16 flex-col items-center justify-center gap-0.5 text-sm font-semibold text-muted-foreground data-[status=active]:text-primary"
+        className="group relative flex min-h-16 flex-col items-center justify-center gap-1 text-sm font-semibold text-muted-foreground transition-colors data-[status=active]:font-bold data-[status=active]:text-primary"
         activeProps={{ "aria-current": "page" }}
       >
-        {icon}
+        <span aria-hidden className="absolute inset-x-6 top-0 h-1 scale-x-0 rounded-b-full bg-primary transition-transform group-data-[status=active]:scale-x-100 motion-reduce:transition-none" />
+        <span className="flex h-8 w-14 items-center justify-center rounded-full transition-colors group-data-[status=active]:bg-primary/15 [&>svg]:transition-transform group-data-[status=active]:[&>svg]:scale-110 group-data-[status=active]:[&>svg]:stroke-[2.5] motion-reduce:[&>svg]:transition-none">
+          {icon}
+        </span>
         <span>{label}</span>
       </Link>
     </li>

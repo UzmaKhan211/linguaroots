@@ -192,7 +192,7 @@ function Talk() {
   };
 
   return (
-    <AppShell>
+    <AppShell lesson>
       <Link
         to="/scenario/$scenarioId"
         params={{ scenarioId: scenario.id }}
