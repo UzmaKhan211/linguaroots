@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { completedCount, getPrefs, isOnboarded, isPhrasesDone, isWarmupDone, scenarioStage } from "@/lib/progress";
+import { completedCount, getPrefs, isPhrasesDone, isWarmupDone, scenarioStage } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";

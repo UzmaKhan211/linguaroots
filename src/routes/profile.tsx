@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronRight, Globe2, RotateCcw, UserRound } from "lucide-react";
+import { ChevronRight, Globe2, RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { supabase } from "@/integrations/supabase/client";
