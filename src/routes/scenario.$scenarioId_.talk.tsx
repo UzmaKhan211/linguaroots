@@ -351,7 +351,6 @@ function Talk() {
           </div>
         </section>
       )}
-      <div ref={endRef} />
     </AppShell>
   );
 }
