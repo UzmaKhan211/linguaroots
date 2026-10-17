@@ -166,7 +166,7 @@ function Index() {
       )}
 
       {isNew && rest.length > 0 && (
-        <h2 className="mt-8 text-sm font-bold uppercase tracking-wider text-muted-foreground">Coming up next</h2>
+        <h2 className="mt-8 text-sm font-bold uppercase tracking-wider text-muted-foreground">More units to explore</h2>
       )}
 
       <ul className={`${isNew ? "mt-3" : "mt-6"} space-y-4`}>

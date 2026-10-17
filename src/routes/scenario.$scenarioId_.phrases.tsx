@@ -1,7 +1,6 @@
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getPhrases, getScenario } from "@/lib/content";
-import { isWarmupDone } from "@/lib/progress";
+import { LessonAccess } from "@/components/LessonAccess";
 import { TeachMatch } from "@/components/TeachMatch";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/phrases")({
@@ -29,12 +28,5 @@ export const Route = createFileRoute("/scenario/$scenarioId_/phrases")({
 
 function PhrasesLesson() {
   const { scenario, items } = Route.useLoaderData();
-  const navigate = useNavigate();
-  const [ok, setOk] = useState(false);
-  useEffect(() => {
-    if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
-    else setOk(true);
-  }, [scenario.id, navigate]);
-  if (!ok) return null;
-  return <TeachMatch scenario={scenario} items={items} kind="phrases" />;
+  return <LessonAccess key={scenario.id} scenarioId={scenario.id} lesson={2}><TeachMatch scenario={scenario} items={items} kind="phrases" /></LessonAccess>;
 }

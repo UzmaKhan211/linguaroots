@@ -6,7 +6,8 @@ import { AudioButton, useAutoAudioBusy } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, resumeFrom, stepAt, type Step } from "@/lib/conversation";
-import { getResume, isPhrasesDone, markScenarioCompleted, saveResume } from "@/lib/progress";
+import { getResume, markScenarioCompleted, saveResume } from "@/lib/progress";
+import { LessonAccess } from "@/components/LessonAccess";
 import { playCelebrate, playPhoneRing, playTeaArrival } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { RewardsBadge } from "@/components/RewardsBadge";
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/scenario/$scenarioId_/talk")({
       ],
     };
   },
-  component: Talk,
+  component: TalkLesson,
 });
 
 const relative: Record<string, string> = { grandmother: "Grandma", grandfather: "Grandpa" };
@@ -41,6 +42,11 @@ const relative: Record<string, string> = { grandmother: "Grandma", grandfather: 
 const cohortUrls = turns
   .filter((t) => t.speaker === "learner" && (t.referenceFile || t.audioFile))
   .map((t) => `/audio/khowar/${t.referenceFile || t.audioFile}`);
+
+function TalkLesson() {
+  const { scenario } = Route.useLoaderData();
+  return <LessonAccess key={scenario.id} scenarioId={scenario.id} lesson={3}><Talk /></LessonAccess>;
+}
 
 function Talk() {
   const { scenario } = Route.useLoaderData();
@@ -65,10 +71,6 @@ function Talk() {
     earn("scenario");
     playCelebrate();
   }, [isEnd, scenario.id]);
-
-  useEffect(() => {
-    if (!isPhrasesDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
-  }, [scenario.id, navigate]);
 
   // Pick up a conversation left part way.
   useEffect(() => {

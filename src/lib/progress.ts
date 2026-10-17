@@ -192,5 +192,5 @@ export function scenarioStage(wordsDone: boolean, completed: number, phrasesDone
 export function lessonUnlocked(lesson: 1 | 2 | 3, wordsDone: boolean, phrasesDone: boolean) {
   if (lesson === 1) return true;
   if (lesson === 2) return wordsDone;
-  return phrasesDone;
+  return wordsDone && phrasesDone;
 }

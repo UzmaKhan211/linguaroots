@@ -15,6 +15,18 @@ describe("guest progress moving into an account", () => {
 import { lessonUnlocked, scenarioStage } from "./progress";
 import { describe as d2, it as i2, expect as e2 } from "vitest";
 d2("scenarioStage", () => {
+  i2("Lesson 1 opens in any unit without previous progress", () => {
+    e2(lessonUnlocked(1, false, false)).toBe(true);
+  });
+  i2("Lesson 2 needs completed words, not just an opened lesson", () => {
+    e2(lessonUnlocked(2, false, false)).toBe(false);
+    e2(lessonUnlocked(2, true, false)).toBe(true);
+  });
+  i2("Lesson 3 requires both preceding lessons", () => {
+    e2(lessonUnlocked(3, false, true)).toBe(false);
+    e2(lessonUnlocked(3, true, false)).toBe(false);
+    e2(lessonUnlocked(3, true, true)).toBe(true);
+  });
   i2("not started is 0%", () => e2(scenarioStage(false, 0).percent).toBe(0));
   i2("words done is 33%", () => e2(scenarioStage(true, 0).percent).toBe(33));
   i2("phrases done is 67%", () => e2(scenarioStage(true, 0, true).percent).toBe(67));
