@@ -78,6 +78,13 @@
       "when": 1792263030586,
       "tag": "0010_reward_once_per_lesson",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792273498061,
+      "tag": "0011_lock_profile_reward_columns",
+      "breakpoints": true
     }
   ]
 }
