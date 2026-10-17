@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LogoMark, Wordmark } from "@/components/LogoMark";
+import { LogoMark } from "@/components/LogoMark";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail } from "lucide-react";
+
 import { signupDestination } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
