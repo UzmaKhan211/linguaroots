@@ -119,9 +119,31 @@ function Talk() {
   }, [scenario.id]);
 
 
+  // Short scene-setting moment before a fresh conversation (skipped when resuming).
+  const phone = scenario.character === "grandmother";
+  useEffect(() => {
+    if (!ready || intro !== "pending") return;
+    if (history.length > 0) {
+      setIntro("done");
+      return;
+    }
+    setIntro("showing");
+  }, [ready, intro, history.length]);
+  useEffect(() => {
+    if (intro !== "showing") return;
+    if (phone) playPhoneRing();
+    else playTeaArrival();
+    const a = setTimeout(() => setConnected(true), 1300);
+    const b = setTimeout(() => setIntro("done"), 2100);
+    return () => {
+      clearTimeout(a);
+      clearTimeout(b);
+    };
+  }, [intro, phone]);
+
   // Relative's lines appear on their own; walk until replies are needed.
   useEffect(() => {
-    if (!ready || step.type !== "line") return;
+    if (!ready || intro !== "done" || step.type !== "line") return;
     const t = setTimeout(() => {
       setHistory((h) => [...h, step.turn]);
       setStep(afterLine(step.turn, turns));
