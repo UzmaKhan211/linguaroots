@@ -217,7 +217,7 @@ export function SayIt({
               : phase === "scored"
                 ? passed
                   ? <><CheckCircle2 className="size-5" aria-hidden /> Well said!</>
-                  : "Tap to try again"
+                  : "Try again"
                 : "Tap and say it"}
         </p>
       </div>
