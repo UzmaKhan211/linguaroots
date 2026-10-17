@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ChevronRight, Globe2, RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AvatarPicker } from "@/components/AvatarPicker";
+import { ActivityMilestones } from "@/components/ActivityMilestones";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { deleteMyAccount } from "@/lib/account.functions";
@@ -135,6 +136,8 @@ function Profile() {
           </>
         ) : null}
       </section>
+
+      <ActivityMilestones />
 
       <h2 className="mt-8 text-lg font-semibold">Learning</h2>
       <Link to="/languages" className="mt-2 flex min-h-14 items-center gap-3 rounded-3xl border bg-card p-4">

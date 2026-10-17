@@ -4,7 +4,6 @@ import { completedCount, getPrefs, isPhrasesDone, isWarmupDone, scenarioStage } 
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
-import { RewardsBadge } from "@/components/RewardsBadge";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
 import { getWarmup, scenarios } from "@/lib/content";
 import { AudioButton } from "@/components/AudioButton";
@@ -121,7 +120,6 @@ function Index() {
         <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
           <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
-          <RewardsBadge className="mt-4" />
           <Drawer>
             <DrawerTrigger asChild>
               <button
