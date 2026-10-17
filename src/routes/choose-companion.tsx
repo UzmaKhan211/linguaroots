@@ -48,12 +48,14 @@ function ChooseCompanion() {
     if (!user || !selected || busy) return;
     setBusy(true);
     setMessage(null);
+    let saved = false;
     try {
       const { data, error } = await supabase.from("profiles").update({ avatar_path: avatarPathValue(selected) }).eq("id", user.id).select("id").single();
-      if (error || !data) { setMessage("We couldn't save your companion. Please try again."); return; }
-      await navigate({ to: "/choose-language", replace: true });
-    } catch { setMessage("We couldn't save your companion. Please try again."); }
-    finally { setBusy(false); }
+      saved = !error && !!data;
+    } catch { saved = false; }
+    setBusy(false);
+    if (!saved) { setMessage("We couldn't save your companion. Please try again."); return; }
+    void navigate({ to: "/choose-language", replace: true });
   };
 
   return (
