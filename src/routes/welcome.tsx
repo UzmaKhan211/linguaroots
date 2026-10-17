@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Hand } from "lucide-react";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
 
 export const Route = createFileRoute("/welcome")({
@@ -103,23 +103,31 @@ function EndangeredFact({ onNext }: { onNext: () => void }) {
     <>
       <p className="text-sm font-bold uppercase tracking-wider text-accent">Did you know?</p>
       <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">The world speaks about 7,000 languages.</h1>
-      <p className="mt-2 text-lg text-muted-foreground">How many of them are at risk of being lost? Tap to find out.</p>
+      <p className="mt-2 text-lg text-muted-foreground">How many of them are at risk of being lost?</p>
       <button
         type="button"
         onClick={() => setShown(true)}
         aria-label="Reveal how many languages are at risk"
-        className="mt-6 grid grid-cols-10 gap-2 rounded-3xl border bg-card p-5 shadow-soft"
+        className="relative mt-6 grid grid-cols-10 gap-2 rounded-3xl border bg-card p-5 shadow-soft transition-transform active:scale-[0.98] motion-reduce:transition-none"
       >
         {Array.from({ length: 50 }, (_, i) => {
           const atRisk = shown && i % 10 < 4;
           return (
             <span
               key={i}
-              className={`aspect-square rounded-full transition-all duration-500 motion-reduce:transition-none ${atRisk ? "scale-75 bg-accent" : "bg-primary/70"}`}
+              className={`aspect-square rounded-full transition-all duration-500 motion-reduce:transition-none ${atRisk ? "scale-75 bg-accent" : shown ? "bg-primary/70" : "bg-primary/40"}`}
               style={{ transitionDelay: `${(i % 10) * 40 + Math.floor(i / 10) * 30}ms` }}
             />
           );
         })}
+        <span
+          aria-hidden
+          className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-300 motion-reduce:transition-none ${shown ? "opacity-0" : "opacity-100"}`}
+        >
+          <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-5 text-base font-bold text-primary-foreground shadow-soft motion-safe:animate-pulse">
+            <Hand className="size-5" aria-hidden /> Tap to reveal
+          </span>
+        </span>
       </button>
       {shown && (
         <p className="pop-in mt-4 text-lg" role="status">
@@ -128,7 +136,7 @@ function EndangeredFact({ onNext }: { onNext: () => void }) {
           are endangered, according to UNESCO. Many are indigenous languages kept alive by families at home.
         </p>
       )}
-      <Primary onClick={onNext} disabled={!shown}>Continue</Primary>
+      <Primary onClick={shown ? onNext : () => setShown(true)}>{shown ? "Continue" : "Reveal the answer"}</Primary>
     </>
   );
 }
