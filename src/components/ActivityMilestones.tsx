@@ -20,7 +20,7 @@ export function ActivityMilestones() {
     { label: "First conversation", done: activity.talked, Icon: MessageCircle },
   ];
   return (
-    <section className="mt-8" aria-labelledby="activity-title">
+    <section className="mt-8 scroll-mt-[calc(5rem+env(safe-area-inset-top))]" aria-labelledby="activity-title">
       <h2 id="activity-title" className="text-lg font-semibold">Activity &amp; Milestones</h2>
       <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-4 border-y py-5">
         {[
