@@ -282,7 +282,7 @@ function Talk() {
       )}
 
       {chosen && !speaking && (
-        <section className="fade-up mt-6 rounded-3xl border bg-leaf-soft p-5">
+        <section className="fade-up rounded-3xl border bg-leaf-soft p-5">
           <div className="flex items-center justify-between gap-2">
             <p className="flex items-center gap-2 font-bold text-primary">
               <Mic className="size-5" aria-hidden /> {single ? "Respond by saying" : "Say it out loud"}
