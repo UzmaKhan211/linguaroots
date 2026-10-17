@@ -248,6 +248,8 @@ function Talk() {
         ))}
       </ol>
       <div ref={endRef} />
+      {/* Room so the pinned reply stage never covers the newest line. */}
+      {(step.type === "choose" || chosen) && !speaking && <div className={chosen ? "h-80" : "h-56"} aria-hidden />}
 
       {/* Pinned reply stage: stays at the bottom like a messaging app, so no scrolling. */}
       {(step.type === "choose" || chosen) && !speaking && (
