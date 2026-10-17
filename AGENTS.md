@@ -25,3 +25,4 @@
 - Admin access is the `admin` role in `user_roles`, checked with `has_role`; storage writes are gated by that role in policies.
 - Profile (/profile) is the home for name, character avatar, language choice and account settings; /settings redirects there. Avatars are bundled character images in `src/assets/avatars/`, registered in `src/lib/avatars.ts`, and stored as an `avatar:<id>` key in `profiles.avatar_path`; no photo uploads.
 - Registration destinations are determined by account profile state through `src/lib/signup.ts`, with `/choose-companion` before language choice; this keeps email confirmation and OAuth callbacks consistent across devices without repeating setup for existing learners. Profile edits only persist through its Save changes action.
+- Learning screens require a signed-in account via `RequireAccount` (used by AppShell and lesson routes); signed-out visitors go to /welcome. Why: no guest mode, so every learner has synced progress.
