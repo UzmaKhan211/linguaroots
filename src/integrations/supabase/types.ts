@@ -110,6 +110,30 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_grants: {
+        Row: {
+          created_at: string
+          day: string
+          kind: string
+          ref: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          kind: string
+          ref: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          kind?: string
+          ref?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       scenario_progress: {
         Row: {
           completed_count: number
@@ -163,14 +187,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      award_xp: {
-        Args: { _kind: string; _today: string }
-        Returns: {
-          last_active_day: string
-          streak: number
-          xp: number
-        }[]
-      }
+      award_xp:
+        | {
+            Args: { _kind: string; _ref: string; _today: string }
+            Returns: {
+              last_active_day: string
+              streak: number
+              xp: number
+            }[]
+          }
+        | {
+            Args: { _kind: string; _today: string }
+            Returns: {
+              last_active_day: string
+              streak: number
+              xp: number
+            }[]
+          }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
