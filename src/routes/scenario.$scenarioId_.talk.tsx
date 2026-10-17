@@ -395,7 +395,7 @@ function Bubble({ turn, who, autoPlay = false }: { turn: Turn; who: string; auto
         <p className={`text-sm ${me ? "opacity-85" : "text-muted-foreground"}`}>{turn.english}</p>
         {!me && (
           <div className="mt-2">
-            <AudioButton file={turn.audioFile} autoPlay={autoPlay} />
+            <AudioButton file={turn.audioFile} autoPlay={autoPlay} label="Play" iconOnly bare playPause />
           </div>
         )}
       </div>
