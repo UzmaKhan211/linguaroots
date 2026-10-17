@@ -46,7 +46,7 @@ describe("lesson completion", () => {
         fireEvent.click(screen.getByRole("button", { name: kind === "words" ? "Next words" : "Next phrases" }));
       }
       expect(paired).toBe(items.length);
-      fireEvent.click(screen.getByRole("button", { name: kind === "words" ? "Go to Lesson 2: Phrases" : "Go to Lesson 3: Conversation" }));
+      fireEvent.click(screen.getByRole("button", { name: "Finish lesson" }));
       expect(kind === "words" ? wordsDone : phrasesDone).toHaveBeenCalledExactlyOnceWith(scenario.id);
       expect(earn).toHaveBeenCalledExactlyOnceWith("warmup");
     });

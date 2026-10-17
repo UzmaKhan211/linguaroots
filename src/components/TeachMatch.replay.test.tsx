@@ -64,7 +64,7 @@ describe("completed lessons stay available during replay", () => {
         assertAccess();
         if (paired < items.length) fireEvent.click(screen.getByRole("button", { name: "Next words" }));
       }
-      fireEvent.click(screen.getByRole("button", { name: "Go to Lesson 2: Phrases" }));
+      fireEvent.click(screen.getByRole("button", { name: "Finish lesson" }));
       assertAccess();
     });
   }
