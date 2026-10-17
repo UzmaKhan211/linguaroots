@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, PartyPopper, Sparkles, Volume1, Volume2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import type { Scenario, WarmupItem } from "@/lib/content";
@@ -20,12 +20,31 @@ function Dots({ total, at }: { total: number; at: number }) {
   );
 }
 
+/** Only one clip plays at a time: a new tap or action stops the one still playing. */
+let current: { a: HTMLAudioElement; end: () => void } | null = null;
+function stopPlay() {
+  const c = current;
+  current = null;
+  if (c) {
+    c.a.pause();
+    c.end();
+  }
+}
 function play(file: string, onEnd?: () => void) {
+  stopPlay();
   if (!file) return onEnd?.();
   const a = new Audio(`/audio/khowar/${file}`);
-  a.onended = () => onEnd?.();
-  a.onerror = () => onEnd?.();
-  a.play().catch(() => onEnd?.());
+  let done = false;
+  const end = () => {
+    if (done) return;
+    done = true;
+    if (current?.a === a) current = null;
+    onEnd?.();
+  };
+  current = { a, end };
+  a.onended = end;
+  a.onerror = end;
+  a.play().catch(end);
 }
 
 export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; items: WarmupItem[]; kind: "words" | "phrases" }) {
@@ -64,6 +83,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
     window.scrollTo({ top: 0 });
   };
   const goNext = () => {
+    stopPlay();
     if (isWords) navigate({ to: "/scenario/$scenarioId/phrases", params: { scenarioId: scenario.id } });
     else navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });
   };
@@ -93,6 +113,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   };
 
   const nextRound = () => {
+    stopPlay();
     if (isLast) return finish();
     setRound(round + 1);
     setLearnAt(0);
@@ -101,6 +122,8 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
     setLastNote(null);
     setMessage(pairPrompt);
   };
+
+  useEffect(() => stopPlay, []);
 
   if (!items.length) return null;
 
@@ -195,6 +218,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
               variant="audio"
               type="button"
               onClick={() => {
+                if (hearing) return stopPlay();
                 setHearing(true);
                 play(it.audioFile, () => setHearing(false));
               }}
@@ -215,6 +239,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
         <button
           type="button"
           onClick={() => {
+            stopPlay();
             const n = learnAt + 1;
             setLearnAt(n);
           }}
@@ -306,6 +331,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
                   disabled={done}
                   aria-pressed={sel}
                   onClick={() => {
+                    stopPlay();
                     setPickEn(it.id);
                     tryPair(pickKh, it.id);
                   }}
