@@ -57,6 +57,13 @@
       "when": 1792190781641,
       "tag": "0007_grant_profiles_update",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792251176417,
+      "tag": "0008_add_phrases_done",
+      "breakpoints": true
     }
   ]
 }

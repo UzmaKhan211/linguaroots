@@ -3,6 +3,7 @@ import { parseCsv } from "./csv";
 import scenariosCsv from "@/content/khowar/Scenarios.csv?raw";
 import turnsCsv from "@/content/khowar/Turns.csv?raw";
 import warmupCsv from "@/content/khowar/warm_up.csv?raw";
+import phrasesCsv from "@/content/khowar/phrases.csv?raw";
 
 export type Quality = "best" | "acceptable" | "less-fitting";
 
@@ -110,6 +111,7 @@ export function buildWarmup(csv: string): WarmupItem[] {
 export const scenarios = buildScenarios(scenariosCsv);
 export const turns = buildTurns(turnsCsv);
 export const warmupItems = buildWarmup(warmupCsv);
+export const phraseItems = buildWarmup(phrasesCsv);
 
 const turnById = new Map(turns.map((t) => [t.id, t]));
 
@@ -117,6 +119,8 @@ export const getScenario = (id: string) => scenarios.find((s) => s.id === id);
 export const getTurn = (id: string) => turnById.get(id);
 export const getWarmup = (scenarioId: string) =>
   warmupItems.filter((w) => w.scenarioId === scenarioId);
+export const getPhrases = (scenarioId: string) =>
+  phraseItems.filter((w) => w.scenarioId === scenarioId);
 
 /** Learner reply options offered after a character line, in set order. */
 export function getChoices(characterTurnId: string, all: Turn[] = turns): Turn[] {
