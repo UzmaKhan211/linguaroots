@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChooseCompanionRouteImport } from './routes/choose-companion'
 import { Route as ChooseLanguageRouteImport } from './routes/choose-language'
 import { Route as ChooseNameRouteImport } from './routes/choose-name'
+import { Route as CreatePasswordRouteImport } from './routes/create-password'
 import { Route as DictionaryRouteImport } from './routes/dictionary'
 import { Route as LabRouteImport } from './routes/lab'
 import { Route as LanguageIntroRouteImport } from './routes/language-intro'
@@ -55,6 +56,11 @@ const ChooseLanguageRoute = ChooseLanguageRouteImport.update({
 const ChooseNameRoute = ChooseNameRouteImport.update({
   id: '/choose-name',
   path: '/choose-name',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreatePasswordRoute = CreatePasswordRouteImport.update({
+  id: '/create-password',
+  path: '/create-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DictionaryRoute = DictionaryRouteImport.update({
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/choose-companion': typeof ChooseCompanionRoute
   '/choose-language': typeof ChooseLanguageRoute
   '/choose-name': typeof ChooseNameRoute
+  '/create-password': typeof CreatePasswordRoute
   '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/choose-companion': typeof ChooseCompanionRoute
   '/choose-language': typeof ChooseLanguageRoute
   '/choose-name': typeof ChooseNameRoute
+  '/create-password': typeof CreatePasswordRoute
   '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/choose-companion': typeof ChooseCompanionRoute
   '/choose-language': typeof ChooseLanguageRoute
   '/choose-name': typeof ChooseNameRoute
+  '/create-password': typeof CreatePasswordRoute
   '/dictionary': typeof DictionaryRoute
   '/lab': typeof LabRoute
   '/language-intro': typeof LanguageIntroRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/choose-companion'
     | '/choose-language'
     | '/choose-name'
+    | '/create-password'
     | '/dictionary'
     | '/lab'
     | '/language-intro'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/choose-companion'
     | '/choose-language'
     | '/choose-name'
+    | '/create-password'
     | '/dictionary'
     | '/lab'
     | '/language-intro'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/choose-companion'
     | '/choose-language'
     | '/choose-name'
+    | '/create-password'
     | '/dictionary'
     | '/lab'
     | '/language-intro'
@@ -240,6 +252,7 @@ export interface RootRouteChildren {
   ChooseCompanionRoute: typeof ChooseCompanionRoute
   ChooseLanguageRoute: typeof ChooseLanguageRoute
   ChooseNameRoute: typeof ChooseNameRoute
+  CreatePasswordRoute: typeof CreatePasswordRoute
   DictionaryRoute: typeof DictionaryRoute
   LabRoute: typeof LabRoute
   LanguageIntroRoute: typeof LanguageIntroRoute
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/choose-name'
       fullPath: '/choose-name'
       preLoaderRoute: typeof ChooseNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-password': {
+      id: '/create-password'
+      path: '/create-password'
+      fullPath: '/create-password'
+      preLoaderRoute: typeof CreatePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dictionary': {
@@ -384,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChooseCompanionRoute: ChooseCompanionRoute,
   ChooseLanguageRoute: ChooseLanguageRoute,
   ChooseNameRoute: ChooseNameRoute,
+  CreatePasswordRoute: CreatePasswordRoute,
   DictionaryRoute: DictionaryRoute,
   LabRoute: LabRoute,
   LanguageIntroRoute: LanguageIntroRoute,

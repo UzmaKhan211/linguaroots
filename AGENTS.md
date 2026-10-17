@@ -25,6 +25,7 @@
 - Admin access is the `admin` role in `user_roles`, checked with `has_role`; storage writes are gated by that role in policies.
 - Profile (/profile) is the home for name, character avatar, language choice and account settings; /settings redirects there. Avatars are bundled character images in `src/assets/avatars/`, registered in `src/lib/avatars.ts`, and stored as an `avatar:<id>` key in `profiles.avatar_path`; no photo uploads.
 - Registration destinations are determined by account profile state through `src/lib/signup.ts`, in order `/choose-name`, `/choose-companion`, then language choice; this keeps email confirmation and OAuth callbacks consistent across devices without repeating setup for existing learners. Profile edits only persist through its Save changes action.
+- Email registration uses an OTP email link to `/create-password` before profile setup; that public page validates the confirmed session, saves a password, and sends already-onboarded accounts to their existing destination so shared email links do not reset established learners' passwords.
 - Learning screens require a signed-in account via `RequireAccount` (used by AppShell and lesson routes); signed-out visitors go to /welcome. Why: no guest mode, so every learner has synced progress.
 - Lesson screens use `AppShell lesson`, which hides the bottom bar so stray taps cannot exit a lesson midway.
 - Conversation replies use SayIt's compact layout and a measured pinned stage; matching the spacer to its live height keeps new bubbles clear of recording feedback.

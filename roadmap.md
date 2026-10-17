@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Email-first signup: verification link targets password creation, then existing profile setup; tests and signed-out phone checks passed
+- [ ] Verify real signup email delivery and password saving from the email link; requires a fresh signup with a real inbox and deployed password screen
 - [x] Review independent unit access and completion-based lesson unlocking; fix bypasses and verify
 - [x] Simplify sign-up with progressive disclosure and a dedicated companion step; verify saving and returning-account flow
 - [x] Phase 1 – look, content loading, Home, Languages
