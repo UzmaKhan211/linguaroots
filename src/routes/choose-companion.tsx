@@ -32,7 +32,7 @@ function ChooseCompanion() {
     if (!ready) return;
     if (!user) { void navigate({ to: "/auth", replace: true }); return; }
     let active = true;
-    void supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", user.id).maybeSingle().then(({ data, error }) => {
+    void supabase.from("profiles").select("display_name, avatar_path, onboarded_at").eq("id", user.id).maybeSingle().then(({ data, error }) => {
       if (!active) return;
       if (error) setMessage("We couldn't load your profile. Please refresh and try again.");
       else {

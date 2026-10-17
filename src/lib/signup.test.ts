@@ -15,3 +15,17 @@ describe("Registration steps", () => {
     expect(signupDestination({ avatar_path: "avatar:unknown", onboarded_at: null })).toBe("/choose-companion");
   });
 });
+describe("Name step", () => {
+  it("asks a new account for a name before the companion", () => {
+    expect(signupDestination({ display_name: null, avatar_path: null, onboarded_at: null })).toBe("/choose-name");
+  });
+  it("treats a blank name as missing", () => {
+    expect(signupDestination({ display_name: "  ", avatar_path: null, onboarded_at: null })).toBe("/choose-name");
+  });
+  it("moves on to the companion once a name is saved", () => {
+    expect(signupDestination({ display_name: "Uzma", avatar_path: null, onboarded_at: null })).toBe("/choose-companion");
+  });
+  it("does not ask existing learners for a name", () => {
+    expect(signupDestination({ display_name: null, avatar_path: null, onboarded_at: "2026-10-17" })).toBe("/");
+  });
+});
