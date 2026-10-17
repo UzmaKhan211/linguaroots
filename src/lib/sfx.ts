@@ -40,6 +40,21 @@ export function playIncorrect() {
   tone(330, 0.15, 0.35, 0.12, "triangle");
 }
 
+/** Soft phone trill: two short gentle rings. */
+export function playPhoneRing() {
+  [0, 0.55].forEach((s) => {
+    tone(440, s, 0.4, 0.08);
+    tone(480, s, 0.4, 0.08);
+  });
+}
+
+/** Warm welcome chime, like arriving home. */
+export function playTeaArrival() {
+  tone(523, 0, 0.9, 0.1);
+  tone(659, 0.18, 0.9, 0.09);
+  tone(784, 0.36, 1.1, 0.08);
+}
+
 /** Little rising melody for finishing a warm-up or conversation. */
 export function playCelebrate() {
   [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.35, 0.16));

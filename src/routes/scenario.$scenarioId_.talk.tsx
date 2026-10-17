@@ -1,13 +1,13 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Heart, Mic, RotateCcw } from "lucide-react";
+import { ArrowLeft, Coffee, Heart, Mic, Phone, RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AudioButton, useAutoAudioBusy } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, resumeFrom, stepAt, type Step } from "@/lib/conversation";
 import { getResume, isWarmupDone, markScenarioCompleted, saveResume } from "@/lib/progress";
-import { playCelebrate } from "@/lib/sfx";
+import { playCelebrate, playPhoneRing, playTeaArrival } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { RewardsBadge } from "@/components/RewardsBadge";
 import { loadCohortKeyed, loadReference } from "@/lib/audio";
@@ -53,6 +53,8 @@ function Talk() {
   const [tally, setTally] = useState({ spoken: 0, skipped: 0 });
   const [restored, setRestored] = useState(0);
   const [ready, setReady] = useState(false);
+  const [intro, setIntro] = useState<"pending" | "showing" | "done">("pending");
+  const [connected, setConnected] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const restoredAt = useRef(0);
   const isEnd = step.type === "end";
@@ -96,6 +98,8 @@ function Talk() {
     restoredAt.current = 0;
     setChosen(null);
     setStep(stepAt(scenario.startTurnId, turns));
+    setConnected(false);
+    setIntro("showing");
   };
 
   // Get the listening tool ready and pre-listen to the example clips in the background
@@ -119,15 +123,37 @@ function Talk() {
   }, [scenario.id]);
 
 
+  // Short scene-setting moment before a fresh conversation (skipped when resuming).
+  const phone = scenario.character === "grandmother";
+  useEffect(() => {
+    if (!ready || intro !== "pending") return;
+    if (history.length > 0) {
+      setIntro("done");
+      return;
+    }
+    setIntro("showing");
+  }, [ready, intro, history.length]);
+  useEffect(() => {
+    if (intro !== "showing") return;
+    if (phone) playPhoneRing();
+    else playTeaArrival();
+    const a = setTimeout(() => setConnected(true), 1300);
+    const b = setTimeout(() => setIntro("done"), 2100);
+    return () => {
+      clearTimeout(a);
+      clearTimeout(b);
+    };
+  }, [intro, phone]);
+
   // Relative's lines appear on their own; walk until replies are needed.
   useEffect(() => {
-    if (!ready || step.type !== "line") return;
+    if (!ready || intro !== "done" || step.type !== "line") return;
     const t = setTimeout(() => {
       setHistory((h) => [...h, step.turn]);
       setStep(afterLine(step.turn, turns));
     }, history.length ? 700 : 200);
     return () => clearTimeout(t);
-  }, [ready, step, history.length]);
+  }, [ready, intro, step, history.length]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -173,6 +199,23 @@ function Talk() {
             <RotateCcw className="size-4" aria-hidden /> Start over
           </button>
         </div>
+      )}
+
+      {intro === "showing" && (
+        <button
+          type="button"
+          onClick={() => setIntro("done")}
+          aria-label="Skip and start the conversation"
+          className="fade-up mt-6 flex w-full flex-col items-center rounded-3xl border bg-card p-8 text-center shadow-soft"
+        >
+          <span className={`flex size-20 items-center justify-center rounded-full bg-bark text-primary-foreground ${connected ? "" : "motion-safe:animate-pulse"}`}>
+            {phone ? <Phone className="size-9" aria-hidden /> : <Coffee className="size-9" aria-hidden />}
+          </span>
+          <span className="mt-4 font-display text-2xl font-semibold" aria-live="polite">
+            {phone ? (connected ? `${who} picked up` : `Calling ${who}...`) : connected ? `${who} is here` : `Joining ${who} for tea...`}
+          </span>
+          <span className="mt-2 text-sm text-muted-foreground">Tap to skip</span>
+        </button>
       )}
 
       <ol className="mt-4 space-y-4" aria-live="polite">
