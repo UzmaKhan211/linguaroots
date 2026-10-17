@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { signupDestination, signupEmailOptions } from "./signup";
+import { hasSignupEmail, signupDestination, signupEmailOptions } from "./signup";
 
 describe("Email-first signup", () => {
+  it("allows email verification only after email text is entered", () => {
+    expect(hasSignupEmail("")).toBe(false);
+    expect(hasSignupEmail("   ")).toBe(false);
+    expect(hasSignupEmail("uzma@example.com")).toBe(true);
+  });
+
   it("sends verification back to password creation without requesting a password", () => {
     expect(signupEmailOptions("https://linguaroots.lovable.app")).toEqual({
       shouldCreateUser: true,
