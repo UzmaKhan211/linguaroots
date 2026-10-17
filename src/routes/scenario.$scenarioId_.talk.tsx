@@ -318,6 +318,8 @@ function Talk() {
           />
         </section>
       )}
+        </div>
+      )}
 
       {step.type === "end" && (
         <section className="fade-up mt-8 rounded-3xl border bg-sun-soft p-6 text-center">
