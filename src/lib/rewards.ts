@@ -71,13 +71,13 @@ function save(r: Rewards) {
 export type RewardKind = keyof typeof XP;
 
 /** The account decides the amount and streak; the device only shows a quick preview until it answers. */
-export function earn(kind: RewardKind) {
+export function earn(kind: RewardKind, ref: string) {
   const preview = award(getRewards(), XP[kind], dayKey());
   save(preview);
   void (async () => {
     const { data: s } = await supabase.auth.getSession();
     if (!s.session) return;
-    const { data } = await supabase.rpc("award_xp", { _kind: kind, _today: dayKey() });
+    const { data } = await supabase.rpc("award_xp", { _kind: kind, _ref: ref, _today: dayKey() });
     const row = Array.isArray(data) ? data[0] : data;
     if (row) save({ xp: row.xp, streak: row.streak, lastDay: row.last_active_day });
   })();

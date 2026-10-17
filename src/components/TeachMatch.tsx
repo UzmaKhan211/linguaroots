@@ -53,7 +53,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
     if (!isLast || !roundDone) return;
     if (isWords) markWarmupDone(scenario.id);
     else markPhrasesDone(scenario.id);
-    earn("warmup");
+    earn("warmup", `${scenario.id}:${kind}`);
     playCelebrate();
     if (isWords) navigate({ to: "/scenario/$scenarioId/phrases", params: { scenarioId: scenario.id } });
     else navigate({ to: "/scenario/$scenarioId/talk", params: { scenarioId: scenario.id } });

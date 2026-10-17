@@ -71,6 +71,13 @@
       "when": 1792261462792,
       "tag": "0009_profile_name_chosen_by_learner",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792263030586,
+      "tag": "0010_reward_once_per_lesson",
+      "breakpoints": true
     }
   ]
 }

@@ -68,7 +68,7 @@ function Talk() {
     if (!isEnd) return;
     saveResume(scenario.id, null);
     markScenarioCompleted(scenario.id);
-    earn("scenario");
+    earn("scenario", scenario.id);
     playCelebrate();
   }, [isEnd, scenario.id]);
 
@@ -183,7 +183,7 @@ function Talk() {
     if (!chosen) return;
     if (skipped) setTally((t) => ({ ...t, skipped: t.skipped + 1 }));
     else {
-      earn("line");
+      earn("line", `${scenario.id}:${chosen.id}`);
       setTally((t) => ({ ...t, spoken: t.spoken + 1 }));
     }
     setHistory((h) => [...h, chosen]);
