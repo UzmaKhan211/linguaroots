@@ -204,12 +204,20 @@ export type Database = {
               xp: number
             }[]
           }
+      complete_lesson: {
+        Args: { _scenario: string; _step: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      save_resume: {
+        Args: { _resume: Json; _scenario: string }
+        Returns: undefined
       }
     }
     Enums: {

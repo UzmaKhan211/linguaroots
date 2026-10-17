@@ -85,6 +85,13 @@
       "when": 1792273498061,
       "tag": "0011_lock_profile_reward_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792277364366,
+      "tag": "0012_server_checked_lesson_progress",
+      "breakpoints": true
     }
   ]
 }
