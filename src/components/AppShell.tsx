@@ -14,13 +14,11 @@ export function AppShell({ children, lesson = false }: { children: ReactNode; le
         <>
           <header aria-label="LinguaRoots activity" className="fixed inset-x-0 top-0 z-20 mx-auto max-w-[440px] bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
             <div className="flex h-16 items-center justify-between gap-3 px-5">
+              <Link to="/" aria-label="LinguaRoots home" className="flex min-h-11 items-center"><LogoMark className="h-10 w-auto" /></Link>
               <div className="flex items-center gap-2">
-                <Link to="/" aria-label="LinguaRoots home" className="flex min-h-11 items-center"><LogoMark className="h-10 w-auto" /></Link>
-                <Link to="/profile" aria-label="Learning Khowar. Change language in Profile" className="inline-flex min-h-11 items-center">
-                  <span className="rounded-full bg-sun-soft px-3 py-1 text-sm font-bold text-bark">Khowar</span>
-                </Link>
+                <span className="rounded-full bg-sun-soft px-3 py-1 text-sm font-bold text-bark">Khowar</span>
+                <RewardsCounter />
               </div>
-              <RewardsCounter />
             </div>
           </header>
           <div className="h-[calc(4rem+env(safe-area-inset-top))] shrink-0" aria-hidden />
