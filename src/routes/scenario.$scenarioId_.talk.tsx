@@ -172,7 +172,7 @@ function Talk() {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [history.length, step, chosen]);
+  }, [history.length]);
 
   // Only one reply? Open it straight away — nothing to pick.
   useEffect(() => {
