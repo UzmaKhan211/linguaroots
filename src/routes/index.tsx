@@ -58,7 +58,7 @@ function Index() {
         if (!active) return;
         const destination = error ? "/" : signupDestination(profile);
         if (destination !== "/") { void navigate({ to: destination, replace: true }); return; }
-      } else if (!isOnboarded()) { void navigate({ to: "/welcome", replace: true }); return; }
+      } else { void navigate({ to: "/welcome", replace: true }); return; }
       setChecked(true);
     })();
     setRelative(getPrefs().relative);

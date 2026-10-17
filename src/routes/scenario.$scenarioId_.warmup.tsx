@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getScenario, getWarmup } from "@/lib/content";
 import { TeachMatch } from "@/components/TeachMatch";
+import { RequireAccount } from "@/components/RequireAccount";
 
 export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
   loader: ({ params }) => {
@@ -27,5 +28,5 @@ export const Route = createFileRoute("/scenario/$scenarioId_/warmup")({
 
 function WordsLesson() {
   const { scenario, items } = Route.useLoaderData();
-  return <TeachMatch scenario={scenario} items={items} kind="words" />;
+  return <RequireAccount><TeachMatch scenario={scenario} items={items} kind="words" /></RequireAccount>;
 }

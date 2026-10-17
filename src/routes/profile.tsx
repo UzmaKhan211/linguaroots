@@ -134,22 +134,7 @@ function Profile() {
               </p>
             )}
           </>
-        ) : (
-          <>
-            <div className="flex items-center gap-3">
-              <span className="flex size-14 items-center justify-center rounded-full bg-muted">
-                <UserRound className="size-7 text-muted-foreground" aria-hidden />
-              </span>
-              <div>
-                <p className="font-bold">You're practicing as a guest</p>
-                <p className="text-sm text-muted-foreground">Sign in to add your name and character.</p>
-              </div>
-            </div>
-            <Link to="/auth" className="mt-4 flex min-h-12 w-full items-center justify-center rounded-full bg-primary font-bold text-primary-foreground">
-              Save my progress
-            </Link>
-          </>
-        )}
+        ) : null}
       </section>
 
       <h2 className="mt-8 text-lg font-semibold">Learning</h2>

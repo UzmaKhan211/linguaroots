@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Home, UserRound, BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
+import { RequireAccount } from "@/components/RequireAccount";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </ul>
       </nav>
     </div>
+    </RequireAccount>
   );
 }
 
