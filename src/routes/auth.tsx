@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, EyeOff, Mail } from "lucide-react";
 
-import { signupDestination } from "@/lib/signup";
+import { signupDestination, signupEmailOptions } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
@@ -67,13 +67,12 @@ function AuthPage() {
     setMsg(null);
     try {
     if (mode === "signup") {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signInWithOtp({
         email,
-        password,
-        options: { emailRedirectTo: window.location.origin },
+        options: signupEmailOptions(window.location.origin),
       });
       if (error) setMsg(error.message);
-      else if (!data.session) setSentTo(email);
+      else setSentTo(email);
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setMsg("That email and password don't match. Please check and try again.");
@@ -83,7 +82,7 @@ function AuthPage() {
   };
 
   const onForm = (e: React.FormEvent) => {
-    if (!emailOpen) { e.preventDefault(); setEmailOpen(true); setMsg(null); return; }
+    if (mode === "signin" && !emailOpen) { e.preventDefault(); setEmailOpen(true); setMsg(null); return; }
     void submit(e);
   };
 
@@ -105,7 +104,7 @@ function AuthPage() {
           Email
           <input type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 min-h-14 w-full rounded-full border bg-muted px-5 text-base font-normal" />
         </label>
-        {emailOpen && (
+        {mode === "signin" && emailOpen && (
           <div className="fade-up">
             <label htmlFor="auth-password" className="block font-bold">Password</label>
             <div className="relative mt-2">
@@ -115,8 +114,8 @@ function AuthPage() {
               required
               minLength={6}
               autoFocus
-              placeholder={mode === "signup" ? "At least 6 characters" : "Password"}
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              placeholder="Password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="min-h-14 w-full rounded-full border bg-muted pl-5 pr-16 text-base font-normal"
@@ -138,7 +137,7 @@ function AuthPage() {
           </div>
         )}
         <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lift disabled:opacity-60">
-          {busy ? "Please wait..." : !emailOpen ? "Continue" : mode === "signup" ? "Create my account" : "Sign in"}
+          {busy ? "Please wait..." : mode === "signup" ? "Verify my email" : !emailOpen ? "Continue" : "Sign in"}
         </Button>
       </form>
 
@@ -152,7 +151,7 @@ function AuthPage() {
           <DialogHeader className="sm:text-center">
             <DialogTitle className="text-center text-2xl">Check your inbox</DialogTitle>
             <DialogDescription className="text-center text-base text-foreground">
-              We sent a link to <span className="break-all font-bold">{sentTo}</span>. Tap it to finish making your account and meet your companion.
+              We sent a link to <span className="break-all font-bold">{sentTo}</span>. Tap it to verify your email and create your password.
             </DialogDescription>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">Can't find it after a minute? Have a look in your spam or junk folder.</p>

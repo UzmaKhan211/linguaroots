@@ -1,5 +1,10 @@
 import { avatarSrc } from "@/lib/avatars";
 
+/** Email ownership is confirmed before a new learner chooses a password. */
+export function signupEmailOptions(origin: string) {
+  return { shouldCreateUser: true, emailRedirectTo: `${origin}/create-password` };
+}
+
 /** Account state, not device state, decides which registration step comes next: name, companion, then language. */
 export function signupDestination(
   profile: { display_name?: string | null; avatar_path: string | null; onboarded_at: string | null } | null,

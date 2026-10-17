@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { signupDestination } from "./signup";
+import { signupDestination, signupEmailOptions } from "./signup";
+
+describe("Email-first signup", () => {
+  it("sends verification back to password creation without requesting a password", () => {
+    expect(signupEmailOptions("https://linguaroots.lovable.app")).toEqual({
+      shouldCreateUser: true,
+      emailRedirectTo: "https://linguaroots.lovable.app/create-password",
+    });
+  });
+});
 
 describe("Registration steps", () => {
   it("sends a new account to companion selection before language selection", () => {
