@@ -1,8 +1,9 @@
 export type ActivityRow = { words: boolean; phrases: boolean; conversations: number };
+type ActivitySummary = { lessons: number; conversations: number; words: boolean; phrases: boolean; talked: boolean };
 
 /** Count distinct finished lessons; repeats count only in the conversation total. */
 export function summarizeActivity(rows: ActivityRow[]) {
-  return rows.reduce((total, row) => ({
+  return rows.reduce<ActivitySummary>((total, row) => ({
     lessons: total.lessons + Number(row.words) + Number(row.phrases) + Number(row.conversations > 0),
     conversations: total.conversations + row.conversations,
     words: total.words || row.words,
