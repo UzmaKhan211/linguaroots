@@ -256,9 +256,6 @@ export function SayIt({
 
       {passed && phase === "scored" && (
         <div className={compact ? "grid grid-cols-2 items-center gap-2" : "space-y-4"}>
-          <Button type="button" onClick={onPass} className="min-h-11 w-full rounded-full font-bold">
-            Continue
-          </Button>
           <Button
             type="button"
             variant="link"
@@ -266,6 +263,9 @@ export function SayIt({
             className="min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
           >
             Or record again
+          </Button>
+          <Button type="button" onClick={onPass} className="min-h-11 w-full rounded-full font-bold">
+            Continue
           </Button>
         </div>
       )}
