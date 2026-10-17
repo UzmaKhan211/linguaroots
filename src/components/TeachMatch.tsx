@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, PartyPopper, Sparkles, Volume2 } from "lucide-react";
+import { ArrowLeft, Check, PartyPopper, Sparkles, Volume1, Volume2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import type { Scenario, WarmupItem } from "@/lib/content";
 import { chunkRounds, seededShuffle } from "@/lib/pairs";
@@ -20,10 +20,12 @@ function Dots({ total, at }: { total: number; at: number }) {
   );
 }
 
-function play(file: string) {
-  if (!file) return;
+function play(file: string, onEnd?: () => void) {
+  if (!file) return onEnd?.();
   const a = new Audio(`/audio/khowar/${file}`);
-  a.play().catch(() => {});
+  a.onended = () => onEnd?.();
+  a.onerror = () => onEnd?.();
+  a.play().catch(() => onEnd?.());
 }
 
 export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; items: WarmupItem[]; kind: "words" | "phrases" }) {
@@ -41,6 +43,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   const [message, setMessage] = useState<string>(pairPrompt);
   const [learnAt, setLearnAt] = useState(0);
   const [lastNote, setLastNote] = useState<WarmupItem | null>(null);
+  const [hearing, setHearing] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const current = rounds[round] ?? [];
@@ -190,10 +193,13 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
             <Button
               variant="audio"
               type="button"
-              onClick={() => play(it.audioFile)}
+              onClick={() => {
+                setHearing(true);
+                play(it.audioFile, () => setHearing(false));
+              }}
               className="mt-6 px-5"
             >
-              <Volume2 className="size-5" aria-hidden /> Hear it
+              {hearing ? <Volume2 className="size-5 animate-pulse motion-reduce:animate-none" aria-hidden /> : <Volume1 className="size-5" aria-hidden />} Hear it
             </Button>
           </div>
           {it.culturalNote && (
