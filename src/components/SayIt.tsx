@@ -313,7 +313,7 @@ function LiveWave({ stream }: { stream: MediaStream }) {
     };
   }, [stream]);
   return (
-    <div className="flex h-full items-center gap-[3px]">
+    <div className="flex h-full w-full items-center justify-between gap-[2px] overflow-hidden">
       {levels.map((v, i) => (
         <span key={i} className="w-1.5 rounded-full bg-bark" style={{ height: `${Math.round(v * 100)}%` }} />
       ))}
@@ -324,7 +324,7 @@ function LiveWave({ stream }: { stream: MediaStream }) {
 /** A quiet, still waveform when not recording. */
 function IdleWave({ dim }: { dim: boolean }) {
   return (
-    <div className={`flex h-full items-center gap-[3px] ${dim ? "opacity-40" : "opacity-30"}`}>
+    <div className={`flex h-full w-full items-center justify-between gap-[2px] overflow-hidden ${dim ? "opacity-40" : "opacity-30"}`}>
       {Array.from({ length: BARS }, (_, i) => (
         <span
           key={i}
