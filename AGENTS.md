@@ -28,3 +28,4 @@
 - Learning screens require a signed-in account via `RequireAccount` (used by AppShell and lesson routes); signed-out visitors go to /welcome. Why: no guest mode, so every learner has synced progress.
 - Lesson screens use `AppShell lesson`, which hides the bottom bar so stray taps cannot exit a lesson midway.
 - Conversation replies use SayIt's compact layout and a measured pinned stage; matching the spacer to its live height keeps new bubbles clear of recording feedback.
+- Conversations use a fixed compact header with the unit back link, relative name, and phone timer; a safe-area-aware spacer keeps dialogue clear while preserving room for the pinned reply stage.
