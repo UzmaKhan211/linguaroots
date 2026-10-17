@@ -136,7 +136,7 @@ function EndangeredFact({ onNext }: { onNext: () => void }) {
           are endangered, according to UNESCO. Many are indigenous languages kept alive by families at home.
         </p>
       )}
-      <Primary onClick={shown ? onNext : () => setShown(true)}>{shown ? "Continue" : "Reveal the answer"}</Primary>
+      <Primary onClick={onNext} disabled={!shown}>Continue</Primary>
     </>
   );
 }
