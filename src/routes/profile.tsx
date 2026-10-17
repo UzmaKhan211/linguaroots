@@ -5,7 +5,6 @@ import { AppShell } from "@/components/AppShell";
 import { AvatarPicker } from "@/components/AvatarPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { replayOnboarding } from "@/lib/progress";
 import { deleteMyAccount } from "@/lib/account.functions";
 import { DEFAULT_AVATAR, avatarPathValue, avatarSrc } from "@/lib/avatars";
 
