@@ -6,6 +6,7 @@ import { syncRewards } from "@/lib/rewards";
  * learner's account when signed in. On sign-in, device and account progress merge.
  */
 const warmKey = (id: string) => `lr:warmup-done:${id}`;
+const phraseKey = (id: string) => `lr:phrases-done:${id}`;
 const doneKey = (id: string) => `lr:completed:${id}`;
 const ONBOARD_KEY = "lr:onboarded";
 const PREFS_KEY = "lr:prefs";
@@ -40,6 +41,7 @@ async function pushScenario(scenarioId: string) {
     user_id: uid,
     scenario_id: scenarioId,
     warmup_done: isWarmupDone(scenarioId),
+    phrases_done: isPhrasesDone(scenarioId),
     completed_count: completedCount(scenarioId),
     resume: getResume(scenarioId),
     updated_at: new Date().toISOString(),
@@ -70,6 +72,13 @@ export function isWarmupDone(scenarioId: string) {
 }
 export function markWarmupDone(scenarioId: string) {
   set(warmKey(scenarioId), "1");
+  void pushScenario(scenarioId);
+}
+export function isPhrasesDone(scenarioId: string) {
+  return get(phraseKey(scenarioId)) === "1";
+}
+export function markPhrasesDone(scenarioId: string) {
+  set(phraseKey(scenarioId), "1");
   void pushScenario(scenarioId);
 }
 export function completedCount(scenarioId: string) {
@@ -135,16 +144,18 @@ export async function syncWithAccount(scenarioIds: string[]) {
     supabase.from("scenario_progress").select("*").eq("user_id", uid),
     supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
   ]);
-  const remote = new Map((rows ?? []).map((r) => [r.scenario_id, { warmupDone: r.warmup_done, completed: r.completed_count, resume: r.resume as unknown }]));
+  const remote = new Map((rows ?? []).map((r) => [r.scenario_id, { warmupDone: r.warmup_done, phrasesDone: r.phrases_done, completed: r.completed_count, resume: r.resume as unknown }]));
   const ids = new Set([...scenarioIds, ...remote.keys()]);
   const upserts = [...ids].map((id) => {
     const m = mergeProgress({ warmupDone: isWarmupDone(id), completed: completedCount(id) }, remote.get(id));
     set(warmKey(id), m.warmupDone ? "1" : null);
     set(doneKey(id), m.completed ? String(m.completed) : null);
+    const phrasesDone = isPhrasesDone(id) || !!remote.get(id)?.phrasesDone;
+    set(phraseKey(id), phrasesDone ? "1" : null);
     const rr = remote.get(id)?.resume;
     const resume = pickResume(getResume(id), isResume(rr) ? rr : null);
     set(resumeKey(id), resume ? JSON.stringify(resume) : null);
-    return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, completed_count: m.completed, resume, updated_at: new Date().toISOString() };
+    return { user_id: uid, scenario_id: id, warmup_done: m.warmupDone, phrases_done: phrasesDone, completed_count: m.completed, resume, updated_at: new Date().toISOString() };
   });
   if (upserts.length) await supabase.from("scenario_progress").upsert(upserts);
 
@@ -169,9 +180,17 @@ export function clearDeviceProgress() {
   }
 }
 
-/** Pure: how far a learner is in one conversation. Warm-up done = halfway, finished once = full. */
-export function scenarioStage(warmupDone: boolean, completed: number): { percent: 0 | 50 | 100; label: string } {
+/** Pure: how far a learner is in one unit of three lessons (words, phrases, conversation). */
+export function scenarioStage(wordsDone: boolean, completed: number, phrasesDone = false): { percent: number; label: string } {
   if (completed > 0) return { percent: 100, label: "Practice again" };
-  if (warmupDone) return { percent: 50, label: "Ready to talk" };
-  return { percent: 0, label: "Start warm-up" };
+  if (phrasesDone) return { percent: 67, label: "Lesson 3: Conversation" };
+  if (wordsDone) return { percent: 33, label: "Lesson 2: Phrases" };
+  return { percent: 0, label: "Lesson 1: Words" };
+}
+
+/** Pure: a lesson opens once the one before it is done. */
+export function lessonUnlocked(lesson: 1 | 2 | 3, wordsDone: boolean, phrasesDone: boolean) {
+  if (lesson === 1) return true;
+  if (lesson === 2) return wordsDone;
+  return phrasesDone;
 }
