@@ -172,9 +172,9 @@ export function SayIt({
           <div
             role="img"
             aria-label="Said correctly"
-            className={`fade-up flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lift ${compact ? "size-14" : "size-20"}`}
+            className={`fade-up flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lift size-11`}
           >
-            <Check className="size-9" strokeWidth={3} aria-hidden />
+            <Check className="size-6" strokeWidth={3} aria-hidden />
           </div>
         ) : (
         <Button
@@ -183,7 +183,7 @@ export function SayIt({
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Try again"}
           variant="audio"
-          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-6 ${compact ? "size-14" : "size-20"} ${
+          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-6 size-11 ${
             phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
           }`}
         >
