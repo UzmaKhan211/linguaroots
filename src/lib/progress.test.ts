@@ -12,10 +12,14 @@ describe("guest progress moving into an account", () => {
   });
 });
 
-import { scenarioStage } from "./progress";
+import { lessonUnlocked, scenarioStage } from "./progress";
 import { describe as d2, it as i2, expect as e2 } from "vitest";
 d2("scenarioStage", () => {
   i2("not started is 0%", () => e2(scenarioStage(false, 0).percent).toBe(0));
-  i2("warm-up done is 50%", () => e2(scenarioStage(true, 0).percent).toBe(50));
+  i2("words done is 33%", () => e2(scenarioStage(true, 0).percent).toBe(33));
+  i2("phrases done is 67%", () => e2(scenarioStage(true, 0, true).percent).toBe(67));
+  i2("phrases lesson locked until words done", () => e2(lessonUnlocked(2, false, false)).toBe(false));
+  i2("conversation locked until phrases done", () => e2(lessonUnlocked(3, true, false)).toBe(false));
+  i2("conversation opens after phrases", () => e2(lessonUnlocked(3, true, true)).toBe(true));
   i2("finished is 100%", () => e2(scenarioStage(true, 2).percent).toBe(100));
 });

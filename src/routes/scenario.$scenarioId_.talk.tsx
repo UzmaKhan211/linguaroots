@@ -6,7 +6,7 @@ import { AudioButton, useAutoAudioBusy } from "@/components/AudioButton";
 import { SayIt } from "@/components/SayIt";
 import { getScenario, turns, type Turn } from "@/lib/content";
 import { afterChoice, afterLine, resumeFrom, stepAt, type Step } from "@/lib/conversation";
-import { getResume, isWarmupDone, markScenarioCompleted, saveResume } from "@/lib/progress";
+import { getResume, isPhrasesDone, markScenarioCompleted, saveResume } from "@/lib/progress";
 import { playCelebrate, playPhoneRing, playTeaArrival } from "@/lib/sfx";
 import { earn, XP } from "@/lib/rewards";
 import { RewardsBadge } from "@/components/RewardsBadge";
@@ -67,7 +67,7 @@ function Talk() {
   }, [isEnd, scenario.id]);
 
   useEffect(() => {
-    if (!isWarmupDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
+    if (!isPhrasesDone(scenario.id)) navigate({ to: "/scenario/$scenarioId", params: { scenarioId: scenario.id }, replace: true });
   }, [scenario.id, navigate]);
 
   // Pick up a conversation left part way.

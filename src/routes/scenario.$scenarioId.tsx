@@ -1,18 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, Lock } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useEffect, useState } from "react";
-import { getScenario, getWarmup } from "@/lib/content";
-import { isWarmupDone } from "@/lib/progress";
+import { getPhrases, getScenario, getWarmup } from "@/lib/content";
+import { completedCount, isPhrasesDone, isWarmupDone, lessonUnlocked } from "@/lib/progress";
 
 export const Route = createFileRoute("/scenario/$scenarioId")({
   loader: ({ params }) => {
     const scenario = getScenario(params.scenarioId);
     if (!scenario) throw notFound();
-    return { scenario, warmupCount: getWarmup(scenario.id).length };
+    return { scenario, wordCount: getWarmup(scenario.id).length, phraseCount: getPhrases(scenario.id).length };
   },
   head: ({ loaderData }) => {
-    const title = loaderData ? `${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
+    const title = loaderData ? `Unit ${loaderData.scenario.order}: ${loaderData.scenario.title} | LinguaRoots` : "Unavailable | LinguaRoots";
     const desc = loaderData?.scenario.situation ?? "Practice a real Khowar conversation.";
     return {
       meta: [
@@ -25,50 +25,73 @@ export const Route = createFileRoute("/scenario/$scenarioId")({
       ],
     };
   },
-  component: ScenarioIntro,
+  component: UnitOverview,
 });
 
-function ScenarioIntro() {
-  const { scenario, warmupCount } = Route.useLoaderData();
-  const [done, setDone] = useState(false);
-  useEffect(() => setDone(isWarmupDone(scenario.id)), [scenario.id]);
+type LessonPath = "/scenario/$scenarioId/warmup" | "/scenario/$scenarioId/phrases" | "/scenario/$scenarioId/talk";
+
+function UnitOverview() {
+  const { scenario, wordCount, phraseCount } = Route.useLoaderData();
+  const [state, setState] = useState({ words: false, phrases: false, talked: false });
+  useEffect(
+    () => setState({ words: isWarmupDone(scenario.id), phrases: isPhrasesDone(scenario.id), talked: completedCount(scenario.id) > 0 }),
+    [scenario.id],
+  );
+
+  const lessons: { n: 1 | 2 | 3; title: string; detail: string; to: LessonPath; done: boolean }[] = [
+    { n: 1, title: "Words", detail: `${wordCount} key words to learn and pair`, to: "/scenario/$scenarioId/warmup", done: state.words },
+    { n: 2, title: "Phrases", detail: `${phraseCount} longer phrases to learn and pair`, to: "/scenario/$scenarioId/phrases", done: state.phrases },
+    { n: 3, title: "Conversation", detail: scenario.situation, to: "/scenario/$scenarioId/talk", done: state.talked },
+  ];
+
   return (
     <AppShell>
       <Link to="/" className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted-foreground">
         <ArrowLeft className="size-5" aria-hidden /> Back
       </Link>
-      <h1 className="fade-up mt-4 text-[2rem] font-semibold">{scenario.title}</h1>
-      <p className="fade-up mt-3 text-lg text-muted-foreground">{scenario.situation}</p>
+      <p className="fade-up mt-4 text-sm font-bold uppercase tracking-wider text-accent">Unit {scenario.order}</p>
+      <h1 className="fade-up mt-1 text-[2rem] font-semibold">{scenario.title}</h1>
+      <p className="fade-up mt-3 text-lg text-muted-foreground">Three short lessons, one step at a time.</p>
 
-      <div className="fade-up mt-8 rounded-3xl border bg-sun-soft p-5">
-        <p className="flex items-center gap-2 font-bold text-bark">
-          <Sparkles className="size-5" aria-hidden /> Warm-up first
-        </p>
-        <p className="mt-2 text-base">
-          {warmupCount} words and phrases to get comfortable with before you talk.
-        </p>
-      </div>
-
-      <Link
-        to="/scenario/$scenarioId/warmup"
-        params={{ scenarioId: scenario.id }}
-        className="mt-6 flex min-h-14 w-full items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
-      >
-        {done ? "Warm up again" : "Start the warm-up"}
-      </Link>
-      {done ? (
-        <Link
-          to="/scenario/$scenarioId/talk"
-          params={{ scenarioId: scenario.id }}
-          className="mt-3 flex min-h-14 w-full items-center justify-center rounded-full border-2 bg-card text-lg font-bold"
-        >
-          Go to the conversation
-        </Link>
-      ) : (
-        <p className="mt-3 text-center text-base text-muted-foreground">
-          The conversation opens after your first warm-up.
-        </p>
-      )}
+      <ol className="mt-6 space-y-3">
+        {lessons.map((l, i) => {
+          const open = lessonUnlocked(l.n, state.words, state.phrases);
+          const inner = (
+            <>
+              <span
+                className={`flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-bold ${
+                  l.done ? "bg-primary text-primary-foreground" : open ? "bg-leaf-soft text-primary" : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {l.done ? <Check className="size-6" aria-hidden /> : open ? l.n : <Lock className="size-5" aria-hidden />}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold text-muted-foreground">Lesson {l.n}</span>
+                <span className="block font-display text-xl font-semibold text-foreground">{l.title}</span>
+                <span className="mt-0.5 block text-sm text-muted-foreground">
+                  {open ? l.detail : `Opens after Lesson ${l.n - 1}`}
+                </span>
+                <span className="sr-only">{l.done ? ", done" : open ? ", ready" : ", locked"}</span>
+              </span>
+              {open && <ChevronRight className="size-6 shrink-0 text-muted-foreground" aria-hidden />}
+            </>
+          );
+          const cls = "flex items-center gap-4 rounded-3xl border bg-card p-4";
+          return (
+            <li key={l.n} className="fade-up" style={{ animationDelay: `${60 + i * 60}ms` }}>
+              {open ? (
+                <Link to={l.to} params={{ scenarioId: scenario.id }} className={`${cls} shadow-soft transition-shadow hover:shadow-lift`}>
+                  {inner}
+                </Link>
+              ) : (
+                <div className={`${cls} opacity-70`} aria-disabled="true">
+                  {inner}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </AppShell>
   );
 }

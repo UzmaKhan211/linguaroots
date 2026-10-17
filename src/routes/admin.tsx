@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { AudioButton } from "@/components/AudioButton";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { scenarios, turns, warmupItems } from "@/lib/content";
+import { phraseItems, scenarios, turns, warmupItems } from "@/lib/content";
 import { languages } from "@/lib/languages";
 import { AUDIO_BUCKET } from "@/lib/lessonAudio";
 
@@ -35,7 +35,10 @@ function allClips(): Clip[] {
     }
   }
   for (const w of warmupItems) {
-    if (w.audioFile && !map.has(w.audioFile)) map.set(w.audioFile, { file: w.audioFile, where: "Warm-up", roman: w.roman, scenarioId: w.scenarioId });
+    if (w.audioFile && !map.has(w.audioFile)) map.set(w.audioFile, { file: w.audioFile, where: "Words", roman: w.roman, scenarioId: w.scenarioId });
+  }
+  for (const w of phraseItems) {
+    if (w.audioFile && !map.has(w.audioFile)) map.set(w.audioFile, { file: w.audioFile, where: "Phrases", roman: w.roman, scenarioId: w.scenarioId });
   }
   return [...map.values()].sort((a, b) => a.file.localeCompare(b.file));
 }

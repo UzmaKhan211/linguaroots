@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { completedCount, getPrefs, isOnboarded, isWarmupDone, scenarioStage } from "@/lib/progress";
+import { completedCount, getPrefs, isOnboarded, isPhrasesDone, isWarmupDone, scenarioStage } from "@/lib/progress";
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/")({
 
 const relativeLabel: Record<string, string> = { grandmother: "Grandma", grandfather: "Grandpa" };
 
-type Row = { id: string; warm: boolean; done: number };
+type Row = { id: string; warm: boolean; phrases: boolean; done: number };
 
 function Index() {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ function Index() {
       setChecked(true);
     })();
     setRelative(getPrefs().relative);
-    setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), done: completedCount(s.id) })));
+    setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), phrases: isPhrasesDone(s.id), done: completedCount(s.id) })));
     return () => { active = false; };
   }, [navigate]);
 
@@ -92,7 +92,7 @@ function Index() {
           <p className="text-sm font-bold uppercase tracking-wider text-accent">Khowar</p>
           <h1 className="mt-1 text-[2rem] font-semibold text-foreground">Your first conversation is waiting</h1>
           <p className="mt-2 text-lg text-muted-foreground">
-            Learn a few words, then have a friendly chat. It only takes a few minutes.
+            Learn a few words and phrases, then have a friendly chat. It only takes a few minutes.
           </p>
 
           <Link
@@ -104,21 +104,21 @@ function Index() {
               <Sparkles className="size-7" aria-hidden />
             </span>
             <span className="mt-4 block text-sm font-bold opacity-85">
-              With {relativeLabel[featured.character] ?? featured.character}
+              Unit {featured.order} · With {relativeLabel[featured.character] ?? featured.character}
             </span>
             <span className="block font-display text-2xl font-semibold">{featured.title}</span>
             <span className="mt-1 block text-base opacity-90">
-              A short warm-up to learn your first {getWarmup(featured.id).length} words.
+              Three short lessons: words, phrases, then a friendly chat.
             </span>
             <span className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-primary-foreground px-5 font-bold text-primary">
-              Begin warm-up <ChevronRight className="size-5" aria-hidden />
+              Start Lesson 1 <ChevronRight className="size-5" aria-hidden />
             </span>
           </Link>
         </section>
       ) : (
         <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
-          <p className="mt-1 text-lg text-muted-foreground">Which conversation would you like to practice today?</p>
+          <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
           <RewardsBadge className="mt-4" />
           <Drawer>
             <DrawerTrigger asChild>
@@ -173,7 +173,7 @@ function Index() {
         {rest.map((s, i) => {
           const Icon = /phone|call/i.test(s.id + s.title) ? Phone : HomeIcon;
           const r = rows?.find((x) => x.id === s.id);
-          const stage = scenarioStage(!!r?.warm, r?.done ?? 0);
+          const stage = scenarioStage(!!r?.warm, r?.done ?? 0, !!r?.phrases);
           return (
             <li key={s.id} className="fade-up" style={{ animationDelay: `${80 + i * 70}ms` }}>
               <Link
@@ -190,7 +190,7 @@ function Index() {
                 </ProgressRing>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-bold text-muted-foreground">
-                    With {relativeLabel[s.character] ?? s.character}
+                    Unit {s.order} · With {relativeLabel[s.character] ?? s.character}
                   </span>
                   <span className="block font-display text-xl font-semibold text-foreground">{s.title}</span>
                   {isNew ? (
