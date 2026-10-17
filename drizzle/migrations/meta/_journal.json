@@ -64,6 +64,13 @@
       "when": 1792251176417,
       "tag": "0008_add_phrases_done",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792261462792,
+      "tag": "0009_profile_name_chosen_by_learner",
+      "breakpoints": true
     }
   ]
 }
