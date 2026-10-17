@@ -300,35 +300,17 @@ const BARS = 28;
 
 /** Bars that move with the learner's own take while it plays back. */
 function PlaybackWave({ audio }: { audio: HTMLAudioElement }) {
+  // The audio plays on its own; the bars only animate, so playback never depends on extra audio routing.
   const [levels, setLevels] = useState<number[]>(() => Array(BARS).fill(0.08));
   useEffect(() => {
-    let ctx: AudioContext | null = null;
-    let raf = 0;
-    try {
-      ctx = new AudioContext();
-      const src = ctx.createMediaElementSource(audio);
-      const an = ctx.createAnalyser();
-      an.fftSize = 512;
-      src.connect(an);
-      an.connect(ctx.destination);
-      void ctx.resume();
-      const buf = new Uint8Array(an.fftSize);
-      let last = 0;
-      const tick = (t: number) => {
-        raf = requestAnimationFrame(tick);
-        if (t - last < 60) return;
-        last = t;
-        an.getByteTimeDomainData(buf);
-        let sum = 0;
-        for (const v of buf) sum += ((v - 128) / 128) ** 2;
-        const lvl = Math.min(1, Math.sqrt(sum / buf.length) * 4);
-        setLevels((prev) => [...prev.slice(1), Math.max(0.08, lvl)]);
-      };
-      raf = requestAnimationFrame(tick);
-    } catch {
-      /* playback still works without the bars */
-    }
-    return () => {
+    const id = window.setInterval(() => {
+      if (audio.paused) return;
+      const t = audio.currentTime * 9;
+      setLevels((prev) => [...prev.slice(1), 0.2 + Math.abs(Math.sin(t) * Math.cos(t * 0.37)) * 0.75]);
+    }, 70);
+    return () => window.clearInterval(id);
+  }, [audio]);
+  return () => {
       cancelAnimationFrame(raf);
       void ctx?.close();
     };
