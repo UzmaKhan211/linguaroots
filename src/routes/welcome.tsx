@@ -70,6 +70,13 @@ function Welcome() {
               Make a free account so your progress is saved on every device.
             </p>
             <Primary onClick={() => navigate({ to: "/auth" })}>Create my account</Primary>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/auth", search: { mode: "signin" } })}
+              className="mt-4 min-h-11 px-4 font-bold text-primary underline underline-offset-4"
+            >
+              Already have an account? Sign in
+            </button>
           </div>
         )}
       </div>

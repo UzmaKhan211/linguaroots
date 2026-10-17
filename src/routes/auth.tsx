@@ -19,13 +19,15 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { mode?: "signin" } => (s["mode"] === "signin" ? { mode: "signin" } : {}),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signup");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"signin" | "signup">(search.mode === "signin" ? "signin" : "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailOpen, setEmailOpen] = useState(false);
