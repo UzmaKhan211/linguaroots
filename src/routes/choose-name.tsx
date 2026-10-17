@@ -37,7 +37,7 @@ function ChooseName() {
       else {
         const destination = signupDestination(data);
         if (destination !== "/choose-name") { void navigate({ to: destination, replace: true }); return; }
-        const suggested = (user.user_metadata?.full_name ?? user.user_metadata?.name ?? "") as string;
+        const suggested = (user.user_metadata?.["full_name"] ?? user.user_metadata?.["name"] ?? "") as string;
         setName(suggested.split(" ")[0] ?? "");
       }
       setLoading(false);
