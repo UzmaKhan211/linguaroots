@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { replayOnboarding } from "@/lib/progress";
 import { deleteMyAccount } from "@/lib/account.functions";
-import { DEFAULT_AVATAR, avatarPathValue, avatarSrc, takePendingAvatar } from "@/lib/avatars";
+import { DEFAULT_AVATAR, avatarPathValue, avatarSrc } from "@/lib/avatars";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -43,13 +43,9 @@ function Profile() {
       setName(n);
       setSavedName(n);
       const stored = data?.avatar_path ?? "";
-      const pending = takePendingAvatar();
-      const chosen = pending ?? (avatarSrc(stored) ? stored.replace("avatar:", "") : DEFAULT_AVATAR);
+      const chosen = avatarSrc(stored) ? stored.replace("avatar:", "") : DEFAULT_AVATAR;
       setAvatar(chosen);
       setSavedAvatar(chosen);
-      if (pending || !avatarSrc(stored)) {
-        await supabase.from("profiles").update({ avatar_path: avatarPathValue(chosen) }).eq("id", user.id);
-      }
     })();
   }, [user]);
 

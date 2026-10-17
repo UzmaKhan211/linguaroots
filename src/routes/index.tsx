@@ -8,6 +8,7 @@ import { RewardsBadge } from "@/components/RewardsBadge";
 import { LogoMark, Wordmark } from "@/components/LogoMark";
 import { getWarmup, scenarios } from "@/lib/content";
 import { AudioButton } from "@/components/AudioButton";
+import { signupDestination } from "@/lib/signup";
 import {
   Drawer,
   DrawerClose,
@@ -47,14 +48,20 @@ function Index() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [relative, setRelative] = useState<string | undefined>();
   useEffect(() => {
-    if (!isOnboarded()) {
-      void supabase.auth.getSession().then(({ data }) =>
-        navigate({ to: data.session ? "/choose-language" : "/welcome", replace: true }),
-      );
-      return;
-    }
+    let active = true;
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!active) return;
+      if (data.session) {
+        const { data: profile, error } = await supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", data.session.user.id).maybeSingle();
+        if (!active || error) return;
+        const destination = signupDestination(profile);
+        if (destination !== "/") void navigate({ to: destination, replace: true });
+      } else if (!isOnboarded()) void navigate({ to: "/welcome", replace: true });
+    })();
     setRelative(getPrefs().relative);
     setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), done: completedCount(s.id) })));
+    return () => { active = false; };
   }, [navigate]);
 
   const isNew = rows ? rows.every((r) => !r.warm && r.done === 0) : true;

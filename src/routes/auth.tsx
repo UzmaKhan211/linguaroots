@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell } from "@/components/AppShell";
-import { AvatarPicker } from "@/components/AvatarPicker";
+import { LogoMark, Wordmark } from "@/components/LogoMark";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Mail } from "lucide-react";
+import { signupDestination } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
-import { isOnboarded } from "@/lib/progress";
-import { DEFAULT_AVATAR, setPendingAvatar } from "@/lib/avatars";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -28,27 +28,39 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState(DEFAULT_AVATAR);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user) navigate({ to: isOnboarded() ? "/" : "/choose-language", replace: true });
+    if (!user) return;
+    let active = true;
+    setChecking(true);
+    void supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", user.id).maybeSingle().then(({ data, error }) => {
+      if (!active) return;
+      if (error) { setMsg("We couldn't load your profile. Please refresh and try again."); setChecking(false); return; }
+      void navigate({ to: signupDestination(data), replace: true });
+    });
+    return () => { active = false; };
   }, [user, navigate]);
 
   const social = async (provider: "google" | "apple") => {
     setMsg(null);
-    if (mode === "signup") setPendingAvatar(avatar);
-    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
-    if (r.error) setMsg("That didn't work just now. Please try again.");
+    setBusy(true);
+    try {
+      const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
+      if (r.error) setMsg("That didn't work just now. Please try again.");
+    } catch { setMsg("That didn't work just now. Please try again."); }
+    finally { setBusy(false); }
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setMsg(null);
+    try {
     if (mode === "signup") {
-      setPendingAvatar(avatar);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -60,26 +72,22 @@ function AuthPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setMsg("That email and password don't match. Please check and try again.");
     }
-    setBusy(false);
+    } catch { setMsg("That didn't work just now. Please try again."); }
+    finally { setBusy(false); }
   };
 
   return (
-    <AppShell>
-      <h1 className="text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
+    <div className="mx-auto min-h-screen w-full max-w-[440px] bg-background px-6 pb-10 pt-8">
+      <header className="flex items-center gap-3"><LogoMark className="h-14 w-auto" /><Wordmark className="h-6 w-auto" /></header>
+      {emailOpen && <Button variant="ghost" disabled={busy || checking} className="mt-4 min-h-11 px-0" onClick={() => { setEmailOpen(false); setMsg(null); }}><ArrowLeft aria-hidden /> Back</Button>}
+      <h1 className="mt-6 text-[2rem] font-semibold leading-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
       <p className="mt-2 text-muted-foreground">Your progress stays safe on every device.</p>
 
-      <div className="mt-6 space-y-3">
-        <button type="button" onClick={() => social("google")} className="min-h-12 w-full rounded-full border-2 bg-card font-bold">
-          Continue with Google
-        </button>
-        <button type="button" onClick={() => social("apple")} className="min-h-12 w-full rounded-full border-2 bg-card font-bold">
-          Continue with Apple
-        </button>
-      </div>
-
-      <p className="my-5 text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">or use email</p>
-
-      <form onSubmit={submit} className="space-y-3">
+      {!emailOpen ? <div className="mt-8 space-y-3">
+        <Button type="button" variant="outline" disabled={busy || checking} onClick={() => social("google")} className="min-h-14 w-full rounded-full border-2 bg-card text-base font-bold">Continue with Google</Button>
+        <Button type="button" variant="outline" disabled={busy || checking} onClick={() => { setEmailOpen(true); setMsg(null); }} className="min-h-14 w-full rounded-full border-2 bg-card text-base font-bold"><Mail aria-hidden /> Continue with email</Button>
+      </div> : (
+      <form onSubmit={submit} className="mt-6 space-y-4">
         <label className="block text-sm font-semibold">
           Email
           <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base" />
@@ -96,23 +104,17 @@ function AuthPage() {
             className="mt-1 min-h-12 w-full rounded-2xl border bg-card px-4 text-base"
           />
         </label>
-        {mode === "signup" && (
-          <fieldset>
-            <legend className="text-sm font-semibold">Pick your character</legend>
-            <p className="mb-2 text-sm text-muted-foreground">This friendly face shows on your profile. You can change it later.</p>
-            <AvatarPicker value={avatar} onChange={setAvatar} disabled={busy} />
-          </fieldset>
-        )}
-        <button type="submit" disabled={busy} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-60">
-          {mode === "signup" ? "Create my account" : "Sign in"}
-        </button>
+        <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground disabled:opacity-60">
+          {busy ? "Please wait..." : mode === "signup" ? "Create my account" : "Sign in"}
+        </Button>
       </form>
+      )}
 
       <div aria-live="polite">{msg && <p className="mt-4 rounded-2xl bg-card p-3">{msg}</p>}</div>
 
-      <button type="button" onClick={() => setMode(mode === "signup" ? "signin" : "signup")} className="mt-4 min-h-11 w-full font-bold text-primary underline">
+      <Button variant="link" disabled={busy || checking} type="button" onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setPassword(""); setMsg(null); }} className="mt-4 min-h-11 w-full font-bold text-primary underline">
         {mode === "signup" ? "I already have an account" : "I'm new, create an account"}
-      </button>
-    </AppShell>
+      </Button>
+    </div>
   );
 }

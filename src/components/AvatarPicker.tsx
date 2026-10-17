@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { AVATARS } from "@/lib/avatars";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   value: string;
@@ -14,7 +15,8 @@ export function AvatarPicker({ value, onChange, disabled }: Props) {
       {AVATARS.map((a) => {
         const selected = a.id === value;
         return (
-          <button
+          <Button
+            variant="ghost"
             key={a.id}
             type="button"
             role="radio"
@@ -22,7 +24,7 @@ export function AvatarPicker({ value, onChange, disabled }: Props) {
             aria-label={a.label}
             disabled={disabled}
             onClick={() => onChange(a.id)}
-            className={`relative flex aspect-square items-center justify-center rounded-full border-2 bg-leaf-soft transition-transform active:scale-95 motion-reduce:transition-none disabled:opacity-60 ${
+            className={`relative flex h-auto aspect-square items-center justify-center rounded-full border-2 bg-leaf-soft p-0 transition-transform active:scale-95 motion-reduce:transition-none disabled:opacity-60 ${
               selected ? "border-primary ring-2 ring-primary/40" : "border-transparent"
             }`}
           >
@@ -32,7 +34,7 @@ export function AvatarPicker({ value, onChange, disabled }: Props) {
                 <Check className="size-3.5" aria-hidden />
               </span>
             )}
-          </button>
+          </Button>
         );
       })}
     </div>
