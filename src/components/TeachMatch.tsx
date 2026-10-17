@@ -50,6 +50,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
   const isLast = round + 1 >= rounds.length;
 
   const finish = () => {
+    if (!isLast || !roundDone) return;
     if (isWords) markWarmupDone(scenario.id);
     else markPhrasesDone(scenario.id);
     earn("warmup");
@@ -108,9 +109,6 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
         </Link>
         <div className="mt-3 flex items-center justify-between">
           <Dots total={rounds.length} at={round} />
-          <button type="button" onClick={finish} className="min-h-11 px-2 text-sm font-bold text-primary underline-offset-4 hover:underline">
-            {isWords ? "Skip to phrases" : "I'm ready to talk"}
-          </button>
         </div>
         <p className="mt-6 text-sm font-bold uppercase tracking-wider text-accent">{lessonLabel}</p>
         <h1 className="mt-1 font-display text-3xl font-semibold">{isWords ? "New words" : "New phrases"}</h1>
@@ -175,9 +173,6 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
       </Link>
       <div className="mt-3 flex items-center justify-between">
         <Dots total={rounds.length} at={round} />
-        <button type="button" onClick={finish} className="min-h-11 px-2 text-sm font-bold text-primary underline-offset-4 hover:underline">
-          {isWords ? "Skip to phrases" : "I'm ready to talk"}
-        </button>
       </div>
 
       <p className="mt-6 text-sm font-bold uppercase tracking-wider text-accent">{lessonLabel}</p>

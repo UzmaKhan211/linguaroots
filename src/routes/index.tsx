@@ -62,8 +62,10 @@ function Index() {
       setChecked(true);
     })();
     setRelative(getPrefs().relative);
-    setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), phrases: isPhrasesDone(s.id), done: completedCount(s.id) })));
-    return () => { active = false; };
+    const refresh = () => setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), phrases: isPhrasesDone(s.id), done: completedCount(s.id) })));
+    refresh();
+    window.addEventListener("lr:progress", refresh);
+    return () => { active = false; window.removeEventListener("lr:progress", refresh); };
   }, [navigate]);
 
   const isNew = rows ? rows.every((r) => !r.warm && r.done === 0) : true;
@@ -166,7 +168,7 @@ function Index() {
       )}
 
       {isNew && rest.length > 0 && (
-        <h2 className="mt-8 text-sm font-bold uppercase tracking-wider text-muted-foreground">Coming up next</h2>
+        <h2 className="mt-8 text-sm font-bold uppercase tracking-wider text-muted-foreground">More units to explore</h2>
       )}
 
       <ul className={`${isNew ? "mt-3" : "mt-6"} space-y-4`}>
