@@ -320,7 +320,7 @@ export function TeachMatch({ scenario, items, kind }: { scenario: Scenario; item
           onClick={nextRound}
           className="fade-up mt-6 min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground"
         >
-          {isLast ? (isWords ? "Go to Lesson 2: Phrases" : "Go to Lesson 3: Conversation") : isWords ? "Next words" : "Next phrases"}
+          {isLast ? "Finish lesson" : isWords ? "Next words" : "Next phrases"}
         </button>
       )}
     </AppShell>
