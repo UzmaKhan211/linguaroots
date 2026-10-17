@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Square } from "lucide-react";
+import { Volume1, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function DictionaryAudio({ url, word }: { url: string; word: string }) {
@@ -21,7 +21,7 @@ export function DictionaryAudio({ url, word }: { url: string; word: string }) {
   }, [url]);
 
   return <div>
-    <Button variant="audio" aria-label={`${playing ? "Stop" : "Hear"} ${word}`} onClick={() => {
+    <Button variant="ghost" size="icon" type="button" className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6" aria-label={`${playing ? "Stop" : "Hear"} ${word}`} onClick={() => {
       const clip = audio.current;
       if (!clip) return;
       if (playing) { clip.pause(); return; }
@@ -30,7 +30,7 @@ export function DictionaryAudio({ url, word }: { url: string; word: string }) {
       clip.currentTime = 0;
       void clip.play().then(() => setPlaying(true)).catch(() => { setFailed(true); setPlaying(false); });
     }}>
-      {playing ? <Square aria-hidden /> : <Volume2 aria-hidden />} {playing ? "Playing" : "Hear it"}
+      {playing ? <Volume2 className="animate-pulse motion-reduce:animate-none" aria-hidden /> : <Volume1 aria-hidden />}
     </Button>
     {failed && <p role="status" className="mt-2 text-sm text-muted-foreground">Couldn't play. Tap to try again.</p>}
   </div>;
