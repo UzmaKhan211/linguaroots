@@ -87,7 +87,8 @@ function Index() {
     <AppShell>
       {isNew ? (
         <section className="fade-up mt-8">
-          <h1 className="text-[2rem] font-semibold text-foreground">Your first conversation is waiting</h1>
+          <h1 className="text-[2rem] font-semibold text-foreground">{name ? `Welcome, ${name}!` : "Welcome!"}</h1>
+          <p className="mt-2 font-display text-xl font-semibold text-foreground">Your first conversation is waiting</p>
           <p className="mt-2 text-lg text-muted-foreground">
             Learn a few words and phrases, then have a friendly chat. It only takes a few minutes.
           </p>
