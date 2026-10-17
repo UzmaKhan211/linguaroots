@@ -63,6 +63,8 @@ function Talk() {
   const [connected, setConnected] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const restoredAt = useRef(0);
+  // The reply/recording area is pinned to the bottom (like a messaging app), so learners
+  // never scroll for it; only the conversation bubbles scroll, to the newest line.
   const isEnd = step.type === "end";
   useEffect(() => {
     if (!isEnd) return;
@@ -170,7 +172,7 @@ function Talk() {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [history.length, step, chosen]);
+  }, [history.length]);
 
   // Only one reply? Open it straight away — nothing to pick.
   useEffect(() => {
@@ -245,9 +247,15 @@ function Talk() {
           <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restoredAt.current} />
         ))}
       </ol>
+      <div ref={endRef} />
+      {/* Room so the pinned reply stage never covers the newest line. */}
+      {(step.type === "choose" || chosen) && !speaking && <div className={chosen ? "h-80" : "h-56"} aria-hidden />}
 
+      {/* Pinned reply stage: stays at the bottom like a messaging app, so no scrolling. */}
+      {(step.type === "choose" || chosen) && !speaking && (
+        <div className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] border-t bg-background/95 px-5 pb-5 pt-3 backdrop-blur">
       {step.type === "choose" && !chosen && !speaking && (
-        <section className="fade-up mt-6">
+        <section className="fade-up">
           <p className="font-bold text-muted-foreground">
             {step.options.length > 1 ? "Select a response of your choice" : "Respond by saying"}
           </p>
@@ -276,7 +284,7 @@ function Talk() {
       )}
 
       {chosen && !speaking && (
-        <section className="fade-up mt-6 rounded-3xl border bg-leaf-soft p-5">
+        <section className="fade-up rounded-3xl border bg-leaf-soft p-5">
           <div className="flex items-center justify-between gap-2">
             <p className="flex items-center gap-2 font-bold text-primary">
               <Mic className="size-5" aria-hidden /> {single ? "Respond by saying" : "Say it out loud"}
@@ -312,6 +320,8 @@ function Talk() {
           />
         </section>
       )}
+        </div>
+      )}
 
       {step.type === "end" && (
         <section className="fade-up mt-8 rounded-3xl border bg-sun-soft p-6 text-center">
@@ -343,7 +353,6 @@ function Talk() {
           </div>
         </section>
       )}
-      <div ref={endRef} />
     </AppShell>
   );
 }
