@@ -63,6 +63,8 @@ function Talk() {
   const [connected, setConnected] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const restoredAt = useRef(0);
+  // The reply/recording area is pinned to the bottom (like a messaging app), so learners
+  // never scroll for it; only the conversation bubbles scroll, to the newest line.
   const isEnd = step.type === "end";
   useEffect(() => {
     if (!isEnd) return;
