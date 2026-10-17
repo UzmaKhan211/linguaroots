@@ -27,3 +27,4 @@
 - Registration destinations are determined by account profile state through `src/lib/signup.ts`, in order `/choose-name`, `/choose-companion`, then language choice; this keeps email confirmation and OAuth callbacks consistent across devices without repeating setup for existing learners. Profile edits only persist through its Save changes action.
 - Learning screens require a signed-in account via `RequireAccount` (used by AppShell and lesson routes); signed-out visitors go to /welcome. Why: no guest mode, so every learner has synced progress.
 - Lesson screens use `AppShell lesson`, which hides the bottom bar so stray taps cannot exit a lesson midway.
+- Conversation replies use SayIt's compact layout and a measured pinned stage; matching the spacer to its live height keeps new bubbles clear of recording feedback.
