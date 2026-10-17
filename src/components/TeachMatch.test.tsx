@@ -37,7 +37,7 @@ describe("lesson completion", () => {
           const item = items.find((i) => i.roman.trim() === text);
           if (!item) throw new Error("Matching item missing");
           fireEvent.click(button);
-          fireEvent.click(within(en).getByRole("button", { name: item.english, exact: true }));
+          fireEvent.click(within(en).getByRole("button", { name: item.english }));
           paired++;
         }
         expect(wordsDone).not.toHaveBeenCalled();
