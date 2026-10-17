@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TeachMatch } from "./TeachMatch";
 import { getPhrases, getScenario, getWarmup } from "@/lib/content";
 
@@ -12,7 +12,8 @@ vi.mock("@/lib/progress", () => ({ markWarmupDone: wordsDone, markPhrasesDone: p
 vi.mock("@/lib/rewards", () => ({ earn }));
 vi.mock("@/lib/sfx", () => ({ playCelebrate: vi.fn(), playCorrect: vi.fn(), playIncorrect: vi.fn() }));
 
-afterEach(() => { cleanup(); vi.clearAllMocks(); });
+beforeEach(() => { vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined); });
+afterEach(() => { cleanup(); vi.clearAllMocks(); vi.restoreAllMocks(); });
 
 describe("lesson completion", () => {
   for (const kind of ["words", "phrases"] as const) {
