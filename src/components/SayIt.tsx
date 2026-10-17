@@ -172,9 +172,9 @@ export function SayIt({
           <div
             role="img"
             aria-label="Said correctly"
-            className={`fade-up flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lift size-11`}
+            className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-primary p-0 text-primary-foreground shadow-lift"
           >
-            <Check className="size-6" strokeWidth={3} aria-hidden />
+            <Check className="size-6" aria-hidden />
           </div>
         ) : (
         <Button
