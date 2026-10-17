@@ -184,8 +184,17 @@ function Talk() {
   }, [ready, intro, step, history.length]);
 
   useEffect(() => {
+    if (isEnd) return;
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [history.length, replyHeight]);
+  }, [history.length, replyHeight, isEnd]);
+
+  // When the conversation ends, bring the closing feedback card into view.
+  const doneRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!isEnd || speaking) return;
+    const t = setTimeout(() => doneRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 150);
+    return () => clearTimeout(t);
+  }, [isEnd, speaking]);
 
   // Only one reply? Open it straight away — nothing to pick.
   useEffect(() => {
@@ -346,7 +355,7 @@ function Talk() {
       )}
 
       {step.type === "end" && (
-        <section className="fade-up mt-8 rounded-3xl border bg-sun-soft p-6 text-center">
+        <section ref={doneRef} className="fade-up mt-8 scroll-mb-6 rounded-3xl border bg-sun-soft p-6 text-center">
           <Heart className="mx-auto size-10 text-accent" aria-hidden />
           <h2 className="mt-3 text-2xl font-semibold">You talked with {who}</h2>
           <p className="mt-2 text-lg">That was a whole conversation in Khowar. They'd be so happy to hear it.</p>
