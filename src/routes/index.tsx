@@ -62,8 +62,10 @@ function Index() {
       setChecked(true);
     })();
     setRelative(getPrefs().relative);
-    setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), phrases: isPhrasesDone(s.id), done: completedCount(s.id) })));
-    return () => { active = false; };
+    const refresh = () => setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), phrases: isPhrasesDone(s.id), done: completedCount(s.id) })));
+    refresh();
+    window.addEventListener("lr:progress", refresh);
+    return () => { active = false; window.removeEventListener("lr:progress", refresh); };
   }, [navigate]);
 
   const isNew = rows ? rows.every((r) => !r.warm && r.done === 0) : true;

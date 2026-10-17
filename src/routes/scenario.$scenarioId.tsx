@@ -33,10 +33,12 @@ type LessonPath = "/scenario/$scenarioId/warmup" | "/scenario/$scenarioId/phrase
 function UnitOverview() {
   const { scenario, wordCount, phraseCount } = Route.useLoaderData();
   const [state, setState] = useState({ words: false, phrases: false, talked: false });
-  useEffect(
-    () => setState({ words: isWarmupDone(scenario.id), phrases: isPhrasesDone(scenario.id), talked: completedCount(scenario.id) > 0 }),
-    [scenario.id],
-  );
+  useEffect(() => {
+    const refresh = () => setState({ words: isWarmupDone(scenario.id), phrases: isPhrasesDone(scenario.id), talked: completedCount(scenario.id) > 0 });
+    refresh();
+    window.addEventListener("lr:progress", refresh);
+    return () => window.removeEventListener("lr:progress", refresh);
+  }, [scenario.id]);
 
   const lessons: { n: 1 | 2 | 3; title: string; detail: string; to: LessonPath; done: boolean }[] = [
     { n: 1, title: "Words", detail: `${wordCount} key words to learn and pair`, to: "/scenario/$scenarioId/warmup", done: state.words },

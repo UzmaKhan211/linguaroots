@@ -24,6 +24,7 @@ const set = (k: string, v: string | null) => {
   try {
     if (v === null) localStorage.removeItem(k);
     else localStorage.setItem(k, v);
+    window.dispatchEvent(new Event("lr:progress"));
   } catch {
     /* ignore */
   }
