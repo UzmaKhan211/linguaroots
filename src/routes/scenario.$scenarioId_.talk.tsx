@@ -397,7 +397,7 @@ function Bubble({ turn, who, autoPlay = false }: { turn: Turn; who: string; auto
             <>
               {" "}
               <span className="inline-block align-middle">
-                <AudioButton file={turn.audioFile} autoPlay={autoPlay} label="Play" iconOnly bare playPause />
+                <AudioButton file={turn.audioFile} autoPlay={autoPlay} label="Hear it" iconOnly bare speaker />
               </span>
             </>
           )}
