@@ -171,10 +171,10 @@ export function SayIt({
         {phase === "scored" && passed && takeUrl ? (
           <Button
             type="button"
-            variant="audio"
+            variant="ghost"
             onClick={playTake}
             aria-label="Hear yourself"
-            className={`fade-up relative flex shrink-0 items-center justify-center rounded-full bg-bark p-0 text-primary-foreground shadow-lift [&_svg]:size-8 ${compact ? "size-14" : "size-20"}`}
+            className={`fade-up relative flex shrink-0 items-center justify-center rounded-full p-0 text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-10 ${compact ? "size-14" : "size-20"}`}
           >
             <Play className="ml-1 fill-current" aria-hidden />
           </Button>
@@ -192,20 +192,15 @@ export function SayIt({
           onClick={phase === "recording" ? stop : start}
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Try again"}
-          variant="audio"
-          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-7 ${compact ? "size-14" : "size-20"} ${
-            phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
-          }`}
+          variant="ghost"
+          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 text-bark hover:bg-sun-soft hover:text-bark disabled:opacity-60 ${compact ? "size-14" : "size-20"}`}
         >
-          {phase === "recording" && (
-            <span className="absolute inset-0 rounded-full bg-bark/40 motion-safe:animate-ping" aria-hidden />
-          )}
           {phase === "recording" ? (
-            <Square className="relative size-7 fill-current" aria-hidden />
+            <Square className="relative size-8 fill-current motion-safe:animate-pulse" aria-hidden />
           ) : phase === "scored" ? (
-            <RotateCcw className="size-8" aria-hidden />
+            <RotateCcw className="size-10" aria-hidden />
           ) : (
-            <Mic className="size-9" aria-hidden />
+            <Mic className="size-11" aria-hidden />
           )}
         </Button>
         )}
