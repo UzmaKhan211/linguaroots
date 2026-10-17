@@ -86,7 +86,7 @@ function Index() {
   return (
     <AppShell>
       {isNew ? (
-        <section className="fade-up mt-3">
+        <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">{name ? `Welcome, ${name}!` : "Welcome!"}</h1>
           <p className="mt-2 font-display text-xl font-semibold text-foreground">Your first conversation is waiting</p>
           <p className="mt-2 text-lg text-muted-foreground">
@@ -114,15 +114,15 @@ function Index() {
           </Link>
         </section>
       ) : (
-        <section className="fade-up mt-3">
+        <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">{name ? `Welcome back, ${name}!` : "Welcome back!"}</h1>
-          <p className="mt-2 text-balance text-lg text-muted-foreground">Which unit would you like to practice today?</p>
+          <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
           <Drawer>
             <DrawerTrigger asChild>
               <button
                 type="button"
                 disabled={wordsLearned === 0}
-                className="mt-5 flex w-full items-center gap-3 rounded-3xl border bg-sun-soft p-4 text-left"
+                className="mt-4 flex w-full items-center gap-3 rounded-3xl border bg-sun-soft p-4 text-left"
               >
                 <BookOpen className="size-6 shrink-0 text-bark" aria-hidden />
                 <span className="flex-1 text-base text-foreground">
