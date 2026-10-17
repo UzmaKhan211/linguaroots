@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { LogoMark } from "@/components/LogoMark";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mail } from "lucide-react";
+import { Eye, EyeOff, Mail } from "lucide-react";
 
 import { signupDestination } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +32,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">(search.mode === "signin" ? "signin" : "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const [checking, setChecking] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -105,10 +106,12 @@ function AuthPage() {
           <input type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 min-h-14 w-full rounded-full border bg-muted px-5 text-base font-normal" />
         </label>
         {emailOpen && (
-          <label className="fade-up block font-bold">
-            Password
+          <div className="fade-up">
+            <label htmlFor="auth-password" className="block font-bold">Password</label>
+            <div className="relative mt-2">
             <input
-              type="password"
+              id="auth-password"
+              type={showPassword ? "text" : "password"}
               required
               minLength={6}
               autoFocus
@@ -116,9 +119,23 @@ function AuthPage() {
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 min-h-14 w-full rounded-full border bg-muted px-5 text-base font-normal"
+              className="min-h-14 w-full rounded-full border bg-muted pl-5 pr-16 text-base font-normal"
             />
-          </label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              title={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+              aria-controls="auth-password"
+              onClick={() => setShowPassword((shown) => !shown)}
+              className="absolute right-2 top-1/2 size-11 -translate-y-1/2 rounded-full text-muted-foreground"
+            >
+              {showPassword ? <EyeOff className="size-5" aria-hidden /> : <Eye className="size-5" aria-hidden />}
+            </Button>
+            </div>
+          </div>
         )}
         <Button type="submit" disabled={busy || checking} className="min-h-14 w-full rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lift disabled:opacity-60">
           {busy ? "Please wait..." : !emailOpen ? "Continue" : mode === "signup" ? "Create my account" : "Sign in"}
@@ -145,7 +162,7 @@ function AuthPage() {
 
       <p className="mt-6 text-center text-muted-foreground">
         {mode === "signup" ? "Already have an account? " : "New to LinguaRoots? "}
-        <button type="button" disabled={busy || checking} onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setPassword(""); setMsg(null); }} className="min-h-11 font-bold text-foreground underline underline-offset-4">
+        <button type="button" disabled={busy || checking} onClick={() => { setMode(mode === "signup" ? "signin" : "signup"); setPassword(""); setShowPassword(false); setMsg(null); }} className="min-h-11 font-bold text-foreground underline underline-offset-4">
           {mode === "signup" ? "Log in" : "Create an account"}
         </button>
       </p>
