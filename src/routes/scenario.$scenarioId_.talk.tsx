@@ -99,6 +99,7 @@ function Talk() {
     setChosen(null);
     setStep(stepAt(scenario.startTurnId, turns));
     setConnected(false);
+    setSeconds(0);
     setIntro("showing");
   };
 
@@ -144,6 +145,16 @@ function Talk() {
       clearTimeout(b);
     };
   }, [intro, phone]);
+
+  // Call timer for phone scenarios: ticks once the call connects, freezes at the end.
+  const [seconds, setSeconds] = useState(0);
+  const callLive = phone && ready && intro === "done" && !isEnd;
+  useEffect(() => {
+    if (!callLive) return;
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [callLive]);
+  const clock = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
   // Relative's lines appear on their own; walk until replies are needed.
   useEffect(() => {
@@ -216,6 +227,15 @@ function Talk() {
           </span>
           <span className="mt-2 text-sm text-muted-foreground">Tap to skip</span>
         </button>
+      )}
+
+      {phone && intro === "done" && (
+        <div className="fade-up mt-4 flex items-center justify-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
+          <Phone className="size-4 text-bark" aria-hidden />
+          <span>{isEnd ? "Call ended" : `On call with ${who}`}</span>
+          <span aria-hidden>·</span>
+          <span className="tabular-nums" aria-label={`Call time ${clock}`}>{clock}</span>
+        </div>
       )}
 
       <ol className="mt-4 space-y-4" aria-live="polite">
