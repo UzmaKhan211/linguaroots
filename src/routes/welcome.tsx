@@ -149,7 +149,7 @@ function GenerationsFact({ onNext }: { onNext: () => void }) {
     <>
       <p className="text-sm font-bold uppercase tracking-wider text-accent">Quick guess</p>
       <h1 className="mt-1 text-[1.75rem] font-semibold leading-tight">
-        When families move abroad, how many generations does it often take for a home language to fade?
+        Where another language dominates, how many generations does a heritage language last?
       </h1>
       <div className="mt-6 grid grid-cols-3 gap-3">
         {options.map((o, i) => {
