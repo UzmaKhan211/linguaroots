@@ -208,13 +208,27 @@ function Talk() {
 
   return (
     <AppShell lesson>
-      <Link
-        to="/scenario/$scenarioId"
-        params={{ scenarioId: scenario.id }}
-        className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted-foreground"
-      >
-        <ArrowLeft className="size-5" aria-hidden /> {scenario.title}
-      </Link>
+      <header aria-label="Conversation" className="fixed inset-x-0 top-0 z-20 mx-auto max-w-[440px] border-b bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+        <div className="flex h-14 items-center gap-3 px-4">
+          <Link
+            to="/scenario/$scenarioId"
+            params={{ scenarioId: scenario.id }}
+            aria-label={`Back to ${scenario.title}`}
+            title={`Back to ${scenario.title}`}
+            className="flex size-11 shrink-0 items-center justify-center rounded-full text-muted-foreground"
+          >
+            <ArrowLeft className="size-5" aria-hidden />
+          </Link>
+          {phone ? <Phone className="size-4 shrink-0 text-bark" aria-hidden /> : <Coffee className="size-4 shrink-0 text-bark" aria-hidden />}
+          <p className="min-w-0 flex-1 truncate font-display text-lg font-semibold">{who}</p>
+          {phone && (
+            <span className="shrink-0 text-sm font-semibold text-muted-foreground">
+              {intro === "done" ? <span className="tabular-nums" aria-label={`${isEnd ? "Call ended at" : "Call time"} ${clock}`}>{clock}</span> : "Calling..."}
+            </span>
+          )}
+        </div>
+      </header>
+      <div className="h-[calc(2rem+env(safe-area-inset-top))]" aria-hidden />
 
       {restored > 0 && !isEnd && (
         <div className="fade-up mt-4 flex items-center justify-between gap-3 rounded-2xl bg-muted p-3">
@@ -244,15 +258,6 @@ function Talk() {
           </span>
           <span className="mt-2 text-sm text-muted-foreground">Tap to skip</span>
         </button>
-      )}
-
-      {phone && intro === "done" && (
-        <div className="fade-up mt-4 flex items-center justify-center gap-2 rounded-full bg-muted px-4 py-2 text-sm font-semibold text-muted-foreground">
-          <Phone className="size-4 text-bark" aria-hidden />
-          <span>{isEnd ? "Call ended" : `On call with ${who}`}</span>
-          <span aria-hidden>·</span>
-          <span className="tabular-nums" aria-label={`Call time ${clock}`}>{clock}</span>
-        </div>
       )}
 
       <ol className="mt-4 space-y-4" aria-live="polite">
@@ -374,7 +379,7 @@ function Talk() {
 function Bubble({ turn, who, autoPlay = false }: { turn: Turn; who: string; autoPlay?: boolean }) {
   const me = turn.speaker === "learner";
   return (
-    <li className={`fade-up flex ${me ? "justify-end" : "justify-start"}`}>
+    <li className={`fade-up flex scroll-mt-[calc(4.5rem+env(safe-area-inset-top))] ${me ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-[85%] rounded-3xl p-4 shadow-soft ${
           me ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md border bg-card"
