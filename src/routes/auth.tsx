@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogoMark } from "@/components/LogoMark";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Mail } from "lucide-react";
 
 import { signupDestination } from "@/lib/signup";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +36,7 @@ function AuthPage() {
   const [checking, setChecking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -69,7 +72,7 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin },
       });
       if (error) setMsg(error.message);
-      else if (!data.session) setMsg("Nearly there! We've sent you an email. Tap the link in it to finish making your account.");
+      else if (!data.session) setSentTo(email);
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setMsg("That email and password don't match. Please check and try again.");
@@ -123,6 +126,22 @@ function AuthPage() {
       </form>
 
       <div aria-live="polite">{msg && <p className="mt-4 rounded-2xl bg-card p-3">{msg}</p>}</div>
+
+      <Dialog open={sentTo !== null} onOpenChange={(o) => { if (!o) setSentTo(null); }}>
+        <DialogContent className="max-w-[360px] rounded-3xl p-7 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/15 text-primary">
+            <Mail className="size-8" aria-hidden />
+          </div>
+          <DialogHeader className="sm:text-center">
+            <DialogTitle className="text-center text-2xl">Check your inbox</DialogTitle>
+            <DialogDescription className="text-center text-base text-foreground">
+              We sent a link to <span className="break-all font-bold">{sentTo}</span>. Tap it to finish making your account and meet your companion.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Can't find it after a minute? Have a look in your spam or junk folder.</p>
+          <Button type="button" onClick={() => setSentTo(null)} className="min-h-14 w-full rounded-full text-lg font-bold">Got it</Button>
+        </DialogContent>
+      </Dialog>
 
       <p className="mt-6 text-center text-muted-foreground">
         {mode === "signup" ? "Already have an account? " : "New to LinguaRoots? "}
