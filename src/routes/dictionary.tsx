@@ -45,9 +45,8 @@ function Dictionary() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs font-bold text-muted-foreground">{w.category}</span>
         </div>
-        <h2 className="mt-2 break-words text-2xl font-semibold tracking-normal">{w.roman}</h2>
+        <h2 className="mt-2 break-words text-2xl font-semibold tracking-normal">{w.roman}<span className="ml-1 inline-block align-middle"><DictionaryAudio url={vocabularyAudioUrl(w)} word={w.roman} /></span></h2>
         <p className="mt-1 break-words text-base text-muted-foreground">{w.english}</p>
-        <div className="mt-3"><DictionaryAudio url={vocabularyAudioUrl(w)} word={w.roman} /></div>
         {w.culturalNote && <details className="mt-3 border-t pt-3">
           <summary className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-primary"><Sparkles className="size-4" aria-hidden /> Cultural insight</summary>
           <p className="mt-2 text-sm italic text-muted-foreground">{w.culturalNote}</p>

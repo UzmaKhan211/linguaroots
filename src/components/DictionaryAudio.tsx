@@ -20,7 +20,7 @@ export function DictionaryAudio({ url, word }: { url: string; word: string }) {
     return () => { clip.pause(); audio.current = null; window.removeEventListener("lr:dictionary-audio", stopOthers); };
   }, [url]);
 
-  return <div>
+  return <span className="inline-flex flex-col">
     <Button variant="ghost" size="icon" type="button" className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6" aria-label={`${playing ? "Stop" : "Hear"} ${word}`} onClick={() => {
       const clip = audio.current;
       if (!clip) return;
@@ -32,6 +32,6 @@ export function DictionaryAudio({ url, word }: { url: string; word: string }) {
     }}>
       {playing ? <Volume2 className="animate-pulse motion-reduce:animate-none" aria-hidden /> : <Volume1 aria-hidden />}
     </Button>
-    {failed && <p role="status" className="mt-2 text-sm text-muted-foreground">Couldn't play. Tap to try again.</p>}
-  </div>;
+    {failed && <span role="status" className="sr-only">Couldn't play. Tap to try again.</span>}
+  </span>;
 }
