@@ -265,9 +265,10 @@ function Talk() {
           <Bubble key={t.id + i} turn={t} who={who} autoPlay={i >= restoredAt.current} />
         ))}
       </ol>
-      <div ref={endRef} />
-      {/* Room so the pinned reply stage never covers the newest line. */}
+      {/* Room so the pinned reply stage never covers the newest line; the scroll marker sits
+          below it so scrolling to the end lands the newest bubble just above the stage. */}
       {showReply && <div style={{ height: replyHeight }} aria-hidden />}
+      <div ref={endRef} className="scroll-mb-4" />
 
       {/* Pinned reply stage: stays at the bottom like a messaging app, so no scrolling. */}
       {(step.type === "choose" || chosen) && !speaking && (
