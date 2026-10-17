@@ -391,13 +391,18 @@ function Bubble({ turn, who, autoPlay = false }: { turn: Turn; who: string; auto
         <p className={`text-xs font-bold uppercase tracking-wider ${me ? "opacity-80" : "text-accent"}`}>
           {me ? "You" : who}
         </p>
-        <p className="mt-1 font-display text-xl font-semibold">{turn.roman}</p>
+        <p className="mt-1 font-display text-xl font-semibold">
+          {turn.roman}
+          {!me && (
+            <>
+              {" "}
+              <span className="inline-block align-middle">
+                <AudioButton file={turn.audioFile} autoPlay={autoPlay} label="Play" iconOnly bare playPause />
+              </span>
+            </>
+          )}
+        </p>
         <p className={`text-sm ${me ? "opacity-85" : "text-muted-foreground"}`}>{turn.english}</p>
-        {!me && (
-          <div className="mt-2">
-            <AudioButton file={turn.audioFile} autoPlay={autoPlay} label="Play" iconOnly bare playPause />
-          </div>
-        )}
       </div>
     </li>
   );
