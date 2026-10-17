@@ -150,16 +150,6 @@ function Profile() {
 
       <h2 className="mt-8 text-lg font-semibold">Account</h2>
       <div className="mt-2 space-y-3">
-        <button
-          type="button"
-          onClick={() => {
-            replayOnboarding();
-            navigate({ to: "/welcome" });
-          }}
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 bg-card font-bold"
-        >
-          <RotateCcw className="size-4" aria-hidden /> Replay the welcome
-        </button>
         {user && (
           <button type="button" onClick={() => supabase.auth.signOut()} className="min-h-12 w-full rounded-full border-2 bg-card font-bold">
             Sign out
