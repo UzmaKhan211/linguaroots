@@ -311,6 +311,7 @@ function PlaybackWave({ audio }: { audio: HTMLAudioElement }) {
       an.fftSize = 512;
       src.connect(an);
       an.connect(ctx.destination);
+      void ctx.resume();
       const buf = new Uint8Array(an.fftSize);
       let last = 0;
       const tick = (t: number) => {
