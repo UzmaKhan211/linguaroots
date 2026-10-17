@@ -159,9 +159,9 @@ export function SayIt({
               size="icon"
               onClick={playTake}
               aria-label="Hear yourself"
-              className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark"
+              className="size-11 shrink-0 rounded-full text-bark hover:bg-sun-soft hover:text-bark [&_svg]:size-6"
             >
-              <Play className="size-5 fill-current" aria-hidden />
+              <Play className="size-6 fill-current" aria-hidden />
             </Button>
           )}
           <div className={compact ? "flex h-8 min-w-0 flex-1 items-center justify-center" : "flex h-14 min-w-0 flex-1 items-center justify-center"} aria-hidden>
@@ -183,7 +183,7 @@ export function SayIt({
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Try again"}
           variant="audio"
-          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-7 ${compact ? "size-14" : "size-20"} ${
+          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-6 ${compact ? "size-14" : "size-20"} ${
             phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
           }`}
         >
@@ -191,11 +191,11 @@ export function SayIt({
             <span className="absolute inset-0 rounded-full bg-bark/40 motion-safe:animate-ping" aria-hidden />
           )}
           {phase === "recording" ? (
-            <Square className="relative size-7 fill-current" aria-hidden />
+            <Square className="relative size-6 fill-current" aria-hidden />
           ) : phase === "scored" ? (
-            <RotateCcw className="size-8" aria-hidden />
+            <RotateCcw className="size-6" aria-hidden />
           ) : (
-            <Mic className="size-9" aria-hidden />
+            <Mic className="size-6" aria-hidden />
           )}
         </Button>
         )}
