@@ -54,7 +54,7 @@ function Welcome() {
               Keep your family's language alive.
             </h1>
             <p className="fade-up mt-3 text-lg text-muted-foreground" style={{ animationDelay: "320ms" }}>
-              Learn everyday Khowar phrases through short, friendly conversations.
+              Learn everyday phrases in your heritage language through short, friendly conversations.
             </p>
             <Primary onClick={next}>Let's begin</Primary>
           </div>

@@ -14,9 +14,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in | LinguaRoots" },
-      { name: "description", content: "Sign in or create an account to keep your Khowar practice on every device." },
+      { name: "description", content: "Sign in or create an account to keep your heritage language practice on every device." },
       { property: "og:title", content: "Sign in | LinguaRoots" },
-      { property: "og:description", content: "Sign in or create an account to keep your Khowar practice on every device." },
+      { property: "og:description", content: "Sign in or create an account to keep your heritage language practice on every device." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
