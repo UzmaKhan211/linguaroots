@@ -62,10 +62,23 @@ function Talk() {
   const [intro, setIntro] = useState<"pending" | "showing" | "done">("pending");
   const [connected, setConnected] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const replyRef = useRef<HTMLDivElement>(null);
+  const [replyHeight, setReplyHeight] = useState(0);
   const restoredAt = useRef(0);
   // The reply/recording area is pinned to the bottom (like a messaging app), so learners
   // never scroll for it; only the conversation bubbles scroll, to the newest line.
   const isEnd = step.type === "end";
+  const showReply = (step.type === "choose" || chosen !== null) && !speaking;
+  useEffect(() => {
+    const panel = replyRef.current;
+    if (!showReply || !panel) {
+      setReplyHeight(0);
+      return;
+    }
+    const observer = new ResizeObserver(() => setReplyHeight(panel.getBoundingClientRect().height));
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [showReply]);
   useEffect(() => {
     if (!isEnd) return;
     saveResume(scenario.id, null);
@@ -172,7 +185,7 @@ function Talk() {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [history.length]);
+  }, [history.length, replyHeight]);
 
   // Only one reply? Open it straight away — nothing to pick.
   useEffect(() => {
@@ -249,11 +262,11 @@ function Talk() {
       </ol>
       <div ref={endRef} />
       {/* Room so the pinned reply stage never covers the newest line. */}
-      {(step.type === "choose" || chosen) && !speaking && <div className={chosen ? "h-80" : "h-56"} aria-hidden />}
+      {showReply && <div style={{ height: replyHeight }} aria-hidden />}
 
       {/* Pinned reply stage: stays at the bottom like a messaging app, so no scrolling. */}
       {(step.type === "choose" || chosen) && !speaking && (
-        <div className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-[440px] border-t bg-background/95 px-5 pb-5 pt-3 backdrop-blur">
+        <div ref={replyRef} className="fixed inset-x-0 bottom-0 z-10 mx-auto max-h-[65dvh] max-w-[440px] overflow-y-auto border-t bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
       {step.type === "choose" && !chosen && !speaking && (
         <section className="fade-up">
           <p className="font-bold text-muted-foreground">
@@ -263,7 +276,7 @@ function Talk() {
             {step.options.map((o, idx) => (
               <li key={o.id}>
                 {idx > 0 && (
-                  <div className="flex items-center gap-3 py-2" aria-hidden>
+                  <div className="flex items-center gap-3 py-1" aria-hidden>
                     <span className="h-px flex-1 bg-border" />
                     <span className="rounded-full bg-muted px-3 py-0.5 text-xs font-bold uppercase tracking-widest text-muted-foreground">or</span>
                     <span className="h-px flex-1 bg-border" />
@@ -272,7 +285,7 @@ function Talk() {
                 <button
                   type="button"
                   onClick={() => setChosen(o)}
-                  className="w-full rounded-2xl border-2 bg-card p-4 text-left shadow-soft"
+                   className="min-h-11 w-full rounded-2xl border-2 bg-card px-3 py-2 text-left shadow-soft"
                 >
                   <span className="block font-display text-xl font-semibold">{o.roman}</span>
                   <span className="block text-sm text-muted-foreground">{o.english}</span>
@@ -284,7 +297,7 @@ function Talk() {
       )}
 
       {chosen && !speaking && (
-        <section className="fade-up rounded-3xl border bg-leaf-soft p-5">
+        <section className="fade-up">
           <div className="flex items-center justify-between gap-2">
             <p className="flex items-center gap-2 font-bold text-primary">
               <Mic className="size-5" aria-hidden /> {single ? "Respond by saying" : "Say it out loud"}
@@ -299,9 +312,9 @@ function Talk() {
               </button>
             )}
           </div>
-          <p className="mt-2 font-display text-2xl font-semibold">{chosen.roman}</p>
-          <p className="text-base text-muted-foreground">{chosen.english}</p>
-          <div className="mt-4">
+          <p className="mt-1 font-display text-xl font-semibold">{chosen.roman}</p>
+          <p className="text-sm text-muted-foreground">{chosen.english}</p>
+          <div className="mt-2">
             <AudioButton file={chosen.audioFile} label="Hear it first" />
           </div>
           {chosen.quality === "less-fitting" && (
@@ -311,6 +324,7 @@ function Talk() {
           )}
           <SayIt
             key={chosen.id}
+            compact
             referenceUrl={`/audio/khowar/${chosen.referenceFile || chosen.audioFile}`}
             cohortUrls={cohortUrls}
             passMark={chosen.passThreshold}

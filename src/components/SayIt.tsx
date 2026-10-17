@@ -6,6 +6,7 @@ import { decodeToMono16k, getScoringConfig, loadCohort, loadCohortKeyed, loadRef
 import { loadSpeech, onSpeechProgress, scoreSpeech, speechReady } from "@/lib/speechClient";
 import { speechRatioToScore } from "@/lib/speechScore";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 /** Store only the number (never the recording) so closeness can be studied later. */
 async function saveAttempt(reference: string, score: number, passed: boolean, attempt: number, scorer: string) {
@@ -36,6 +37,7 @@ export function SayIt({
   onSelfCheck,
   onSkip,
   onAttempt,
+  compact = false,
 }: {
   referenceUrl: string;
   cohortUrls?: string[];
@@ -46,6 +48,7 @@ export function SayIt({
   /** Shown only after 3 attempts below the pass mark (or when recording can't work). */
   onSkip?: () => void;
   onAttempt?: () => void;
+  compact?: boolean;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [score, setScore] = useState<number | null>(null);
@@ -143,26 +146,27 @@ export function SayIt({
   const selfCheck = noRef || !!micError || showSelfCheck(fails);
 
   return (
-    <div className="mt-5 space-y-4">
-      <div className="flex flex-col items-center gap-3">
-        <div className="flex h-14 w-full items-center justify-center" aria-hidden>
+    <div className={compact ? "mt-3 space-y-2" : "mt-5 space-y-4"}>
+      <div className={compact ? "grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1" : "flex flex-col items-center gap-3"}>
+        <div className={compact ? "flex h-8 min-w-0 items-center justify-center" : "flex h-14 w-full items-center justify-center"} aria-hidden>
           {phase === "recording" && stream ? <LiveWave stream={stream} /> : <IdleWave dim={phase === "scoring"} />}
         </div>
         {phase === "scored" && passed ? (
           <div
             role="img"
             aria-label="Said correctly"
-            className="fade-up flex size-20 items-center justify-center rounded-full border-4 border-primary bg-leaf-soft text-primary shadow-lift"
+            className={`fade-up flex items-center justify-center rounded-full border-4 border-primary bg-leaf-soft text-primary shadow-lift ${compact ? "size-14" : "size-20"}`}
           >
             <CheckCircle2 className="size-10" aria-hidden />
           </div>
         ) : (
-        <button
+        <Button
           type="button"
           onClick={phase === "recording" ? stop : start}
           disabled={phase === "scoring"}
           aria-label={phase === "recording" ? "Stop recording" : phase === "idle" ? "Record yourself" : "Record again"}
-          className={`relative flex size-20 items-center justify-center rounded-full shadow-lift disabled:opacity-60 ${
+          variant="audio"
+          className={`relative flex shrink-0 items-center justify-center rounded-full p-0 shadow-lift disabled:opacity-60 [&_svg]:size-7 ${compact ? "size-14" : "size-20"} ${
             phase === "recording" ? "bg-bark text-primary-foreground ring-4 ring-bark/30" : "bg-bark text-primary-foreground"
           }`}
         >
@@ -176,9 +180,9 @@ export function SayIt({
           ) : (
             <Mic className="size-9" aria-hidden />
           )}
-        </button>
+        </Button>
         )}
-        <p className={`text-base font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
+        <p className={`${compact ? "col-span-2 text-center text-sm" : "text-base"} font-bold ${phase === "scored" && passed ? "text-primary" : ""}`} aria-live="polite">
           {phase === "recording"
             ? "Listening… tap to stop"
             : phase === "scoring"
@@ -208,16 +212,16 @@ export function SayIt({
       <div aria-live="polite">
         {phase === "scored" && score !== null && (
           <div
-            className={`fade-up rounded-2xl border-2 p-4 ${
+            className={`fade-up rounded-2xl border-2 ${compact ? "px-3 py-2" : "p-4"} ${
               passed ? "border-primary bg-leaf-soft" : fails >= 3 ? "border-destructive bg-card" : "border-sun bg-card"
             }`}
           >
-            {passed && (
+            {passed && !compact && (
               <p className="flex items-center gap-2 font-bold text-primary">
                 <CheckCircle2 className="size-6" aria-hidden /> You got it!
               </p>
             )}
-            <p className={`font-display text-xl font-semibold ${passed ? "mt-1" : ""}`}>{feedback}</p>
+            <p className={`font-display ${compact ? "text-base" : "text-xl"} font-semibold ${passed && !compact ? "mt-1" : ""}`}>{feedback}</p>
           </div>
         )}
         {noRef && (
@@ -229,18 +233,19 @@ export function SayIt({
       </div>
 
       {passed && phase === "scored" && (
-        <>
-          <button type="button" onClick={onPass} className="min-h-12 w-full rounded-full bg-primary font-bold text-primary-foreground">
+        <div className={compact ? "grid grid-cols-2 items-center gap-2" : "space-y-4"}>
+          <Button type="button" onClick={onPass} className="min-h-11 w-full rounded-full font-bold">
             Continue
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="link"
             onClick={start}
             className="min-h-11 w-full rounded-full font-bold text-muted-foreground underline"
           >
             Or record again
-          </button>
-        </>
+          </Button>
+        </div>
       )}
 
       {!passed && selfCheck && onSkip && phase !== "recording" && phase !== "scoring" && (
