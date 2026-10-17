@@ -13,3 +13,5 @@
 - [x] Verify Dictionary and existing navigation
 - [x] Dictionary corrections: translation, alphabetical ordering, filter scroll bar
 - [x] Units with 3 lessons: Words, Phrases, Conversation (new words/phrases lists and clips)
+
+- [ ] Persistent XP/streak counters and Profile Activity & Milestones
