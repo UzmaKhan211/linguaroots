@@ -317,10 +317,12 @@ function Talk() {
               </button>
             )}
           </div>
-          <p className="mt-1 font-display text-xl font-semibold">{chosen.roman}</p>
-          <p className="text-sm text-muted-foreground">{chosen.english}</p>
-          <div className="mt-2">
-            <AudioButton file={chosen.audioFile} label="Hear it first" />
+          <div className="mt-1 flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-xl font-semibold">{chosen.roman}</p>
+              <p className="text-sm text-muted-foreground">{chosen.english}</p>
+            </div>
+            <AudioButton file={chosen.audioFile} label="Hear it first" iconOnly />
           </div>
           {chosen.quality === "less-fitting" && (
             <p className="mt-4 rounded-2xl bg-card p-3 text-base">
