@@ -2,12 +2,25 @@ import { Link } from "@tanstack/react-router";
 import { Home, UserRound, BookOpen } from "lucide-react";
 import type { ReactNode } from "react";
 import { RequireAccount } from "@/components/RequireAccount";
+import { RewardsCounter } from "@/components/RewardsCounter";
+import { LogoMark, Wordmark } from "@/components/LogoMark";
 
 /** `lesson` hides the bottom bar so a stray tap cannot pull learners out mid-lesson. */
 export function AppShell({ children, lesson = false }: { children: ReactNode; lesson?: boolean }) {
   return (
     <RequireAccount>
     <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col bg-background">
+      {!lesson && (
+        <>
+          <header aria-label="LinguaRoots activity" className="fixed inset-x-0 top-0 z-20 mx-auto max-w-[440px] border-b bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+            <div className="flex h-16 items-center justify-between gap-3 px-5">
+              <Link to="/" aria-label="LinguaRoots home" className="flex min-h-11 items-center gap-2"><LogoMark className="h-10 w-auto" /><Wordmark className="hidden h-4 w-auto min-[380px]:block" /></Link>
+              <RewardsCounter />
+            </div>
+          </header>
+          <div className="h-[calc(4rem+env(safe-area-inset-top))] shrink-0" aria-hidden />
+        </>
+      )}
       <main className={lesson ? "flex-1 px-5 pb-10 pt-6" : "flex-1 px-5 pb-28 pt-6"}>{children}</main>
       {!lesson && (
       <nav

@@ -4,8 +4,7 @@ import { completedCount, getPrefs, isPhrasesDone, isWarmupDone, scenarioStage } 
 import { Phone, Home as HomeIcon, ChevronRight, Check, Sparkles, BookOpen, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
-import { RewardsBadge } from "@/components/RewardsBadge";
-import { LogoMark, Wordmark } from "@/components/LogoMark";
+import { LogoMark } from "@/components/LogoMark";
 import { getWarmup, scenarios } from "@/lib/content";
 import { AudioButton } from "@/components/AudioButton";
 import { signupDestination } from "@/lib/signup";
@@ -84,11 +83,6 @@ function Index() {
 
   return (
     <AppShell>
-      <header className="fade-up flex items-center gap-3">
-        <LogoMark className="h-11 w-auto" />
-        <Wordmark className="h-5 w-auto" />
-      </header>
-
       {isNew ? (
         <section className="fade-up mt-8">
           <p className="text-sm font-bold uppercase tracking-wider text-accent">Khowar</p>
@@ -121,7 +115,6 @@ function Index() {
         <section className="fade-up mt-8">
           <h1 className="text-[2rem] font-semibold text-foreground">Welcome back!</h1>
           <p className="mt-1 text-lg text-muted-foreground">Which unit would you like to practice today?</p>
-          <RewardsBadge className="mt-4" />
           <Drawer>
             <DrawerTrigger asChild>
               <button
