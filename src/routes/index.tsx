@@ -54,7 +54,7 @@ function Index() {
       const { data } = await supabase.auth.getSession();
       if (!active) return;
       if (data.session) {
-        const { data: profile, error } = await supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", data.session.user.id).maybeSingle();
+        const { data: profile, error } = await supabase.from("profiles").select("display_name, avatar_path, onboarded_at").eq("id", data.session.user.id).maybeSingle();
         if (!active) return;
         const destination = error ? "/" : signupDestination(profile);
         if (destination !== "/") { void navigate({ to: destination, replace: true }); return; }

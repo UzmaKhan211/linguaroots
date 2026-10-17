@@ -42,7 +42,7 @@ function AuthPage() {
     if (!user) return;
     let active = true;
     setChecking(true);
-    void supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", user.id).maybeSingle().then(({ data, error }) => {
+    void supabase.from("profiles").select("display_name, avatar_path, onboarded_at").eq("id", user.id).maybeSingle().then(({ data, error }) => {
       if (!active) return;
       if (error) { setMsg("We couldn't load your profile. Please refresh and try again."); setChecking(false); return; }
       void navigate({ to: signupDestination(data), replace: true });

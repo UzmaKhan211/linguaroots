@@ -1,8 +1,11 @@
 import { avatarSrc } from "@/lib/avatars";
 
-/** Account state, not device state, decides which registration step comes next. */
-export function signupDestination(profile: { avatar_path: string | null; onboarded_at: string | null } | null) {
+/** Account state, not device state, decides which registration step comes next: name, companion, then language. */
+export function signupDestination(
+  profile: { display_name?: string | null; avatar_path: string | null; onboarded_at: string | null } | null,
+) {
   if (profile?.onboarded_at) return "/" as const;
+  if (profile && "display_name" in profile && !profile.display_name?.trim()) return "/choose-name" as const;
   if (!avatarSrc(profile?.avatar_path)) return "/choose-companion" as const;
   return "/choose-language" as const;
 }
