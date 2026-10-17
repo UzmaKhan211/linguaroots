@@ -47,6 +47,7 @@ function Index() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [relative, setRelative] = useState<string | undefined>();
+  const [checked, setChecked] = useState(false);
   useEffect(() => {
     let active = true;
     void (async () => {
@@ -54,10 +55,11 @@ function Index() {
       if (!active) return;
       if (data.session) {
         const { data: profile, error } = await supabase.from("profiles").select("avatar_path, onboarded_at").eq("id", data.session.user.id).maybeSingle();
-        if (!active || error) return;
-        const destination = signupDestination(profile);
-        if (destination !== "/") void navigate({ to: destination, replace: true });
-      } else if (!isOnboarded()) void navigate({ to: "/welcome", replace: true });
+        if (!active) return;
+        const destination = error ? "/" : signupDestination(profile);
+        if (destination !== "/") { void navigate({ to: destination, replace: true }); return; }
+      } else if (!isOnboarded()) { void navigate({ to: "/welcome", replace: true }); return; }
+      setChecked(true);
     })();
     setRelative(getPrefs().relative);
     setRows(scenarios.map((s) => ({ id: s.id, warm: isWarmupDone(s.id), done: completedCount(s.id) })));
