@@ -1,26 +1,17 @@
-# Linguaroots
+# LinguaRoots
 
-I want to build app and i have created a PRD for it. I have all the content including audio files, lesson data, and my app's logo and color idea. Read the PRD and tell me how should we plan the build. Here is the link to the PRD. https://docs.google.com/document/d/1pESmWXVvjN4QpZ73IBPLy7yVnoI7_GM0_LbWR4WQlOI/edit?tab=t.0
+**LinguaRoots** is a heritage-language learning web app created to help diaspora families bridge the generational gap and keep their mother tongue alive. 
 
-This project was built with [Lovable](https://lovable.dev).
+When families live surrounded by a dominant language, home languages often fade within two to three generations. For endangered and indigenous languages like Khowar (spoken in Chitral), mainstream language platforms offer no resources. LinguaRoots provides a warm, family-centered space where learners can practice everyday spoken conversations with beloved elders.
 
-**Live app**: https://linguaroots.lovable.app
+**Live app**: [https://linguaroots.lovable.app](https://linguaroots.lovable.app)
 
-## Build with Lovable
+---
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/66251e63-5d79-4e1d-ad2d-c6e047aad655).
+### Key Features
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+- **Realistic phone conversations:** Learners practice simulated calls with Grandma and Grandpa, using authentic everyday phrasing.
+- **Three-step learning path:** Each unit builds confidence progressively through Words (vocabulary), Phrases, and full Conversations.
+- **Private, on-device pronunciation feedback:** Voice comparison runs directly in the learner's browser using local audio processing. Voice recordings never leave the device.
+- **Living heritage dictionary:** Audio-enabled reference for everyday vocabulary with learned badges and authentic recordings.
+- **Family-first design:** Gentle, warm aesthetic with character avatars, encouraging feedback over score pressure, and streak tracking that celebrates consistency.
